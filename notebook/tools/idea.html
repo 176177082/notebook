@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:43 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IntelliJ IDEA</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">IntelliJ IDEA</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgd56fe3f">1. 简单使用</a></li>
+<li><a href="#orgc79297d">2. 调试程序</a></li>
+<li><a href="#orgf92a87f">3. Empty Project</a></li>
+<li><a href="#org5299197">4. 相关技巧</a>
+<ul>
+<li><a href="#org5bab0c5">4.1. 通过 Maven 创建 Web App</a></li>
+<li><a href="#org21c4a32">4.2. 配置 Emacs 作为额外的编辑工具</a></li>
+<li><a href="#org69ae526">4.3. 快速的创建多级目录</a></li>
+<li><a href="#org89315e7">4.4. 配置环境变量</a></li>
+<li><a href="#orgdd4019a">4.5. Import project from external model</a></li>
+<li><a href="#orgd11a709">4.6. Create Live Templates</a></li>
+<li><a href="#orgf42ed59">4.7. 使用 Scratch 文件</a></li>
+<li><a href="#orgafcdf0e">4.8. 常用的快捷键</a></li>
+<li><a href="#orgbad2612">4.9. 创建书签</a></li>
+<li><a href="#org9250587">4.10. 寻找文件</a></li>
+<li><a href="#orgc8bd8b0">4.11. 快速添加依赖</a></li>
+<li><a href="#orgc05046a">4.12. 多 project 操作</a></li>
+<li><a href="#org95a3626">4.13. 自动创建返回值</a></li>
+<li><a href="#org5930b33">4.14. File Type</a></li>
+</ul>
+</li>
+<li><a href="#org5e318c0">5. 相关问题</a>
+<ul>
+<li><a href="#orgc74dd0d">5.1. 怎样添加静态导入到补全列表</a></li>
+<li><a href="#org40f1345">5.2. 怎样清理同步 VSF</a></li>
+<li><a href="#org3ddf822">5.3. 解决 Can't reslove symbol 问题</a></li>
+<li><a href="#org21463e4">5.4. Idea 集成 Mybatis 时可能遇到的问题</a></li>
+<li><a href="#orgffc4981">5.5. 怎样设置单行注释的对其方式</a></li>
+<li><a href="#org88d2995">5.6. 怎样关闭某段代码的自动格式化</a></li>
+<li><a href="#org8d3521f">5.7. Intellij IDEA Module 的 Language Level 的问题</a></li>
+<li><a href="#orgcb80076">5.8. 关闭参数提示</a></li>
+<li><a href="#orgce2f97c">5.9. 配置文件路径</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd56fe3f" class="outline-2">
+<h2 id="orgd56fe3f"><span class="section-number-2">1</span> 简单使用</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+在 Emacs 键位下的一些常用快捷键：
+</p>
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">快捷键</th>
+<th scope="col" class="org-left">作用</th>
+<th scope="col" class="org-left">快捷键</th>
+<th scope="col" class="org-left">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>C-S-A</code></td>
+<td class="org-left">查看某操作的快捷键</td>
+<td class="org-left"><code>C-S-F12</code></td>
+<td class="org-left">显示/隐藏所有工具窗口</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>C-S-up/down</code></td>
+<td class="org-left">移动当前行</td>
+<td class="org-left"><code>M-insert</code></td>
+<td class="org-left">创建构造函数等</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>C-M-L</code></td>
+<td class="org-left">格式化代码</td>
+<td class="org-left"><code>C-M-I</code></td>
+<td class="org-left">自动缩进行</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>C-M-O</code></td>
+<td class="org-left">优化导入内容</td>
+<td class="org-left"><code>C-S-T</code></td>
+<td class="org-left">创建测试</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>C-S-F10</code></td>
+<td class="org-left">运行当前类</td>
+<td class="org-left"><code>C-+/-</code></td>
+<td class="org-left">展开/折叠代码</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>M-Num</code></td>
+<td class="org-left">跳转窗口</td>
+<td class="org-left"><code>M-return</code></td>
+<td class="org-left">快速修复</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>C-o</code></td>
+<td class="org-left">覆盖父类方法</td>
+<td class="org-left"><code>C-S-/</code></td>
+<td class="org-left">块注释代码</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>M-left/right</code></td>
+<td class="org-left">在 tab 间跳转</td>
+<td class="org-left"><code>C-M-T</code></td>
+<td class="org-left">环绕代码块</td>
+</tr>
+</tbody>
+</table>
+
+<ul class="org-ul">
+<li><a href="https://www.jetbrains.com/help/idea/discover-intellij-idea.html?keymap=primary_emacs">Discover IntelliJ IDEA - Help | IntelliJ IDEA</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc79297d" class="outline-2">
+<h2 id="orgc79297d"><span class="section-number-2">2</span> 调试程序</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li>Step over - F8</li>
+<li>Step out  - S-F8</li>
+<li>Step into - F7</li>
+<li>Smart Step into S-F7</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf92a87f" class="outline-2">
+<h2 id="orgf92a87f"><span class="section-number-2">3</span> Empty Project</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+目前来看，IntelliJ IDEA 的功能是 JetBrains 家各种 IDE 中支持最好的，其他 IDE 的主要功能也只需要安装插件就可以使用，因此，如何利用 IDEA 替代其他 IDE 是一个很有用的操作。
+</p>
+
+<p>
+语言相关 IDE 基本上只要安装插件就足够了，比较特殊的是 Datagrid，存在多个项目时，不可能每个项目都拷贝一次数据库配置，因此可以创建一个 Empty 项目，在这个项目内通过 Database 功能替代 Datagrid。
+</p>
+
+<p>
+同时，还可以添加子 sandbox 模块尝试项目无关的测试代码。
+</p>
+
+<p>
+项目内部也可以通过创建 scratch 文件夹，在 gitignore 中忽略后，这个文件夹中可以直接依赖项目依赖，不必像 scratch 需要配置。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5299197" class="outline-2">
+<h2 id="org5299197"><span class="section-number-2">4</span> 相关技巧</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org5bab0c5" class="outline-3">
+<h3 id="org5bab0c5"><span class="section-number-3">4.1</span> 通过 Maven 创建 Web App</h3>
+<div class="outline-text-3" id="text-4-1">
+<ol class="org-ol">
+<li>选择 maven-archetype-webapp 创建项目</li>
+<li><p>
+添加依赖项：
+</p>
+<div class="org-src-container">
+<pre class="src src-xml"><span class="org-comment-delimiter">&lt;!-- </span><span class="org-comment">https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api </span><span class="org-comment-delimiter">--&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">dependency</span><span class="org-nxml-tag-delimiter">&gt;</span>
+  <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">groupId</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">javax.servlet</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">groupId</span><span class="org-nxml-tag-delimiter">&gt;</span>
+  <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">artifactId</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">javax.servlet-api</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">artifactId</span><span class="org-nxml-tag-delimiter">&gt;</span>
+  <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">version</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">3.1.0</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">version</span><span class="org-nxml-tag-delimiter">&gt;</span>
+  <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">scope</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">provided</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">scope</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">dependency</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div></li>
+<li><p>
+添加 Tomcat 插件：
+</p>
+<div class="org-src-container">
+<pre class="src src-xml"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">build</span><span class="org-nxml-tag-delimiter">&gt;</span>
+  <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">finalName</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">servletp</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">finalName</span><span class="org-nxml-tag-delimiter">&gt;</span>
+  <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">plugins</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">plugin</span><span class="org-nxml-tag-delimiter">&gt;</span>
+      <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">groupId</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">org.apache.tomcat.maven</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">groupId</span><span class="org-nxml-tag-delimiter">&gt;</span>
+      <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">artifactId</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">tomcat7-maven-plugin</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">artifactId</span><span class="org-nxml-tag-delimiter">&gt;</span>
+      <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">version</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">2.2</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">version</span><span class="org-nxml-tag-delimiter">&gt;</span>
+      <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">configuration</span><span class="org-nxml-tag-delimiter">&gt;</span>
+        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">url</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">http://localhost:8080/servletp</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">url</span><span class="org-nxml-tag-delimiter">&gt;</span>
+        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">server</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">tomcat</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">server</span><span class="org-nxml-tag-delimiter">&gt;</span>
+      <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">configuration</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">plugin</span><span class="org-nxml-tag-delimiter">&gt;</span>
+  <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">plugins</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">build</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org21c4a32" class="outline-3">
+<h3 id="org21c4a32"><span class="section-number-3">4.2</span> 配置 Emacs 作为额外的编辑工具</h3>
+<div class="outline-text-3" id="text-4-2">
+<ul class="org-ul">
+<li><a href="https://www.jetbrains.com/help/idea/using-emacs-as-an-external-editor.html">Using Emacs as an External Editor</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org69ae526" class="outline-3">
+<h3 id="org69ae526"><span class="section-number-3">4.3</span> 快速的创建多级目录</h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+创建目录时通过 <code>a/b/c</code> 的方式就可以直接创建多级目录 <code>a/b/c</code> 了，算是一个很方便的功能。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org89315e7" class="outline-3">
+<h3 id="org89315e7"><span class="section-number-3">4.4</span> 配置环境变量</h3>
+<div class="outline-text-3" id="text-4-4">
+<p>
+可以在 IDEA 中单独为项目或全局环境配置环境变量，不用污染系统环境变量：
+</p>
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/45696203/intellij-idea-global-environment-variable-configuration?rq=1">IntelliJ IDEA global environment variable configuration - Stack Overflow</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgdd4019a" class="outline-3">
+<h3 id="orgdd4019a"><span class="section-number-3">4.5</span> Import project from external model</h3>
+<div class="outline-text-3" id="text-4-5">
+<p>
+在导入已有的项目时，除非是简单的项目，否则都应该通过 <code>Import project from external model</code> 的方式进行导入，不然可能出现问题。
+</p>
+
+<p>
+参考链接：
+</p>
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/11258321/idea-import-from-external-model-vs-create-from-existing-source">android - IDEA - "Import from external model" vs "Create from existing source"? - Stack Overflow</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd11a709" class="outline-3">
+<h3 id="orgd11a709"><span class="section-number-3">4.6</span> Create Live Templates</h3>
+<div class="outline-text-3" id="text-4-6">
+<p>
+具体可以参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.jetbrains.com/help/idea/creating-and-editing-live-templates.html?keymap=primary_emacs">Creating live templates - Help | IntelliJ IDEA</a></li>
+<li><a href="https://www.jetbrains.com/help/idea/template-variables.html?keymap=primary_emacs">Live template variables - Help | IntelliJ IDEA</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf42ed59" class="outline-3">
+<h3 id="orgf42ed59"><span class="section-number-3">4.7</span> 使用 Scratch 文件</h3>
+<div class="outline-text-3" id="text-4-7">
+<p>
+通过 Scratch 可以很方便的创建用于临时测试的代码，而不是需要单独编写一个测试类。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgafcdf0e" class="outline-3">
+<h3 id="orgafcdf0e"><span class="section-number-3">4.8</span> 常用的快捷键</h3>
+<div class="outline-text-3" id="text-4-8">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">快捷键</th>
+<th scope="col" class="org-left">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">M-S-F10</td>
+<td class="org-left">选择运行目标，在项目中存在多个可执行目标时很有用</td>
+</tr>
+
+<tr>
+<td class="org-left">M-F1</td>
+<td class="org-left">Select In，可以快速的在目录中选中当前文件</td>
+</tr>
+
+<tr>
+<td class="org-left">C-S-m</td>
+<td class="org-left">括号跳转</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-orgbad2612" class="outline-3">
+<h3 id="orgbad2612"><span class="section-number-3">4.9</span> 创建书签</h3>
+<div class="outline-text-3" id="text-4-9">
+<p>
+通过 <code>C-F11</code> 创建取消书签，通过 <code>S-F11</code> 显示选择属性，通过 <code>C-Num</code> 快速跳转数字书签。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9250587" class="outline-3">
+<h3 id="org9250587"><span class="section-number-3">4.10</span> 寻找文件</h3>
+<div class="outline-text-3" id="text-4-10">
+<p>
+通过 <code>Recent file</code> 方式打开的文件会在原来的窗口打开，而通过 <code>Find file</code> 方式打开的文件会在当前窗口打开。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc8bd8b0" class="outline-3">
+<h3 id="orgc8bd8b0"><span class="section-number-3">4.11</span> 快速添加依赖</h3>
+<div class="outline-text-3" id="text-4-11">
+<p>
+在 POM 文件的 generate 上下文中可以选择 dependency 快速选择添加依赖：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.jetbrains.com/help/idea/work-with-maven-dependencies.html">Maven dependencies - Help | IntelliJ IDEA</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc05046a" class="outline-3">
+<h3 id="orgc05046a"><span class="section-number-3">4.12</span> 多 project 操作</h3>
+<div class="outline-text-3" id="text-4-12">
+<p>
+IDEA 是支持添加多个项目到一个 IDEA 实例的，参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/8774024/intellij-working-on-multiple-projects">IntelliJ: Working on multiple projects - Stack Overflow</a></li>
+</ul>
+
+<p>
+问题就是使用体验没有想象的那么好……
+</p>
+</div>
+</div>
+
+<div id="outline-container-org95a3626" class="outline-3">
+<h3 id="org95a3626"><span class="section-number-3">4.13</span> 自动创建返回值</h3>
+<div class="outline-text-3" id="text-4-13">
+<p>
+快捷键 <code>C-M-V</code>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5930b33" class="outline-3">
+<h3 id="org5930b33"><span class="section-number-3">4.14</span> File Type</h3>
+<div class="outline-text-3" id="text-4-14">
+<p>
+在 Settings | Editor | File Types 下可以自定义文件后缀和文件类型的关联关系，在使用 Go Template 的时候可能会用到。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5e318c0" class="outline-2">
+<h2 id="org5e318c0"><span class="section-number-2">5</span> 相关问题</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-orgc74dd0d" class="outline-3">
+<h3 id="orgc74dd0d"><span class="section-number-3">5.1</span> 怎样添加静态导入到补全列表</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+在 <code>Settings -&gt; Code Style -&gt; Java -&gt; Imports</code> 处进行设置就可以了。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org40f1345" class="outline-3">
+<h3 id="org40f1345"><span class="section-number-3">5.2</span> 怎样清理同步 VSF</h3>
+<div class="outline-text-3" id="text-5-2">
+<p>
+可以通过菜单栏的同步选项进行操作，更多的内容可以参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.jetbrains.org/intellij/sdk/docs/basics/virtual_file_system.html">Virtual File System / IntelliJ Platform SDK DevGuide</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org3ddf822" class="outline-3">
+<h3 id="org3ddf822"><span class="section-number-3">5.3</span> 解决 Can't reslove symbol 问题</h3>
+<div class="outline-text-3" id="text-5-3">
+<p>
+简单直接粗暴的解决方案：File | Invalidate Caches，参考链接：
+</p>
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/5905896/intellij-inspection-gives-cannot-resolve-symbol-but-still-compiles-code">java - IntelliJ inspection gives "Cannot resolve symbol" but still compiles code - Stack Overflow</a></li>
+</ul>
+
+<p>
+但是，这对通过 <code>Create project from existing source</code> 方式打开的 Maven 项目不生效，需要改变打开方式。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org21463e4" class="outline-3">
+<h3 id="org21463e4"><span class="section-number-3">5.4</span> Idea 集成 Mybatis 时可能遇到的问题</h3>
+<div class="outline-text-3" id="text-5-4">
+<p>
+问题：自动注入 <code>Mapper</code> 对象时报错，提示找不到相应的 Bean，但是实际运行没有问题
+</p>
+
+<p>
+解决：安装 <code>MyBatis plugin</code> 插件就可以解决这个问题
+</p>
+
+<p>
+问题：mapper 文件提示：No data sources are configured to run this sql
+</p>
+
+<p>
+解决：在右侧的 Datasource 中配置相应的数据源即可
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgffc4981" class="outline-3">
+<h3 id="orgffc4981"><span class="section-number-3">5.5</span> 怎样设置单行注释的对其方式</h3>
+<div class="outline-text-3" id="text-5-5">
+<p>
+设置项位于 <code>Go to File &gt; Settings &gt; Editor &gt; Code Style &gt; Java &gt; Code Generation</code> 下，参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/32342682/indentation-of-line-comments-slashes">intellij idea - Indentation of line comments’ slashes - Stack Overflow</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org88d2995" class="outline-3">
+<h3 id="org88d2995"><span class="section-number-3">5.6</span> 怎样关闭某段代码的自动格式化</h3>
+<div class="outline-text-3" id="text-5-6">
+<p>
+这在进行很长的链式调用时是很有用的一个功能，可以在 <code>Preferences &gt; Editor &gt; Code Style &gt; Formatter Control</code> 开启这样功能：
+</p>
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/3375307/how-to-disable-code-formatting-for-some-part-of-the-code-using-comments">intellij idea - How to disable code formatting for some part of the code using comments? - Stack Overflow</a></li>
+</ul>
+
+<p>
+使用：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-comment-delimiter">// </span><span class="org-comment">@formatter:off</span>
+...
+<span class="org-comment-delimiter">// </span><span class="org-comment">@formatter:on </span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8d3521f" class="outline-3">
+<h3 id="org8d3521f"><span class="section-number-3">5.7</span> Intellij IDEA Module 的 Language Level 的问题</h3>
+<div class="outline-text-3" id="text-5-7">
+<p>
+在新建项目后 Language Level 总是会变成 1.5 的原因：
+</p>
+<blockquote>
+<p>
+Apache Maven Compiler Plugin
+</p>
+
+<p>
+The Compiler Plugin is used to compile the sources of your project. Since 3.0, the default compiler is javax.tools.JavaCompiler (if you are using java 1.6) and is used to compile Java sources.
+If you want to force the plugin using javac, you must configure the plugin option forceJavacCompilerUse.
+</p>
+
+<p>
+Also note that at present the default source setting is 1.5 and the default target setting is 1.5, independently of the JDK you run Maven with.
+If you want to change these defaults, you should set source and target as described in Setting the -source and -target of the Java Compiler.   
+</p>
+</blockquote>
+
+<p>
+可以做出如下修改：
+</p>
+<div class="org-src-container">
+<pre class="src src-xml"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">build</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">plugins</span><span class="org-nxml-tag-delimiter">&gt;</span>
+        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">plugin</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">groupId</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">org.apache.maven.plugins</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">groupId</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">artifactId</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">maven-compiler-plugin</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">artifactId</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">version</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">2.3.2</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">version</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">configuration</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">source</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">1.8</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">source</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">target</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">1.8</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">target</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">configuration</span><span class="org-nxml-tag-delimiter">&gt;</span>
+        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">plugin</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">plugins</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">build</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+
+<p>
+或：
+</p>
+<div class="org-src-container">
+<pre class="src src-xml"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">properties</span><span class="org-nxml-tag-delimiter">&gt;</span>
+  <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">maven.compiler.source</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">1.8</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">maven.compiler.source</span><span class="org-nxml-tag-delimiter">&gt;</span>
+  <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">maven.compiler.target</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">1.8</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">maven.compiler.target</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">properties</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.cnblogs.com/larryzeal/p/5552360.html">Intellij IDEA Module 的 Language Level 的问题 - LarryZeal - 博客园</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgcb80076" class="outline-3">
+<h3 id="orgcb80076"><span class="section-number-3">5.8</span> 关闭参数提示</h3>
+<div class="outline-text-3" id="text-5-8">
+<img src="https://resources.jetbrains.com/help/img/idea/2020.1/inlay_hints_example.png">
+<ul class="org-ul">
+<li><a href="https://www.jetbrains.com/help/idea/inlay-hints.html">Inlay Hints - Help | IntelliJ IDEA</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgce2f97c" class="outline-3">
+<h3 id="orgce2f97c"><span class="section-number-3">5.9</span> 配置文件路径</h3>
+<div class="outline-text-3" id="text-5-9">
+<p>
+MacOS - ~/Library/Application Support/JetBrains/IntelliJIdea2020.1
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

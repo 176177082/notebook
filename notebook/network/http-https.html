@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:44 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTTP/HTTPS</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">HTTP/HTTPS</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org451b076">1. HTTP</a>
+<ul>
+<li><a href="#org562c16c">1.1. HTTP 概述</a></li>
+<li><a href="#org3ea02ce">1.2. HTTP 缓存</a></li>
+<li><a href="#orge08f21f">1.3. HTTP Cookie</a></li>
+<li><a href="#orgb2a6199">1.4. HTTP CROS</a></li>
+<li><a href="#org2a67bd3">1.5. HTTP 连接管理</a></li>
+<li><a href="#org7597dd5">1.6. HTTP 请求头和响应头</a></li>
+<li><a href="#orgc82b2c6">1.7. MultiPart</a></li>
+<li><a href="#org53c195d">1.8. 断点续传</a></li>
+<li><a href="#orge0965a2">1.9. HTTP Auth</a></li>
+</ul>
+</li>
+<li><a href="#orgf9d2f5e">2. HTTPS</a>
+<ul>
+<li><a href="#org2a1c5db">2.1. SSL 和 TLS 协议</a></li>
+<li><a href="#org1cb4e07">2.2. 数字证书和数字签名</a>
+<ul>
+<li><a href="#org10c9ad9">2.2.1. 生成方式</a></li>
+<li><a href="#orgbd83421">2.2.2. 信任问题</a></li>
+<li><a href="#org7307c00">2.2.3. 参考链接</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org016cc9e">3. HSTS</a></li>
+<li><a href="#org194c7e0">4. 相关问题</a>
+<ul>
+<li><a href="#orgc2aac47">4.1. HTTP Header 大小写敏感吗</a></li>
+<li><a href="#org4786c77">4.2. HTTP 协议中的无状态是什么意思</a></li>
+<li><a href="#orgf7ddc4b">4.3. GET 和 POST 之间的区别</a></li>
+<li><a href="#orgcddf622">4.4. 状态码 200/201 的使用</a></li>
+<li><a href="#orgfd52963">4.5. 名称相同的 Cookie 的处理规则</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org451b076" class="outline-2">
+<h2 id="org451b076"><span class="section-number-2">1</span> HTTP</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org562c16c" class="outline-3">
+<h3 id="org562c16c"><span class="section-number-3">1.1</span> HTTP 概述</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+HTTP 是面向 C/S 架构的协议，客户端通过用户代理发起请求，其中，用户代理通常是浏览器，但也可以是其他东西，比如爬虫。
+</p>
+
+<p>
+HTTP 协议的基本性质为：
+</p>
+<ol class="org-ol">
+<li>简单的 - HTTP 报文能够被人读懂，还允许简单测试，降低了门槛，对新人很友好</li>
+<li>可扩展 - HTTP 协议允许通过 HTTP Headers 对 HTTP 协议进行扩展</li>
+<li>无状态 - 在同一个连接中，两个执行成功的请求之间是没有关系的，但是可以使用 Cookies 可以创建有状态的会话</li>
+</ol>
+
+<p>
+HTTP 良好的扩展性使得越来越多的 Web 功能归其控制，主要有：
+</p>
+<ul class="org-ul">
+<li>缓存 - 资源如何缓存可以通过 HTTP 来控制</li>
+<li>访问控制 CORS - HTTP 可以通过修改头部来开放和 CORS 有关限制</li>
+<li>认证 - 可以使用 HTTP 头如 Authenticate 或 Cookie 来进行认证控制</li>
+</ul>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Overview">HTTP 概述 - HTTP | MDN</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org3ea02ce" class="outline-3">
+<h3 id="org3ea02ce"><span class="section-number-3">1.2</span> HTTP 缓存</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+HTTP 通过请求的方法和请求的资源 URI 来进行缓存，通常只有 GET 方法的响应能够被缓存，主要有：
+</p>
+<ul class="org-ul">
+<li>响应状态码为 200 的 GET 请求</li>
+<li>响应状态码为 301 的永久重定向</li>
+<li>响应状态码为 404 的错误响应</li>
+<li>响应状态码为 206 的不完全响应</li>
+</ul>
+
+<p>
+可以通过一些 HTTP Header 对缓存行为进行控制，可以根据是否需要重新向服务器发起请求来将缓存分为 <b>强制缓存</b> 和 <b>对比缓存</b> 两类：
+</p>
+<ul class="org-ul">
+<li>强制缓存 - 存在缓存时就直接使用缓存数据，不存在时才请求服务器</li>
+<li>对比缓存 - 存在缓存时需要将缓存的一些信息发送到服务器来判断缓存是否有效，有效时服务器返回状态码 304，否则返回相应的数据</li>
+</ul>
+
+<p>
+强制缓存和对比缓存都需要使用 <code>Cache-Control</code> 头，该头常见的取值有：
+</p>
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">取值</th>
+<th scope="col" class="org-left">含义</th>
+<th scope="col" class="org-left">备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">private</td>
+<td class="org-left">只有客户端可以缓存</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">public</td>
+<td class="org-left">客户端和代理服务器都可缓存</td>
+<td class="org-left">前端可以认为 public 和 private 是一样的</td>
+</tr>
+
+<tr>
+<td class="org-left">max-age=xxx</td>
+<td class="org-left">缓存的内容将在 xxx 秒后失效</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">no-cache</td>
+<td class="org-left">需要使用对比缓存来验证缓存数据</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">no-store</td>
+<td class="org-left">所有内容都不会缓存</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+对于强制缓存来说，可以通过只指定 <code>max-age</code> 取值的方式来实现，这时缓存类型默认为 <code>private</code> 的，存在缓存时就不会发起请求。
+</p>
+
+<p>
+对于对比缓存来说，除了通过 <code>Cache-Control</code> 头指定缓存类型以外，还需要通过一些其他头部传递 <b>缓存标识</b> 来判断缓存是否已经失效：
+</p>
+<ul class="org-ul">
+<li><code>Last-Modified/If-Modified-Since</code> - 服务器在响应请求时，可以通过 <code>Last-Modified</code> 告诉浏览器资源的最后修改时间，然后客户端通过 <code>If-Modified-Since</code> 头携带该值，服务器收到请求后就根据该时间判断资源是否存在变动，无变动就返回 304 状态码，变动就返回新的数据</li>
+<li><code>Etag/If-None-Match</code> - 和 <code>Last-Modified/If-Modified-Since</code> 的方式类似，但是优先级更高，服务器通过 <code>Etag</code> 唯一标识资源，收到客户端的请求时，便可以根据该标识判断资源是否存在</li>
+</ul>
+
+<p>
+理论上来讲，当一个资源被缓存存储后，该资源应该可以被永久存储在缓存中。由于缓存只有有限的空间用于存储资源副本，所以缓存会定期地将一些副本删除，这个过程叫做缓存驱逐。
+</p>
+
+<p>
+另一方面，当服务器上面的资源进行了更新，那么缓存中的对应资源也应该被更新，由于 HTTP 是 C/S 模式的协议，服务器更新一个资源时，不可能直接通知客户端更新缓存，所以双方必须为该资源约定一个过期时间，在该过期时间之前，该资源（缓存副本）就是 <b>新鲜</b> 的，当 <b>过了过期时间</b> 后，该资源（缓存副本）则变为 <b>陈旧</b> 的。
+</p>
+
+<p>
+驱逐算法用于将陈旧的资源替换为新鲜的，注意，一个陈旧的资源是不会直接被清除或忽略的，当客户端发起一个请求时，缓存检索到已有一个对应的陈旧资源，则缓存会先将此请求附加一个 <code>If-None-Match</code> 头，然后发给目标服务器，以此来检查该资源副本是否是依然还是算新鲜的，若服务器返回了 304 (Not Modified)，则表示此资源副本是新鲜的，这样一来，可以节省一些带宽。若服务器通过 <code>If-None-Match</code> 或 <code>If-Modified-Since</code> 判断后发现已过期，那么会带有该资源的实体内容返回。
+</p>
+
+<p>
+PS: 在没有 Cache-Control 头的情况下浏览器貌似不会进行缓存……
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://developer.mozilla.org/en-US/docs/Glossary/Cacheable">Cacheable - MDN Web Docs Glossary: Definitions of Web-related terms | MDN</a></li>
+<li><a href="https://www.cnblogs.com/chenqf/p/6386163.html">彻底弄懂 HTTP 缓存机制及原理 - 云中桥 - 博客园</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Caching_FAQ">HTTP 缓存 - HTTP | MDN</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orge08f21f" class="outline-3">
+<h3 id="orge08f21f"><span class="section-number-3">1.3</span> HTTP Cookie</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+使用 HTTP 协议时，常常会通过 Cookie 来使的基于无状态的 HTTP 协议能够记录稳定的状态信息，Cookie 可以通过 <code>Set-Cookie</code> 创建：
+</p>
+<ul class="org-ul">
+<li>默认情况下，不指定 <code>Expires</code> 或 <code>Max-Age</code> 时创建的 Cookie 为会话期 Cookie，关闭页面后就会失效</li>
+</ul>
+
+<p>
+可以通过 Domain 和 Path 指定 Cookie 的作用域，在没有设置 Secure 属性时，在 http schema 下设置的 cookie 在 https 下也可以访问，反之亦然。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Cookies">HTTP cookies - HTTP | MDN</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb2a6199" class="outline-3">
+<h3 id="orgb2a6199"><span class="section-number-3">1.4</span> HTTP CROS</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+在学习 CROS 之前应该先学习的是浏览器的同源策略及其作用，其中同源指的是：域名、协议、端口相同。浏览器会禁止非同源的 DOM 访问和 XHR 请求。
+</p>
+
+<p>
+如果没有 DOM 同源策略，也就是说不同域的 iframe 之间可以相互访问，那么黑客可以这样进行攻击：
+</p>
+<ol class="org-ol">
+<li>做一个假网站，里面用 iframe 嵌套一个银行网站 <code>http://mybank.com</code></li>
+<li>把 iframe 宽高啥的调整到页面全部，这样用户进来除了域名，别的部分和银行的网站没有任何差别</li>
+<li>这时如果用户输入账号密码，我们的主网站可以跨域访问到 <code>http://mybank.com</code> 的 dom 节点，就可以拿到用户的账户密码了</li>
+</ol>
+
+<p>
+如果没有 XMLHttpRequest 同源策略，那么黑客可以进行 CSRF（跨站请求伪造） 攻击：
+</p>
+<ol class="org-ol">
+<li>用户登录了自己的银行页面 <code>http://mybank.com</code> 后网站向用户的 cookie 中添加用户标识</li>
+<li>用户浏览了恶意页面 <code>http://evil.com</code> 执行了页面中的恶意 AJAX 请求代码</li>
+<li><code>http://evil.com</code> 向 <code>http://mybank.com</code> 发起 AJAX HTTP 请求，请求会默认把 <code>http://mybank.com</code> 对应 cookie 也同时发送过去</li>
+<li>银行页面从发送的 cookie 中提取用户标识，验证用户无误，response 中返回请求数据。此时数据就泄露了</li>
+<li>而且由于 Ajax 在后台执行，用户无法感知这一过程</li>
+</ol>
+
+<p>
+虽然同源策略能够让我们更加安全的上网，但是在实际中，有时候我们需要突破这样的限制，此时可以使用 CROS 来实现。
+</p>
+
+<p>
+CORS（Cross-origin resource sharing，跨域资源共享）是一个 W3C 标准，定义了在必须访问跨域资源时，浏览器与服务器应该如何沟通。CORS 背后的基本思想，就是使用自定义的 HTTP 头部让浏览器与服务器进行沟通，从而决定请求或响应是应该成功，还是应该失败。
+</p>
+
+<p>
+浏览器将 CORS 请求分成简单请求和非简单请求两类：
+</p>
+<ul class="org-ul">
+<li>简单请求：
+<ol class="org-ol">
+<li>简单需要在请求中需要附加一个额外的 Origin 头部，其中包含请求页面的源信息（协议、域名和端口），以便服务器根据这个头部信息来决定是否给予响应</li>
+<li>如果服务器认为这个请求可以接受，就在 Access-Control-Allow-Origin 头部中回发相同的源信息（如果是公共资源，可以回发 * ）</li>
+<li>没有这个头部或者有这个头部但源信息不匹配，浏览器就会驳回请求</li>
+</ol></li>
+<li>非简单请求：
+<ol class="org-ol">
+<li>浏览器在发送真正的非简单请求之前，会先发送一个 <code>Preflight</code> 请求给服务器，这种请求使用 OPTIONS 方法，发送指定头部到服务器</li>
+<li>服务器根据请求的头部决定是否允许这种类型的请求，并在响应中发送指定头部到客户端</li>
+<li>一旦服务器通过 Preflight 请求允许该请求之后，以后每次浏览器正常的 CORS 请求，就都跟简单请求一样了</li>
+</ol></li>
+</ul>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://juejin.im/post/5ba1d4fe6fb9a05ce873d4ad#heading-3">浏览器同源策略及跨域的解决方法 - 掘金</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS">HTTP访问控制（CORS） - HTTP | MDN</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2a67bd3" class="outline-3">
+<h3 id="org2a67bd3"><span class="section-number-3">1.5</span> HTTP 连接管理</h3>
+<div class="outline-text-3" id="text-1-5">
+<p>
+在 HTTP/1.0 中默认使用短连接。也就是说，客户端和服务器每进行一次 HTTP 操作，就建立一次连接，任务结束就中断连接。
+</p>
+
+<p>
+这样是极为耗费资源的，因此，从 HTTP/1.1 起，默认使用长连接，用以保持连接特性。使用长连接的 HTTP 协议，会在响应头加入这行代码：
+</p>
+<pre class="example">
+Connection: keep-alive
+</pre>
+
+<p>
+在使用长连接的情况下，当一个网页打开完成后，客户端和服务器之间用于传输 HTTP 数据的 TCP 连接不会关闭，客户端再次访问这个服务器时，会继续使用这一条已经建立的连接。Keep-Alive 不会永久保持连接，它有一个保持时间，可以在不同的服务器软件中设定这个时间。
+</p>
+
+<p>
+客户端也可以通过 <code>Connection</code> 头的 <code>timeout</code> 参数设置超时时间。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Connection_management_in_HTTP_1.x">HTTP/1.x 的连接管理 - HTTP | MDN</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Keep-Alive">Keep-Alive - HTTP | MDN</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7597dd5" class="outline-3">
+<h3 id="org7597dd5"><span class="section-number-3">1.6</span> HTTP 请求头和响应头</h3>
+<div class="outline-text-3" id="text-1-6">
+<p>
+HTTP 消息头支持自定义，自定义的专用消息头一般会添加 <code>X-</code> 前缀，常用的 HTTP 请求头和响应头可以参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://itbilu.com/other/relate/EJ3fKUwUx.html">HTTP 消息头 － 常用的 HTTP 请求头与响应头 - IT 笔录</a></li>
+</ul>
+
+<p>
+响应头中包含相应的状态码，大致的状态码划分为：
+</p>
+<table>
+
+
+<colgroup>
+<col  class="org-right">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">状态码</th>
+<th scope="col" class="org-left">类别</th>
+<th scope="col" class="org-left">原因短语</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1xx</td>
+<td class="org-left">Informational</td>
+<td class="org-left">接收的请求正在处理</td>
+</tr>
+
+<tr>
+<td class="org-right">2xx</td>
+<td class="org-left">Success</td>
+<td class="org-left">请求正常处理完毕</td>
+</tr>
+
+<tr>
+<td class="org-right">3xx</td>
+<td class="org-left">Redirection</td>
+<td class="org-left">需要进行附加操作以完成请求</td>
+</tr>
+
+<tr>
+<td class="org-right">4xx</td>
+<td class="org-left">Client Error</td>
+<td class="org-left">服务器无法处理请求</td>
+</tr>
+
+<tr>
+<td class="org-right">5xx</td>
+<td class="org-left">Server Error</td>
+<td class="org-left">服务器处理请求错误</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+常用状态码：
+</p>
+<ul class="org-ul">
+<li>200 - 请求成功</li>
+<li>201 - 资源已创建</li>
+<li>301 - 永久重定向</li>
+<li>302 - 临时重定向</li>
+<li>401 - 未授权</li>
+<li>403 - 无权限</li>
+<li>404 - 资源不存在</li>
+<li>500 - 服务器内部错误</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc82b2c6" class="outline-3">
+<h3 id="orgc82b2c6"><span class="section-number-3">1.7</span> MultiPart</h3>
+<div class="outline-text-3" id="text-1-7">
+<p>
+MultiPart 类型的请求常用于文件的上传，是一种基于 POST 请求的请求格式。对于 MultiPart 类型的请求，需要指定 <code>Content-Type</code> 为如下格式：
+</p>
+<pre class="example">
+Content-Type: multipart/form-data; boundary=MjkyMTI5NjktMUVCNy00NENELUFFMTctREQ1Q0YzREM3NUY5Cg
+</pre>
+
+<p>
+请求体中的每一部分以 <code>--boundary</code> 开始，最后一个部分以 <code>--boundary--</code> 结束，每个部分需要通过 <code>Content-Disposition</code> 指定该部分对应的字段名称：
+</p>
+<pre class="example">
+Content-Disposition: form-data; name="user";
+Content-Disposition: form-data; name="user"; filename="hello.txt"
+</pre>
+
+<p>
+每个部分可以拥有自己的请求头，然后空一行跟请求体：
+</p>
+<pre class="example">
+POST /t2/upload.do HTTP/1.1
+User-Agent: SOHUWapRebot
+Accept-Language: zh-cn,zh;q=0.5
+Accept-Charset: GBK,utf-8;q=0.7,*;q=0.7
+Connection: keep-alive
+Content-Length: 60408
+Content-Type:multipart/form-data; boundary=ZnGpDtePMx0KrHh_G0X99Yef9r8JZsRJSXC
+Host: w.sohu.com
+
+--ZnGpDtePMx0KrHh_G0X99Yef9r8JZsRJSXC
+Content-Disposition: form-data; name="city"
+
+Santa colo
+--ZnGpDtePMx0KrHh_G0X99Yef9r8JZsRJSXC
+Content-Disposition: form-data;name="desc"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+...
+--ZnGpDtePMx0KrHh_G0X99Yef9r8JZsRJSXC
+Content-Disposition: form-data;name="pic"; filename="photo.jpg"
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: binary
+
+... binary data of the jpg ...
+--ZnGpDtePMx0KrHh_G0X99Yef9r8JZsRJSXC--
+</pre>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/16958448/what-is-http-multipart-request">What is http multipart request? - Stack Overflow</a></li>
+<li><a href="https://www.jianshu.com/p/29e38bcc8a1d">深入解析 multipart/form-data - 简书</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org53c195d" class="outline-3">
+<h3 id="org53c195d"><span class="section-number-3">1.8</span> 断点续传</h3>
+<div class="outline-text-3" id="text-1-8">
+<p>
+断点续传利用的主要是 <code>Range</code> 这个请求头，通过一定的请求格式来获取想要的数据段：
+</p>
+<pre class="example">
+Range: &lt;unit&gt;=&lt;range-start&gt;-
+Range: &lt;unit&gt;=&lt;range-start&gt;-&lt;range-end&gt;
+Range: &lt;unit&gt;=&lt;range-start&gt;-&lt;range-end&gt;, &lt;range-start&gt;-&lt;range-end&gt;
+Range: &lt;unit&gt;=&lt;range-start&gt;-&lt;range-end&gt;, &lt;range-start&gt;-&lt;range-end&gt;, &lt;range-start&gt;-&lt;range-end&gt;
+</pre>
+
+<p>
+同时，根据响应头中的 <code>Content-Length</code> 获取数据的总长度，参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Range">Range - HTTP | MDN</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Length">Content-Length - HTTP | MDN</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orge0965a2" class="outline-3">
+<h3 id="orge0965a2"><span class="section-number-3">1.9</span> HTTP Auth</h3>
+<div class="outline-text-3" id="text-1-9">
+<ul class="org-ul">
+<li><a href="https://coolshell.cn/articles/19395.html">HTTP API 认证授权术 - 酷 壳 - CoolShell</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf9d2f5e" class="outline-2">
+<h2 id="orgf9d2f5e"><span class="section-number-2">2</span> HTTPS</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org2a1c5db" class="outline-3">
+<h3 id="org2a1c5db"><span class="section-number-3">2.1</span> SSL 和 TLS 协议</h3>
+<div class="outline-text-3" id="text-2-1">
+<ul class="org-ul">
+<li><a href="https://www.ruanyifeng.com/blog/2014/02/ssl_tls.html">SSL/TLS 协议运行机制的概述 - 阮一峰的网络日志</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org1cb4e07" class="outline-3">
+<h3 id="org1cb4e07"><span class="section-number-3">2.2</span> 数字证书和数字签名</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+数字证书和数字签名的生成其实并不复杂，理解这两者中最复杂的反而是其中的信任问题，因此，在了解学习这两个东西的过程中，可以考虑将生成方式和信任问题分开来进行理解。
+</p>
+</div>
+
+<div id="outline-container-org10c9ad9" class="outline-4">
+<h4 id="org10c9ad9"><span class="section-number-4">2.2.1</span> 生成方式</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<p>
+数字签名的生成是很简单的，需要进行数字签名时，先通过 Hash 计算得到需要发送的信息的摘要，然后通过自己的私钥对摘要进行加密，得到的便是数字签名了。
+</p>
+
+<p>
+即：通过 <b>私钥</b> 对 <b>信息摘要</b> 进行加密后得到的便是 <b>数字签名</b>
+</p>
+
+<p>
+数字证书的生成同样很简单，需要生成数字证书时，签发机构通过自己的私钥对一些必要的基本信息进行加密（比如申请者的公钥），得到的结果就是数字证书了。
+</p>
+
+<p>
+即：通过签发机构的 <b>私钥</b> 对申请者的 <b>公钥</b> 和其他信息加密后得到的便是 <b>数字证书</b>
+</p>
+
+<p>
+然后，申请者在发送信息的时候便可以带上数字证书证明自己的身份，带上数字签名证明信息没有被篡改。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbd83421" class="outline-4">
+<h4 id="orgbd83421"><span class="section-number-4">2.2.2</span> 信任问题</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<p>
+数字签名用来证明信息内容的完整性，已经，信息没有被篡改，这依赖于 Hash 算法，但是 Hash 算法只能保证信息时完整的，不能保证信息没有被篡改。
+</p>
+
+<p>
+因此，需要通过私钥对信息的摘要进行加密，这样一来，即使中间人能够拿到信息，也不能生成可以被公钥界面的数字签名。但是，如果接收者拿到的公钥也是假的呢？
+</p>
+
+<p>
+于是乎，数字证书出现了，通过受信任的第三方机构的公钥和该机构签发的数字证书，我们能够保证，只要拿到的数字证书时没有问题的，那么，解密数字证书得到的公钥就没有问题，那么，通过解密得到的公钥效验数字签名就没有问题了。
+</p>
+
+<p>
+说到底，就是一个信任链的问题，我信任数字证书的签发机构，签发机构信任信息的发送者，于是，我也信任信息的发送者。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7307c00" class="outline-4">
+<h4 id="org7307c00"><span class="section-number-4">2.2.3</span> 参考链接</h4>
+<div class="outline-text-4" id="text-2-2-3">
+<ul class="org-ul">
+<li><a href="https://www.zhihu.com/question/47232448">怎么保证「CA 的公钥」是真实的？ - 知乎</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2011/08/what_is_a_digital_signature.html">数字签名是什么？ - 阮一峰的网络日志</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html">图解SSL/TLS协议 - 阮一峰的网络日志</a></li>
+<li><a href="https://rootdeep.github.io/posts/ssl/#%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6">理解数字证书及制作过程</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org016cc9e" class="outline-2">
+<h2 id="org016cc9e"><span class="section-number-2">3</span> HSTS</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+HTTP Strict Transport Security（通常简称为HSTS）是一个安全功能，它告诉浏览器只能通过 HTTPS 访问当前资源，而不是 HTTP。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/HTTP_Strict_Transport_Security">HTTP Strict Transport Security - HTTP | MDN</a></li>
+<li><a href="https://www.nginx.com/blog/http-strict-transport-security-hsts-and-nginx/">HTTP Strict Transport Security (HSTS) and NGINX - NGINX</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org194c7e0" class="outline-2">
+<h2 id="org194c7e0"><span class="section-number-2">4</span> 相关问题</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-orgc2aac47" class="outline-3">
+<h3 id="orgc2aac47"><span class="section-number-3">4.1</span> HTTP Header 大小写敏感吗</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+HTTP Header 大小写不敏感，参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/5258977/are-http-headers-case-sensitive">Are HTTP headers case-sensitive? - Stack Overflow</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4786c77" class="outline-3">
+<h3 id="org4786c77"><span class="section-number-3">4.2</span> HTTP 协议中的无状态是什么意思</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+HTTP 中每次的请求都是独立的，它的执行情况和结果与前面的请求和之后的请求是无直接关系的，它不会受前面的请求应答情况直接影响，也不会直接影响后面的请求应答情况。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf7ddc4b" class="outline-3">
+<h3 id="orgf7ddc4b"><span class="section-number-3">4.3</span> GET 和 POST 之间的区别</h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+主要区别有：
+</p>
+<ol class="org-ol">
+<li><p>
+语义上的区别，GET 是幂等的，而 POST 不是，参考：<a href="https://developer.mozilla.org/zh-CN/docs/Glossary/%E5%B9%82%E7%AD%89">幂等 - 术语表 | MDN</a>
+</p>
+<blockquote>
+<p>
+一个 HTTP 方法是幂等的，指的是同样的请求被执行一次与连续执行多次的效果是一样的，服务器的状态也是一样的。换句话说就是，幂等方法不应该具有副作用（统计用途除外）。
+</p>
+</blockquote></li>
+<li>GET 在浏览器回退时是无害的，而 POST 会再次提交请求</li>
+<li>GET 产生的 URL 地址可以被 Bookmark，而 POST 不可以</li>
+<li>GET 请求可以被浏览器 Cache，而 POST 一般不会</li>
+<li>GET 请求参数只能进行 URL 编码，而 POST 支持多种编码方式</li>
+<li>GET 请求参数会被完整保留在浏览器历史记录里，而 POST 中的参数不会被保留</li>
+<li>GET 请求在 URL 中传送的参数是有长度限制的，而 POST 没有</li>
+<li>对参数的数据类型，GET 只接受 ASCII 字符，非 ASCII 字符需要进行编码转换，而 POST 没有限制</li>
+<li>GET 比 POST 更不安全，因为参数直接暴露在 URL 上，所以不能用来传递敏感信息</li>
+<li>GET 参数通过 URL 传递，POST 放在 Request body 中</li>
+</ol>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://zhuanlan.zhihu.com/p/25028045">听说『99% 的人都理解错了 HTTP 中 GET 与 POST 的区别』？？ - 知乎</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/22536382">99% 的人都理解错了 HTTP 中 GET 与 POST 的区别 - 知乎</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgcddf622" class="outline-3">
+<h3 id="orgcddf622"><span class="section-number-3">4.4</span> 状态码 200/201 的使用</h3>
+<div class="outline-text-3" id="text-4-4">
+<p>
+在 RESTful 服务中，POST 请求成功后可以考虑返回这两个状态码中的一个，各自的含义为：
+</p>
+<ul class="org-ul">
+<li>200 when an object is created and returned</li>
+<li>201 when an object is created but only its reference is returned (such as an ID or a link)</li>
+</ul>
+
+<p>
+一般来说还是 200 要用的多一些吧……
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgfd52963" class="outline-3">
+<h3 id="orgfd52963"><span class="section-number-3">4.5</span> 名称相同的 Cookie 的处理规则</h3>
+<div class="outline-text-3" id="text-4-5">
+<p>
+在设置 Cookie 时，Domain 和 Path 属性可能使得一个请求匹配到多个名称相同的 Cookie，比如：
+</p>
+<pre class="example">
+Set-Cookie: value=1; path=/; domain=a.scripts.cmbuckley.co.uk; HttpOnly
+Set-Cookie: vakue=2; path=/; domain=scripts.cmbuckley.co.uk; HttpOnly
+</pre>
+
+<p>
+这种情况下，User Agent 应该按照下面的规则将所有匹配的 Cookie 排序上传：
+</p>
+<blockquote>
+<ol class="org-ol">
+<li>The user agent SHOULD sort the cookie-list in the following
+order:
+
+<ul class="org-ul">
+<li>Cookies with longer paths are listed before cookies with
+shorter paths.</li>
+
+<li>Among cookies that have equal-length path fields, cookies with
+earlier creation-times are listed before cookies with later
+creation-times.</li>
+</ul></li>
+</ol>
+</blockquote>
+
+<p>
+此时，请求的 Cookie 可能就长这样，也就是说，同一个 Cookie 可能存在多个值：
+</p>
+<pre class="example">
+Cookie: value=2; value=1
+</pre>
+
+<p>
+而在服务端，又经常只会获取其中的一个值，这就可能会导致一些奇怪的问题的出现。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://tools.ietf.org/html/rfc6265#section-5.4">RFC 6265 - 5.4 The Cookie Header</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

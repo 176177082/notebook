@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:46 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JDBC</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">JDBC</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org240d9cc">1. 简单使用</a></li>
+<li><a href="#org89ba6c2">2. 各数据库</a>
+<ul>
+<li><a href="#orgc28de7b">2.1. MySQL</a></li>
+</ul>
+</li>
+<li><a href="#org250e058">3. 数据库连接池</a></li>
+<li><a href="#org53b5364">4. 相关问题</a>
+<ul>
+<li><a href="#org80f0838">4.1. Driver 时如何通过 Class.forName 的方式进行注册的</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org240d9cc" class="outline-2">
+<h2 id="org240d9cc"><span class="section-number-2">1</span> 简单使用</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+JDBC 帮助管理三种编程活动：连接数据库、将查询和更新语句发送到数据库和检索并处理从数据库接收的结果。
+</p>
+
+<p>
+使用时，需要先通过 <code>Class.forName()</code> 加载驱动，然后在通过 <code>DriverManager.getConnection</code> 获取连接。但是高版本的 JDBC 可以通过 SPI 机制根据数据库 URI 自动注册驱动，因此可以省略 Class.forName 这一步。
+</p>
+
+<p>
+自动注册驱动的方式大概为：通过静态初始化块进行的注册操作，因此加载类时便完成了注册。
+</p>
+
+<p>
+通过 JDBC 执行 SQL 的一般步骤为：建立连接、创建语句、执行查询、处理结果集、关闭连接。
+</p>
+
+<p>
+获取连接对象可以通过如下方式实现：
+</p>
+<div class="org-src-container">
+<pre class="src src-java">DriverManager.getConnection(...)
+</pre>
+</div>
+
+<p>
+语句对象类型及创建它们的方法：
+</p>
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">语句对象类型</th>
+<th scope="col" class="org-left">创建方法</th>
+<th scope="col" class="org-left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>Statement</code></td>
+<td class="org-left"><code>Connection.createStatement</code></td>
+<td class="org-left">用于实现没有参数的简单 SQL 语句</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>CallableStatement</code></td>
+<td class="org-left"><code>Connection.prepareCall</code></td>
+<td class="org-left">用于执行可能包含输入和输出参数的存储过程</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>PreparedStatement</code></td>
+<td class="org-left"><code>Connection.prepareStatement</code></td>
+<td class="org-left">用于预编译可能包含输入参数的 SQL 语句</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+<code>PrepareStatement</code> 会自动对语句中的危险字符进行转义，其简单使用如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-type">PrepareStatement</span> <span class="org-variable-name">stmt</span> = Connection.prepareStatement(<span class="org-string">"SELECT * FROM table WHERE id=? AND name=?"</span>);  <span class="org-comment-delimiter">// </span><span class="org-comment">&#21019;&#24314; PrepareStatement &#35821;&#21477;&#23545;&#35937;</span>
+stmt.setInt(1, 1001);      <span class="org-comment-delimiter">// </span><span class="org-comment">&#35774;&#32622; id &#30340;&#20540;&#20026; 1001</span>
+stmt.setString(2, <span class="org-string">"job"</span>);  <span class="org-comment-delimiter">// </span><span class="org-comment">&#35774;&#32622; name &#30340;&#20540;&#20026; job</span>
+</pre>
+</div>
+
+<p>
+<code>PrepareStatement</code> 的使用还是比较简单的，需要注意的是 <code>SQL</code> 语句中的参数的起始索引为 <code>1</code> 而不是 <code>0</code>.
+</p>
+
+<p>
+执行 SQL 语句的三个方法：
+</p>
+<ul class="org-ul">
+<li><code>execute</code> - 如果执行的语句返回 <code>ResultSet</code> 对象就返回 <code>true</code>, 执行的语句可以返回多个结果集。使用 <code>Statement.getResultSet</code> 方法获取结果集</li>
+<li><code>executeQuery</code> - 执行查询并返回结果集</li>
+<li><code>executeUpdate</code> - 返回一个整数，表示受 SQL 语句影响的行数。常用于 <code>INSERT</code>, <code>DELETE</code> 和 <code>UPDATE</code> 语句的执行</li>
+</ul>
+
+<p>
+结果集的简单处理方式：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">while</span> (rs.next()) {
+  <span class="org-type">String</span> <span class="org-variable-name">coffeeName</span> = rs.getString(<span class="org-string">"COF_NAME"</span>);
+  <span class="org-type">int</span> <span class="org-variable-name">supplierID</span> = rs.getInt(<span class="org-string">"SUP_ID"</span>);
+  <span class="org-type">float</span> <span class="org-variable-name">price</span> = rs.getFloat(<span class="org-string">"PRICE"</span>);
+  <span class="org-type">int</span> <span class="org-variable-name">sales</span> = rs.getInt(<span class="org-string">"SALES"</span>);
+  <span class="org-type">int</span> <span class="org-variable-name">total</span> = rs.getInt(<span class="org-string">"TOTAL"</span>);
+}
+</pre>
+</div>
+
+<p>
+关闭连接可以在 finally 块中完成：
+</p>
+<div class="org-src-container">
+<pre class="src src-java">} <span class="org-keyword">finally</span> {
+    <span class="org-keyword">if</span> (stmt != <span class="org-constant">null</span>) { stmt.close(); }
+  }
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org89ba6c2" class="outline-2">
+<h2 id="org89ba6c2"><span class="section-number-2">2</span> 各数据库</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orgc28de7b" class="outline-3">
+<h3 id="orgc28de7b"><span class="section-number-3">2.1</span> MySQL</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+MySQL 对 JDBC 的支持情况：
+</p>
+<table>
+
+
+<colgroup>
+<col  class="org-right">
+
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Connector/J version</th>
+<th scope="col" class="org-left">JDBC version</th>
+<th scope="col" class="org-left">MySQL Server version</th>
+<th scope="col" class="org-left">JRE Supported</th>
+<th scope="col" class="org-left">JDK Required for Compilation</th>
+<th scope="col" class="org-left">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">8.0</td>
+<td class="org-left">4.2</td>
+<td class="org-left">5.6, 5.7, 8.0</td>
+<td class="org-left">1.8.x</td>
+<td class="org-left">1.8.x</td>
+<td class="org-left">General availability. Recommended version.</td>
+</tr>
+
+<tr>
+<td class="org-right">5.1</td>
+<td class="org-left">3.0, 4.0, 4.1, 4.2</td>
+<td class="org-left">5.6*, 5.7*, 8.0*</td>
+<td class="org-left">1.5.x, 1.6.x, 1.7.x, 1.8.x*</td>
+<td class="org-left">1.5.x and 1.8.x</td>
+<td class="org-left">General availability</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+需要注意的是，通过 JDBC 连接数据库时可能因为时区的原因出现错误，此时，可以将连接字符串设置为如下形式：
+</p>
+<pre class="example">
+jdbc:mysql://localhost:3306/test?serverTimezone=UTC
+</pre>
+
+<p>
+MySQL 和 JDBC 之间的类型映射：<a href="https://dev.mysql.com/doc/connector-j/8.0/en/connector-j-reference-type-conversions.html">MySQL :: MySQL Connector/J 8.0 Developer Guide :: 6.5 Java, JDBC, and MySQL Types</a>
+</p>
+
+<p>
+需要注意，数据库中 DECIMAL 类型默认是不带小数位的。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org250e058" class="outline-2">
+<h2 id="org250e058"><span class="section-number-2">3</span> 数据库连接池</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+数据库连接池的一个基本作用就是用来管理数据库的 <b>连接</b> 资源，Java 中常用的数据库连接池为 <code>C3P0</code>, <code>DBCP</code> 和 <code>Druid</code>.
+</p>
+
+<p>
+而 JDBC 也提供了对数据库连接池规范的支持，这一点可以通过查阅 <a href="http://download.oracle.com/otn-pub/jcp/jdbc-4_1-mrel-spec/jdbc4.1-fr-spec.pdf">JDBC 4.1 Specification</a> 证明。
+</p>
+
+<p>
+可以参考的文章：<a href="https://juejin.im/post/5af026a06fb9a07ac47ff282">数据库连接池的实现及原理 - 掘金</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org53b5364" class="outline-2">
+<h2 id="org53b5364"><span class="section-number-2">4</span> 相关问题</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org80f0838" class="outline-3">
+<h3 id="org80f0838"><span class="section-number-3">4.1</span> Driver 时如何通过 Class.forName 的方式进行注册的</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+通过静态代码块完成注册，比如 MySQL Driver 中的静态代码块：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">public</span> <span class="org-keyword">class</span> <span class="org-type">Driver</span> <span class="org-keyword">extends</span> <span class="org-type">NonRegisteringDriver</span> <span class="org-keyword">implements</span> <span class="org-constant">java</span>.<span class="org-constant">sql</span>.<span class="org-type">Driver</span> {
+  <span class="org-comment-delimiter">//</span>
+  <span class="org-comment-delimiter">// </span><span class="org-comment">Register ourselves with the DriverManager</span>
+  <span class="org-comment-delimiter">//</span>
+  <span class="org-keyword">static</span> {
+    <span class="org-keyword">try</span> {
+      <span class="org-constant">java</span>.<span class="org-constant">sql</span>.DriverManager.registerDriver(<span class="org-keyword">new</span> <span class="org-type">Driver</span>());
+    } <span class="org-keyword">catch</span> (<span class="org-type">SQLException</span> <span class="org-variable-name">E</span>) {
+      <span class="org-keyword">throw</span> <span class="org-keyword">new</span> <span class="org-type">RuntimeException</span>(<span class="org-string">"Can't register driver!"</span>);
+    }
+  }
+
+  <span class="org-doc">/**</span>
+<span class="org-doc">   * Construct a new driver and register it with DriverManager</span>
+<span class="org-doc">   *</span>
+<span class="org-doc">   * </span><span class="org-doc"><span class="org-constant">@throws</span></span><span class="org-doc"> SQLException</span>
+<span class="org-doc">   *             if a database error occurs.</span>
+<span class="org-doc">   */</span>
+  <span class="org-keyword">public</span> <span class="org-function-name">Driver</span>() <span class="org-keyword">throws</span> <span class="org-type">SQLException</span> {
+    <span class="org-comment-delimiter">// </span><span class="org-comment">Required for Class.forName().newInstance()</span>
+  }
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

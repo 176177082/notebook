@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:47 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>rgb-24bit's notebook</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">rgb-24bit's notebook</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org19ceb33">1. algorithm</a></li>
+<li><a href="#org7672fee">2. android</a></li>
+<li><a href="#orgf1cbb5e">3. c-c++</a></li>
+<li><a href="#org971073e">4. compile</a></li>
+<li><a href="#org562d28a">5. database</a></li>
+<li><a href="#org288def9">6. devops</a></li>
+<li><a href="#org77c7107">7. dotnet</a></li>
+<li><a href="#org265f77a">8. emacs</a></li>
+<li><a href="#org30a41ef">9. front-end</a></li>
+<li><a href="#org75645b8">10. git</a></li>
+<li><a href="#orgace47d0">11. go</a></li>
+<li><a href="#org7930566">12. java</a></li>
+<li><a href="#org3e1ed82">13. lang</a></li>
+<li><a href="#org3139583">14. linux</a></li>
+<li><a href="#orgdb2665a">15. mac</a></li>
+<li><a href="#org85a4c0f">16. microservice</a></li>
+<li><a href="#orgd7dcc7f">17. misc</a></li>
+<li><a href="#org410eac0">18. network</a></li>
+<li><a href="#org1bba976">19. os</a></li>
+<li><a href="#org6f37fb5">20. python</a></li>
+<li><a href="#org0e12d37">21. solution</a></li>
+<li><a href="#orgf1ebf46">22. tools</a></li>
+<li><a href="#org284a2a8">23. windows</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org19ceb33" class="outline-2">
+<h2 id="org19ceb33"><span class="section-number-2">1</span> algorithm</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li><a href="notebook/algorithm/advanced.html">高级数据结构</a></li>
+<li><a href="notebook/algorithm/bit.html">位运算</a></li>
+<li><a href="notebook/algorithm/classic.html">经典问题</a></li>
+<li><a href="notebook/algorithm/containers.html">Containers</a></li>
+<li><a href="notebook/algorithm/digest.html">摘要算法</a></li>
+<li><a href="notebook/algorithm/encrypt.html">加密算法</a></li>
+<li><a href="notebook/algorithm/graph.html">Graph</a></li>
+<li><a href="notebook/algorithm/math.html">数学问题</a></li>
+<li><a href="notebook/algorithm/misc.html">Misc</a></li>
+<li><a href="notebook/algorithm/question.html">相关问题</a></li>
+<li><a href="notebook/algorithm/random.html">随机数相关</a></li>
+<li><a href="notebook/algorithm/search.html">Search</a></li>
+<li><a href="notebook/algorithm/sort.html">Sort</a></li>
+<li><a href="notebook/algorithm/string.html">字符串</a></li>
+<li><a href="notebook/algorithm/tree.html">Tree</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org7672fee" class="outline-2">
+<h2 id="org7672fee"><span class="section-number-2">2</span> android</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li><a href="notebook/android/activity.html">Android - Activity</a></li>
+<li><a href="notebook/android/content-provider.html">Android - 内容提供器</a></li>
+<li><a href="notebook/android/fragment.html">Android - Fragment</a></li>
+<li><a href="notebook/android/layout.html">Android - Layout</a></li>
+<li><a href="notebook/android/misc.html">Android - Misc</a></li>
+<li><a href="notebook/android/resource.html">Android - Resource</a></li>
+<li><a href="notebook/android/service.html">Android - Service</a></li>
+<li><a href="notebook/android/tools.html">Android Tools</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgf1cbb5e" class="outline-2">
+<h2 id="orgf1cbb5e"><span class="section-number-2">3</span> c-c++</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li><a href="notebook/c-c++/c-question.html">C 语言问题集</a></li>
+<li><a href="notebook/c-c++/c-trick.html">C 语言使用技巧</a></li>
+<li><a href="notebook/c-c++/c.html">C 语言</a></li>
+<li><a href="notebook/c-c++/cpp.html">C++</a></li>
+<li><a href="notebook/c-c++/gcc-gdb.html">GCC &amp; GDB</a></li>
+<li><a href="notebook/c-c++/libc.html">C 标准库</a></li>
+<li><a href="notebook/c-c++/macro.html">强大的宏</a></li>
+<li><a href="notebook/c-c++/makefile.html">Makefile</a></li>
+<li><a href="notebook/c-c++/pointer.html">指针</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org971073e" class="outline-2">
+<h2 id="org971073e"><span class="section-number-2">4</span> compile</h2>
+<div class="outline-text-2" id="text-4">
+<ul class="org-ul">
+<li><a href="notebook/compile/grammar.html">编译原理 - 语法分析</a></li>
+<li><a href="notebook/compile/lex.html">编译原理 - 词法分析</a></li>
+<li><a href="notebook/compile/question.html">相关问题</a></li>
+<li><a href="notebook/compile/simple-compile.html">编译原理 - 简单的语法制导翻译器</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org562d28a" class="outline-2">
+<h2 id="org562d28a"><span class="section-number-2">5</span> database</h2>
+<div class="outline-text-2" id="text-5">
+<ul class="org-ul">
+<li><b>mysql</b>
+<ul class="org-ul">
+<li><a href="notebook/database/mysql/innodb.html">InnoDB 引擎相关</a></li>
+<li><a href="notebook/database/mysql/mysql.html">MySQL</a></li>
+<li><a href="notebook/database/mysql/question.html">相关问题</a></li>
+</ul></li>
+<li><a href="notebook/database/mongo.html">MongoDB</a></li>
+<li><a href="notebook/database/mssql.html">SQL Server</a></li>
+<li><a href="notebook/database/others.html">Others</a></li>
+<li><a href="notebook/database/question.html">通用问题集</a></li>
+<li><a href="notebook/database/redis.html">Redis</a></li>
+<li><a href="notebook/database/sqlite3.html">SQLite3</a></li>
+<li><a href="notebook/database/standsql.html">Standard SQL</a></li>
+<li><a href="notebook/database/theory.html">数据库理论</a></li>
+<li><a href="notebook/database/tsdb.html">TSDB - 时序数据库</a></li>
+<li><a href="notebook/database/utils.html">Utils</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org288def9" class="outline-2">
+<h2 id="org288def9"><span class="section-number-2">6</span> devops</h2>
+<div class="outline-text-2" id="text-6">
+<ul class="org-ul">
+<li><a href="notebook/devops/ci.html">持续集成</a></li>
+<li><a href="notebook/devops/concept.html">相关概念</a></li>
+<li><a href="notebook/devops/nginx.html">Nginx</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org77c7107" class="outline-2">
+<h2 id="org77c7107"><span class="section-number-2">7</span> dotnet</h2>
+<div class="outline-text-2" id="text-7">
+<ul class="org-ul">
+<li><a href="notebook/dotnet/csharp-feature.html">.NET - C# 高级特性</a></li>
+<li><a href="notebook/dotnet/csharp-note.html">.NET - C# 基础</a></li>
+<li><a href="notebook/dotnet/misc.html">.NET - Misc</a></li>
+<li><a href="notebook/dotnet/winforms.html">.NET - WinForm 相关笔记</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org265f77a" class="outline-2">
+<h2 id="org265f77a"><span class="section-number-2">8</span> emacs</h2>
+<div class="outline-text-2" id="text-8">
+<ul class="org-ul">
+<li><a href="notebook/emacs/beautify.html">Emacs Beautify</a></li>
+<li><a href="notebook/emacs/elisp.html">Emacs Lisp</a></li>
+<li><a href="notebook/emacs/emacs.html">Emacs</a></li>
+<li><a href="notebook/emacs/info.html">Info Mode</a></li>
+<li><a href="notebook/emacs/latex.html">Edit Latex</a></li>
+<li><a href="notebook/emacs/minor-mode.html">minor mode</a></li>
+<li><a href="notebook/emacs/misc.html">Misc</a></li>
+<li><a href="notebook/emacs/org-mode.html">Org mode</a></li>
+<li><a href="notebook/emacs/package.html">Emacs - Package</a></li>
+<li><a href="notebook/emacs/question.html">Emacs - 问题集</a></li>
+<li><a href="notebook/emacs/regex.html">Emacs - 正则表达式</a></li>
+<li><a href="notebook/emacs/scimax.html">scimax</a></li>
+<li><a href="notebook/emacs/site-lisp.html">Emacs Site Lisp</a></li>
+<li><a href="notebook/emacs/spacemacs.html">Spacemacs</a></li>
+<li><a href="notebook/emacs/trick.html">使用技巧</a></li>
+<li><a href="notebook/emacs/utils.html">Emacs - 实用功能</a></li>
+<li><a href="notebook/emacs/vc.html">Version Control</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org30a41ef" class="outline-2">
+<h2 id="org30a41ef"><span class="section-number-2">9</span> front-end</h2>
+<div class="outline-text-2" id="text-9">
+<ul class="org-ul">
+<li><b>vue</b>
+<ul class="org-ul">
+<li><a href="notebook/front-end/vue/element-ui.html">Element UI</a></li>
+<li><a href="notebook/front-end/vue/question.html">相关问题</a></li>
+<li><a href="notebook/front-end/vue/vue.html">Vue.JS</a></li>
+</ul></li>
+<li><a href="notebook/front-end/async.html">异步编程模型</a></li>
+<li><a href="notebook/front-end/css.html">CSS</a></li>
+<li><a href="notebook/front-end/dom.html">JavaScript DOM API</a></li>
+<li><a href="notebook/front-end/es5.html">ECMAScript 5</a></li>
+<li><a href="notebook/front-end/es6.html">ECMAScript 6</a></li>
+<li><a href="notebook/front-end/glossary.html">Glossary</a></li>
+<li><a href="notebook/front-end/html.html">HTML</a></li>
+<li><a href="notebook/front-end/library.html">JavaScript Library</a></li>
+<li><a href="notebook/front-end/misc.html">Misc</a></li>
+<li><a href="notebook/front-end/nodejs.html">Node.js</a></li>
+<li><a href="notebook/front-end/question.html">相关问题</a></li>
+<li><a href="notebook/front-end/security.html">Security</a></li>
+<li><a href="notebook/front-end/technology.html">前端相关技术了解</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org75645b8" class="outline-2">
+<h2 id="org75645b8"><span class="section-number-2">10</span> git</h2>
+<div class="outline-text-2" id="text-10">
+<ul class="org-ul">
+<li><a href="notebook/git/command.html">Git Command</a></li>
+<li><a href="notebook/git/gerrit.html">Gerrit</a></li>
+<li><a href="notebook/git/github.html">Git - Github</a></li>
+<li><a href="notebook/git/principle.html">Git 内部原理</a></li>
+<li><a href="notebook/git/question.html">Git 问题集</a></li>
+<li><a href="notebook/git/style.html">Git 使用规范</a></li>
+<li><a href="notebook/git/submodule.html">git submodule</a></li>
+<li><a href="notebook/git/trick.html">Git 使用技巧</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgace47d0" class="outline-2">
+<h2 id="orgace47d0"><span class="section-number-2">11</span> go</h2>
+<div class="outline-text-2" id="text-11">
+<ul class="org-ul">
+<li><a href="notebook/go/concurrent.html">Go Concurrent</a></li>
+<li><a href="notebook/go/dev.html">Go Development</a></li>
+<li><a href="notebook/go/go.html">GoLang</a></li>
+<li><a href="notebook/go/question.html">相关问题</a></li>
+<li><a href="notebook/go/reflect.html">Go Reflect</a></li>
+<li><a href="notebook/go/stdlib.html">Go 标准库</a></li>
+<li><a href="notebook/go/style.html">Go Style</a></li>
+<li><a href="notebook/go/template.html">Go Template</a></li>
+<li><a href="notebook/go/test.html">Go Test</a></li>
+<li><a href="notebook/go/toolkit.html">Go Toolkit</a></li>
+<li><a href="notebook/go/trick.html">Go Trick</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org7930566" class="outline-2">
+<h2 id="org7930566"><span class="section-number-2">12</span> java</h2>
+<div class="outline-text-2" id="text-12">
+<ul class="org-ul">
+<li><b>concurrent</b>
+<ul class="org-ul">
+<li><a href="notebook/java/concurrent/fork-join.html">Java Fork/Join 框架</a></li>
+<li><a href="notebook/java/concurrent/java-concurrent.html">Java 并发操作</a></li>
+<li><a href="notebook/java/concurrent/juc.html">J.U.C</a></li>
+<li><a href="notebook/java/concurrent/question.html">相关问题</a></li>
+</ul></li>
+<li><b>database</b>
+<ul class="org-ul">
+<li><a href="notebook/java/database/connection-pool.html">数据库连接池</a></li>
+<li><a href="notebook/java/database/jdbc.html">JDBC</a></li>
+<li><a href="notebook/java/database/jooq.html">JOOQ</a></li>
+<li><a href="notebook/java/database/mybatis.html">mybatis</a></li>
+<li><a href="notebook/java/database/redis.html">Redis</a></li>
+</ul></li>
+<li><b>javaee</b>
+<ul class="org-ul">
+<li><a href="notebook/java/javaee/jsp.html">JSP</a></li>
+<li><a href="notebook/java/javaee/misc.html">Java EE Misc</a></li>
+<li><a href="notebook/java/javaee/question.html">Java EE 问题集</a></li>
+<li><a href="notebook/java/javaee/servlet.html">Servlet</a></li>
+</ul></li>
+<li><b>jvm</b>
+<ul class="org-ul">
+<li><a href="notebook/java/jvm/jvm.html">Java 虚拟机结构</a></li>
+<li><a href="notebook/java/jvm/misc.html">JVM Misc</a></li>
+</ul></li>
+<li><b>mq</b>
+<ul class="org-ul">
+<li><a href="notebook/java/mq/question.html">相关问题</a></li>
+<li><a href="notebook/java/mq/rocketmq.html">RocketMQ</a></li>
+</ul></li>
+<li><b>spring</b>
+<ul class="org-ul">
+<li><a href="notebook/java/spring/question.html">Spring 问题集</a></li>
+<li><a href="notebook/java/spring/spring-aop.html">Spring AOP</a></li>
+<li><a href="notebook/java/spring/spring-boot.html">Spring Boot</a></li>
+<li><a href="notebook/java/spring/spring-data.html">Spring Data</a></li>
+<li><a href="notebook/java/spring/spring-doc.html">Spring 相关文档</a></li>
+<li><a href="notebook/java/spring/spring-ioc.html">Spring IOC</a></li>
+<li><a href="notebook/java/spring/spring-misc.html">Sping Misc</a></li>
+<li><a href="notebook/java/spring/spring-mvc.html">Spring MVC</a></li>
+<li><a href="notebook/java/spring/spring-security.html">Spring Security</a></li>
+<li><a href="notebook/java/spring/spring-test.html">Spring Test</a></li>
+<li><a href="notebook/java/spring/spring-utils.html">Spring Utils</a></li>
+</ul></li>
+<li><b>tools</b>
+<ul class="org-ul">
+<li><a href="notebook/java/tools/beancopy.html">BeanCopy</a></li>
+<li><a href="notebook/java/tools/bytecode.html">字节码操作</a></li>
+<li><a href="notebook/java/tools/gradle.html">Gradle</a></li>
+<li><a href="notebook/java/tools/javadoc.html">JavaDoc</a></li>
+<li><a href="notebook/java/tools/jdk.html">JDK Tools</a></li>
+<li><a href="notebook/java/tools/junit.html">JUnit</a></li>
+<li><a href="notebook/java/tools/logging.html">Java 日志工具</a></li>
+<li><a href="notebook/java/tools/maven.html">Maven</a></li>
+<li><a href="notebook/java/tools/mockito.html">Mockito</a></li>
+<li><a href="notebook/java/tools/swagger.html">Swagger</a></li>
+<li><a href="notebook/java/tools/tomcat.html">Tomcat</a></li>
+</ul></li>
+<li><a href="notebook/java/base.html">Java 基础</a></li>
+<li><a href="notebook/java/collections.html">Java Collections</a></li>
+<li><a href="notebook/java/effective.html">Effective</a></li>
+<li><a href="notebook/java/fp.html">Java 函数式编程</a></li>
+<li><a href="notebook/java/generic.html">Java 泛型</a></li>
+<li><a href="notebook/java/io.html">Java - I/O 操作</a></li>
+<li><a href="notebook/java/lang.html">Fundamental classes</a></li>
+<li><a href="notebook/java/library.html">Java 常用第三方库</a></li>
+<li><a href="notebook/java/log.html">Java 日志框架</a></li>
+<li><a href="notebook/java/misc.html">Java Misc</a></li>
+<li><a href="notebook/java/nio.html">Java NIO</a></li>
+<li><a href="notebook/java/question.html">Java 问题集</a></li>
+<li><a href="notebook/java/reflection.html">Java - 反射</a></li>
+<li><a href="notebook/java/stream.html">Java - 流相关</a></li>
+<li><a href="notebook/java/style.html">Java 编码规范</a></li>
+<li><a href="notebook/java/sun.html">Java Sun Package</a></li>
+<li><a href="notebook/java/tricks.html">Java Tricks</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org3e1ed82" class="outline-2">
+<h2 id="org3e1ed82"><span class="section-number-2">13</span> lang</h2>
+<div class="outline-text-2" id="text-13">
+<ul class="org-ul">
+<li><a href="notebook/lang/dot.html">Dot</a></li>
+<li><a href="notebook/lang/latex.html">Latex</a></li>
+<li><a href="notebook/lang/plantuml.html">Plantuml</a></li>
+<li><a href="notebook/lang/uml.html">UML</a></li>
+<li><a href="notebook/lang/xml.html">XML</a></li>
+<li><a href="notebook/lang/yaml.html">YAML</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org3139583" class="outline-2">
+<h2 id="org3139583"><span class="section-number-2">14</span> linux</h2>
+<div class="outline-text-2" id="text-14">
+<ul class="org-ul">
+<li><a href="notebook/linux/alpine.html">Alpine</a></li>
+<li><a href="notebook/linux/bash.html">Bash</a></li>
+<li><a href="notebook/linux/cli.html">CLI Tools</a></li>
+<li><a href="notebook/linux/debian.html">Debian 系统使用</a></li>
+<li><a href="notebook/linux/io.html">Linux I/O 模型</a></li>
+<li><a href="notebook/linux/linux.html">Linux 基础笔记</a></li>
+<li><a href="notebook/linux/misc.html">Misc</a></li>
+<li><a href="notebook/linux/question.html">Linux 问题集</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgdb2665a" class="outline-2">
+<h2 id="orgdb2665a"><span class="section-number-2">15</span> mac</h2>
+<div class="outline-text-2" id="text-15">
+<ul class="org-ul">
+<li><a href="notebook/mac/daily.html">日常使用</a></li>
+<li><a href="notebook/mac/develop.html">开发相关</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org85a4c0f" class="outline-2">
+<h2 id="org85a4c0f"><span class="section-number-2">16</span> microservice</h2>
+<div class="outline-text-2" id="text-16">
+<ul class="org-ul">
+<li><b>spring-cloud</b>
+<ul class="org-ul">
+<li><a href="notebook/microservice/spring-cloud/spring-cloud.html">Spring Cloud 基本概念</a></li>
+</ul></li>
+<li><a href="notebook/microservice/config.html">配置中心</a></li>
+<li><a href="notebook/microservice/monitor.html">服务监控</a></li>
+<li><a href="notebook/microservice/question.html">相关问题</a></li>
+<li><a href="notebook/microservice/rpc.html">远程过程调用</a></li>
+<li><a href="notebook/microservice/serverless.html">Serverless</a></li>
+<li><a href="notebook/microservice/service-discovery.html">服务发现</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgd7dcc7f" class="outline-2">
+<h2 id="orgd7dcc7f"><span class="section-number-2">17</span> misc</h2>
+<div class="outline-text-2" id="text-17">
+<ul class="org-ul">
+<li><a href="notebook/misc/article.html">优质文章收藏</a></li>
+<li><a href="notebook/misc/async.html">异步编程</a></li>
+<li><a href="notebook/misc/character-encoding.html">字符编码</a></li>
+<li><a href="notebook/misc/coding.html">Coding</a></li>
+<li><a href="notebook/misc/computer-graphics.html">计算机图形学</a></li>
+<li><a href="notebook/misc/concept.html">概念了解</a></li>
+<li><a href="notebook/misc/coroutines.html">Coroutines</a></li>
+<li><a href="notebook/misc/debug.html">Debug</a></li>
+<li><a href="notebook/misc/ds.html">设计模式</a></li>
+<li><a href="notebook/misc/editorconfig.html">EditorConfig</a></li>
+<li><a href="notebook/misc/liscense.html">开源协议</a></li>
+<li><a href="notebook/misc/misc.html">Misc</a></li>
+<li><a href="notebook/misc/ml.html">机器学习</a></li>
+<li><a href="notebook/misc/noun.html">技术了解</a></li>
+<li><a href="notebook/misc/paradigm.html">编程范式相关</a></li>
+<li><a href="notebook/misc/performance-test.html">性能测试</a></li>
+<li><a href="notebook/misc/question.html">问题集</a></li>
+<li><a href="notebook/misc/se.html">结构化编程</a></li>
+<li><a href="notebook/misc/search.html">搜索引擎</a></li>
+<li><a href="notebook/misc/unit-test.html">单元测试</a></li>
+<li><a href="notebook/misc/word.html">英语单词</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org410eac0" class="outline-2">
+<h2 id="org410eac0"><span class="section-number-2">18</span> network</h2>
+<div class="outline-text-2" id="text-18">
+<ul class="org-ul">
+<li><a href="notebook/network/dhcp-dns.html">DHCP · DNS</a></li>
+<li><a href="notebook/network/five-layer-mode.html">计算机网络 - 谢希仁 - 五层模型</a></li>
+<li><a href="notebook/network/http-https.html">HTTP/HTTPS</a></li>
+<li><a href="notebook/network/misc.html">Misc</a></li>
+<li><a href="notebook/network/mqtt.html">MQTT</a></li>
+<li><a href="notebook/network/question.html">相关问题</a></li>
+<li><a href="notebook/network/tcp-ip.html">TCP/IP 相关</a></li>
+<li><a href="notebook/network/tools.html">Network Tools</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org1bba976" class="outline-2">
+<h2 id="org1bba976"><span class="section-number-2">19</span> os</h2>
+<div class="outline-text-2" id="text-19">
+<ul class="org-ul">
+<li><a href="notebook/os/base.html">操作系统 - 基础内容</a></li>
+<li><a href="notebook/os/concurrent.html">并发编程</a></li>
+<li><a href="notebook/os/csorg.html">计算机组成相关</a></li>
+<li><a href="notebook/os/ecf.html">操作系统 - 异常控制流</a></li>
+<li><a href="notebook/os/express.html">操作系统 - 程序的机器级表示</a></li>
+<li><a href="notebook/os/info.html">操作系统 - 信息的表示和处理</a></li>
+<li><a href="notebook/os/io.html">操作系统 - I/O</a></li>
+<li><a href="notebook/os/kernel.html">操作系统内核</a></li>
+<li><a href="notebook/os/link.html">操作系统 - 链接</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org6f37fb5" class="outline-2">
+<h2 id="org6f37fb5"><span class="section-number-2">20</span> python</h2>
+<div class="outline-text-2" id="text-20">
+<ul class="org-ul">
+<li><b>pep</b>
+<ul class="org-ul">
+<li><a href="notebook/python/pep/pep249.html">PEP249 - 数据库接口</a></li>
+</ul></li>
+<li><b>stdlib</b>
+<ul class="org-ul">
+<li><a href="notebook/python/stdlib/allos.html">Generic Operating System Services</a></li>
+<li><a href="notebook/python/stdlib/binary.html">Binary Data Services</a></li>
+<li><a href="notebook/python/stdlib/datatype.html">Data Types</a></li>
+<li><a href="notebook/python/stdlib/debug.html">Debugging and Profiling</a></li>
+<li><a href="notebook/python/stdlib/development.html">Development Tools</a></li>
+<li><a href="notebook/python/stdlib/functional.html">Functional Programming Modules</a></li>
+<li><a href="notebook/python/stdlib/internet.html">Internet Protocols and Support</a></li>
+<li><a href="notebook/python/stdlib/language.html">Python Language Services</a></li>
+<li><a href="notebook/python/stdlib/netdata.html">Internet Data Handling</a></li>
+<li><a href="notebook/python/stdlib/python.html">Python Runtime Services</a></li>
+<li><a href="notebook/python/stdlib/text.html">Text Processing Services</a></li>
+</ul></li>
+<li><a href="notebook/python/async.html">Python - 异步 I/O</a></li>
+<li><a href="notebook/python/coroutine.html">Python 协程</a></li>
+<li><a href="notebook/python/crawler.html">Python 爬虫笔记</a></li>
+<li><a href="notebook/python/flask.html">框架 - Flask 笔记</a></li>
+<li><a href="notebook/python/misc.html">Python Misc</a></li>
+<li><a href="notebook/python/orm.html">ORM 框架</a></li>
+<li><a href="notebook/python/packaging.html">Python Packaging</a></li>
+<li><a href="notebook/python/plr.html">Python Language Reference</a></li>
+<li><a href="notebook/python/python.html">Python 笔记</a></li>
+<li><a href="notebook/python/pythondoc.html">Python 文档字符串</a></li>
+<li><a href="notebook/python/question.html">Python 问题集</a></li>
+<li><a href="notebook/python/socket.html">socket</a></li>
+<li><a href="notebook/python/thread.html">Python - 并发编程</a></li>
+<li><a href="notebook/python/tkinter.html">Tkinter</a></li>
+<li><a href="notebook/python/typing.html">typing - Support for type hints</a></li>
+<li><a href="notebook/python/weakref.html">Python - 弱引用</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org0e12d37" class="outline-2">
+<h2 id="org0e12d37"><span class="section-number-2">21</span> solution</h2>
+<div class="outline-text-2" id="text-21">
+<ul class="org-ul">
+<li><a href="notebook/solution/ac.html">访问控制</a></li>
+<li><a href="notebook/solution/api.html">接口设计</a></li>
+<li><a href="notebook/solution/cache.html">Cache</a></li>
+<li><a href="notebook/solution/distributed.html">分布式系统</a></li>
+<li><a href="notebook/solution/misc.html">其他解决方案</a></li>
+<li><a href="notebook/solution/storage.html">存储</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgf1ebf46" class="outline-2">
+<h2 id="orgf1ebf46"><span class="section-number-2">22</span> tools</h2>
+<div class="outline-text-2" id="text-22">
+<ul class="org-ul">
+<li><a href="notebook/tools/chrome.html">Chrome</a></li>
+<li><a href="notebook/tools/ci.html">持续集成</a></li>
+<li><a href="notebook/tools/cli.html">命令行工具</a></li>
+<li><a href="notebook/tools/cmd.html">Windows CMD 命令</a></li>
+<li><a href="notebook/tools/docker.html">Docker</a></li>
+<li><a href="notebook/tools/idea.html">IntelliJ IDEA</a></li>
+<li><a href="notebook/tools/ssh.html">SSH</a></li>
+<li><a href="notebook/tools/utils.html">实用开源工具收集</a></li>
+<li><a href="notebook/tools/vim.html">Vim 笔记</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org284a2a8" class="outline-2">
+<h2 id="org284a2a8"><span class="section-number-2">23</span> windows</h2>
+<div class="outline-text-2" id="text-23">
+<ul class="org-ul">
+<li><a href="notebook/windows/misc.html">Misc</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

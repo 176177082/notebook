@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:46 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>异步编程模型</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">异步编程模型</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgbd87578">1. 事件循环</a></li>
+<li><a href="#org3d4fa07">2. Promise</a></li>
+<li><a href="#org04f8328">3. Generator</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgbd87578" class="outline-2">
+<h2 id="orgbd87578"><span class="section-number-2">1</span> 事件循环</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+JavaScript 的宿主环境，如浏览器和 Node.js 原生提供了对事件循环和异步操作的支持，整个模型的主要组成为：
+</p>
+<ul class="org-ul">
+<li>运行时栈 - JavaScript 代码的执行栈，同步代码和异步任务的回调函数都在这上面执行</li>
+<li>任务队列 - 当运行时栈为空时，事件循环便会从任务队列中取出任务放入运行时栈执行</li>
+<li>事件循环 - 负责取出任务放入运行时栈执行</li>
+</ul>
+
+<p>
+在浏览器中，调用 <code>setTimeout(task, 0)</code> 不代表该任务会立即执行，这样只是让该任务被快速加入到任务队列，需要等待事件循环的取出调用。
+</p>
+
+<p>
+简单来说就是，JavaScript 先天支持异步操作，除了语言本身以外还具有十分方便的宿主环境，为异步操作提供了极大的便利。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/EventLoop">并发模型与事件循环 - JavaScript | MDN</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org3d4fa07" class="outline-2">
+<h2 id="org3d4fa07"><span class="section-number-2">2</span> Promise</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Promise 对象的状态值只可能是 Pending、Fulfilled 和 Rejected 中的一个，且变换方式只能为 Pending -&gt; Fulfilled 或 Pending -&gt; Rejected：
+</p>
+<div class="org-src-container">
+<pre class="src src-js"><span class="org-keyword">const</span> <span class="org-variable-name">PromiseStatus</span> = {
+  Pending: 1, Fulfilled: 2, Rejected: 3
+}
+</pre>
+</div>
+
+<p>
+通过构造器创建实例时，参数是一个接受 <code>resolve</code> 和 <code>reject</code> 回调函数的 <code>excutor</code> 函数，该函数在恰当的时候通过调用 <code>resolve</code> 或 <code>reject</code> 函数改变 <code>Promise</code> 对象状态：
+</p>
+<div class="org-src-container">
+<pre class="src src-js"><span class="org-keyword">function</span> <span class="org-function-name">isFunction</span>(<span class="org-variable-name">obj</span>) {
+  <span class="org-keyword">return</span> <span class="org-keyword">typeof</span> obj === <span class="org-string">'function'</span>
+}
+
+<span class="org-keyword">function</span> <span class="org-function-name">Promise</span>(<span class="org-variable-name">executor</span>) {
+  <span class="org-keyword">if</span> (isFunction(executor)) {
+    <span class="org-constant">this</span>.status = PromiseStatus.Pending
+    <span class="org-constant">this</span>.result = <span class="org-constant">undefined</span>
+
+    <span class="org-constant">this</span>.resolveCallbacks = []
+    <span class="org-constant">this</span>.rejectCallbacks = []
+
+    <span class="org-keyword">try</span> {
+      <span class="org-comment-delimiter">// </span><span class="org-comment">&#26500;&#36896; Promise &#23545;&#35937;&#23454;&#20363;&#26102; excutor &#20415;&#24320;&#22987;&#25191;&#34892;&#20102;</span>
+      executor(resolve.bind(<span class="org-constant">this</span>), reject.bind(<span class="org-constant">this</span>))
+    } <span class="org-keyword">catch</span> (err) {
+      reject.call(<span class="org-constant">this</span>, err)
+    }
+  } <span class="org-keyword">else</span> {
+    <span class="org-keyword">throw</span> <span class="org-keyword">new</span> <span class="org-type">TypeError</span>(<span class="org-string">'Executor must be a function!'</span>)
+  }
+}
+</pre>
+</div>
+
+<p>
+我们可以通过 <code>then(onFulfilled, onRejected)</code> 方法注册回调函数，该方法返回一个新的 <code>Promise</code> 对象，该对象的状态由当前 <code>Promise</code> 对象决定:
+</p>
+<div class="org-src-container">
+<pre class="src src-js">Promise.<span class="org-constant">prototype</span>.then = <span class="org-keyword">function</span> (<span class="org-variable-name">onFulfilled</span>, <span class="org-variable-name">onRejected</span>) {
+  <span class="org-keyword">return</span> <span class="org-keyword">new</span> <span class="org-type">Promise</span>((resolveNext, rejectNext) =&gt; {
+    <span class="org-comment-delimiter">// </span><span class="org-comment">&#24403; Promise &#23545;&#35937;&#29366;&#24577;&#21464;&#20026; Fulfilled &#26102;&#30340;&#22238;&#35843;&#20989;&#25968;</span>
+    <span class="org-keyword">let</span> <span class="org-variable-name">fulfilled</span> = value =&gt; {
+      <span class="org-keyword">try</span> {
+        <span class="org-keyword">if</span> (!isFunction(onFulfilled)) {
+          <span class="org-comment-delimiter">// </span><span class="org-comment">&#24403; onFulfilled &#19981;&#26159;&#20989;&#25968;&#26102;&#65292;&#20250;&#34987;&#26367;&#25442;&#20026; x =&gt; x &#24418;&#24335;&#30340;&#20989;&#25968;</span>
+          onFulfilled = x =&gt; x
+        }
+        <span class="org-keyword">let</span> <span class="org-variable-name">res</span> = onFulfilled(value)
+        <span class="org-comment-delimiter">// </span><span class="org-comment">&#22238;&#35843;&#20989;&#25968;&#36820;&#22238; Promise &#23545;&#35937;&#65292;&#37027;&#20040;&#26032; Promise &#23545;&#35937;&#30340;&#29366;&#24577;&#20462;&#25913;&#20132;&#30001;&#36820;&#22238;&#30340; Promise &#23545;&#35937;&#22788;&#29702;</span>
+        <span class="org-keyword">if</span> (res <span class="org-keyword">instanceof</span> <span class="org-type">Promise</span>) {
+          res.then(resolveNext, rejectNext)
+        } <span class="org-keyword">else</span> {
+          rejectNext(res)
+        }
+      } <span class="org-keyword">catch</span> (err) {
+        <span class="org-comment-delimiter">// </span><span class="org-comment">&#22238;&#35843;&#20989;&#25968;&#25243;&#20986;&#24322;&#24120;&#65292;&#26032;&#30340; Promise &#23545;&#35937;&#29366;&#24577;&#20462;&#25913;&#20026; Rejected</span>
+        rejectNext(err)
+      }
+    }
+
+    <span class="org-comment-delimiter">// </span><span class="org-comment">&#24403; Promise &#23545;&#35937;&#29366;&#24577;&#21464;&#20026; Rejected &#26102;&#30340;&#22238;&#35843;&#20989;&#25968;</span>
+    <span class="org-keyword">let</span> <span class="org-variable-name">rejected</span> = value =&gt; {
+      <span class="org-keyword">try</span> {
+        <span class="org-keyword">if</span> (!isFunction(onRejected)) {
+          <span class="org-comment-delimiter">// </span><span class="org-comment">&#24403; onRejected &#19981;&#26159;&#20989;&#25968;&#26102;&#65292;&#20250;&#36716;&#25442;&#20026;&#23558;&#36755;&#20837;&#20540;&#25243;&#20986;&#30340; Thrower &#20989;&#25968;</span>
+          onRejected = x =&gt; {
+            <span class="org-keyword">throw</span> x
+          }
+        }
+        <span class="org-keyword">let</span> <span class="org-variable-name">res</span> = onRejected(value)
+        <span class="org-keyword">if</span> (res <span class="org-keyword">instanceof</span> <span class="org-type">Promise</span>) {
+          res.then(resolveNext, rejectNext)
+        } <span class="org-keyword">else</span> {
+          resolveNext(res)
+        }
+      } <span class="org-keyword">catch</span> (err) {
+        rejectNext(err)
+      }
+    }
+
+    <span class="org-keyword">switch</span> (<span class="org-constant">this</span>.status) {
+      <span class="org-comment-delimiter">// </span><span class="org-comment">&#24403;&#29366;&#24577;&#20026; Pending &#26102;&#65292;&#23558; then &#26041;&#27861;&#22238;&#35843;&#20989;&#25968;&#21152;&#20837;&#25191;&#34892;&#38431;&#21015;&#31561;&#24453;&#25191;&#34892;</span>
+      <span class="org-keyword">case</span> PromiseStatus.Pending:
+        <span class="org-constant">this</span>.resolveCallbacks.push(fulfilled)
+        <span class="org-constant">this</span>.rejectCallbacks.push(rejected)
+        <span class="org-keyword">break</span>
+      <span class="org-comment-delimiter">// </span><span class="org-comment">&#24403;&#29366;&#24577;&#24050;&#32463;&#25913;&#21464;&#26102;&#65292;&#31435;&#21363;&#25191;&#34892;&#23545;&#24212;&#30340;&#22238;&#35843;&#20989;&#25968;</span>
+      <span class="org-keyword">case</span> PromiseStatus.Fulfilled:
+        fulfilled(<span class="org-constant">this</span>.result)
+        <span class="org-keyword">break</span>
+      <span class="org-keyword">case</span> PromiseStatus.Rejected:
+        rejected(<span class="org-constant">this</span>.result)
+        <span class="org-keyword">break</span>
+    }
+  })
+}
+</pre>
+</div>
+
+<p>
+这里的重点是，当 <code>Promise</code> 对象的状态为 <code>Pending</code> 时需要将回调函数注册到该 <code>Promise</code> 对象中，无论是 <code>fulfilled</code> 回调还是 <code>rejected</code> 回调，都会：
+</p>
+<ol class="org-ol">
+<li>根据当前 Promise 对象的结果执行 <code>onFulfilled</code> 或 <code>onRejected</code> 回调函数</li>
+<li>根据回调函数的执行结果修改新 <code>Promise</code> 对象的状态</li>
+</ol>
+
+<p>
+通过中间回调函数的方式，将新旧 <code>Promise</code> 对象的状态关联起来。
+</p>
+
+<p>
+<code>resolve</code> 和 <code>reject</code> 方法的实现：
+</p>
+<div class="org-src-container">
+<pre class="src src-js"><span class="org-keyword">function</span> <span class="org-function-name">resolve</span>(<span class="org-variable-name">value</span>) {
+  <span class="org-comment-delimiter">// </span><span class="org-comment">resolve &#21644; reject &#26041;&#27861;&#21482;&#26377;&#31532;&#19968;&#27425;&#35843;&#29992;&#26377;&#25928;</span>
+  <span class="org-keyword">if</span> (<span class="org-constant">this</span>.status === PromiseStatus.Pending) {
+    <span class="org-keyword">const</span> <span class="org-variable-name">runner</span> = () =&gt; {
+      <span class="org-keyword">const</span> <span class="org-variable-name">runFulfilled</span> = (value) =&gt; {
+        <span class="org-keyword">let</span> <span class="org-variable-name">cb</span>;
+        <span class="org-keyword">while</span> (cb = <span class="org-constant">this</span>.resolveCallbacks.shift()) {
+          cb(value)
+        }
+      }
+
+      <span class="org-keyword">const</span> <span class="org-variable-name">runRejected</span> = (error) =&gt; {
+        <span class="org-keyword">let</span> <span class="org-variable-name">cb</span>;
+        <span class="org-keyword">while</span> (cb = <span class="org-constant">this</span>.rejectCallbacks.shift()) {
+          cb(error)
+        }
+      }
+
+      <span class="org-comment-delimiter">// </span><span class="org-comment">&#22914;&#26524; resolve &#30340;&#21442;&#25968;&#20026; Promise &#23545;&#35937;&#65292;&#21017;&#24517;&#39035;&#31561;&#24453;&#35813; Promise &#23545;&#35937;&#29366;&#24577;&#25913;&#21464;&#21518;,</span>
+      <span class="org-comment-delimiter">// </span><span class="org-comment">&#24403;&#21069; Promsie &#30340;&#29366;&#24577;&#25165;&#20250;&#25913;&#21464;&#65292;&#19988;&#29366;&#24577;&#21462;&#20915;&#20110;&#21442;&#25968; Promsie &#23545;&#35937;&#30340;&#29366;&#24577;</span>
+      <span class="org-keyword">if</span> (value <span class="org-keyword">instanceof</span> <span class="org-type">Promise</span>) {
+        value.then(value =&gt; {
+          <span class="org-constant">this</span>.result = value
+          <span class="org-constant">this</span>.status = PromiseStatus.Fulfilled
+          runFulfilled(value)
+        }, err =&gt; {
+          <span class="org-constant">this</span>.result = err
+          <span class="org-constant">this</span>.status = PromiseStatus.Rejected
+          runRejected(err)
+        })
+      } <span class="org-keyword">else</span> {
+        <span class="org-constant">this</span>.status = PromiseStatus.Fulfilled
+        <span class="org-constant">this</span>.result = value
+        runFulfilled(<span class="org-constant">this</span>.result)
+      }
+    }
+    <span class="org-comment-delimiter">// </span><span class="org-comment">resolve &#21644; reject &#26041;&#27861;&#30340;&#35843;&#29992;&#37117;&#19981;&#24212;&#35813;&#38459;&#22622;&#21516;&#27493;&#20195;&#30721;&#30340;&#25191;&#34892;</span>
+    setTimeout(runner, 0)
+  }
+}
+
+<span class="org-keyword">function</span> <span class="org-function-name">reject</span>(<span class="org-variable-name">err</span>) {
+  <span class="org-keyword">if</span> (<span class="org-constant">this</span>.status === PromiseStatus.Pending) {
+    <span class="org-keyword">const</span> <span class="org-variable-name">runner</span> = () =&gt; {
+      <span class="org-constant">this</span>.status = PromiseStatus.Fulfilled
+      <span class="org-constant">this</span>.result = err
+      <span class="org-keyword">let</span> <span class="org-variable-name">cb</span>;
+      <span class="org-keyword">while</span> (cb = <span class="org-constant">this</span>.rejectCallbacks.shift()) {
+        cb(<span class="org-constant">this</span>.result)
+      }
+    }
+    setTimeout(runner, 0)
+  }
+}
+</pre>
+</div>
+
+<p>
+参考链接：
+</p>
+<ul class="org-ul">
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise/then">Promise.prototype.then() - JavaScript | MDN</a></li>
+<li><a href="https://juejin.im/post/5b83cb5ae51d4538cc3ec354">Promise实现原理（附源码） - 掘金</a></li>
+<li><a href="https://es6.ruanyifeng.com/#docs/promise">Promise 对象 - ECMAScript 6入门</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise - JavaScript | MDN</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org04f8328" class="outline-2">
+<h2 id="org04f8328"><span class="section-number-2">3</span> Generator</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+通过 Generator 函数，可以用同步代码的方式编写异步程序，这依赖于一个外部的执行器，运气好的是，JavaScript 中自带这样的执行器。
+</p>
+
+<p>
+JavaScript 中一个 Generator 函数返回的是一个 Iterator 对象，当函数体内部遇到 <code>yield</code> 语句时就会暂停执行并将 <code>yield</code> 后面的表达式的计算结果作为返回值返回：
+</p>
+<div class="org-src-container">
+<pre class="src src-js"><span class="org-keyword">function</span>* <span class="org-function-name">generator</span>() {
+  <span class="org-keyword">yield</span>* [1, 2, 3, 4, 5]
+}
+
+generator().next()  <span class="org-comment-delimiter">// </span><span class="org-comment">{value: 1, done: false}</span>
+</pre>
+</div>
+
+<p>
+因此，我们可以让 <code>yield</code> 的返回值是一个 <code>Promise</code> 对象，并将 <code>next</code> 调用作为回调函数注册到该 <code>Promsie</code> 对象，这样一来，在执行异步代码时暂停，异步代码执行完成后通过 <code>next</code> 方法继续函数的执行，就可以达到用同步代码的方式编写异步程序的目的。
+</p>
+
+<p>
+进一步的，可以利用 <code>generator</code> 函数的特性，将 <code>Promsie</code> 对象的返回值或异常传递到函数体内部，外部执行器例子：
+</p>
+<div class="org-src-container">
+<pre class="src src-js"><span class="org-keyword">function</span> <span class="org-function-name">spawn</span>(<span class="org-variable-name">genF</span>) {
+  <span class="org-keyword">return</span> <span class="org-keyword">new</span> <span class="org-type">Promise</span>(<span class="org-keyword">function</span>(<span class="org-variable-name">resolve</span>, <span class="org-variable-name">reject</span>) {
+    <span class="org-keyword">const</span> <span class="org-variable-name">gen</span> = genF();
+    <span class="org-keyword">function</span> <span class="org-function-name">step</span>(<span class="org-variable-name">nextF</span>) {
+      <span class="org-keyword">let</span> <span class="org-variable-name">next</span>;
+      <span class="org-keyword">try</span> {
+        next = nextF();
+      } <span class="org-keyword">catch</span>(e) {
+        <span class="org-keyword">return</span> reject(e);
+      }
+      <span class="org-keyword">if</span>(next.done) {
+        <span class="org-keyword">return</span> resolve(next.value);
+      }
+      Promise.resolve(next.value).then(<span class="org-keyword">function</span>(<span class="org-variable-name">v</span>) {
+        step(<span class="org-keyword">function</span>() { <span class="org-keyword">return</span> gen.next(v); });
+      }, <span class="org-keyword">function</span>(<span class="org-variable-name">e</span>) {
+        step(<span class="org-keyword">function</span>() { <span class="org-keyword">return</span> gen.<span class="org-keyword">throw</span>(e); });
+      });
+    }
+    step(<span class="org-keyword">function</span>() { <span class="org-keyword">return</span> gen.next(<span class="org-constant">undefined</span>); });
+  });
+}
+</pre>
+</div>
+
+<p>
+参考链接：
+</p>
+<ul class="org-ul">
+<li><a href="https://es6.ruanyifeng.com/#docs/iterator">Iterator 和 for&#x2026;of 循环 - ECMAScript 6入门</a></li>
+<li><a href="https://es6.ruanyifeng.com/#docs/generator-async">Generator 函数的异步应用 - ECMAScript 6入门</a></li>
+<li><a href="https://es6.ruanyifeng.com/#docs/generator">Generator 函数的语法 - ECMAScript 6入门</a></li>
+<li><a href="https://es6.ruanyifeng.com/#docs/async">async 函数 - ECMAScript 6入门</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

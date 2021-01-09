@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:47 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Misc</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">Misc</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgf70036e">1. Base64 编码</a>
+<ul>
+<li><a href="#org9773dbc">1.1. urlsafe base64</a></li>
+</ul>
+</li>
+<li><a href="#org090521d">2. LRU Cache</a></li>
+<li><a href="#orgf59f6ca">3. BitMap</a></li>
+<li><a href="#org224855b">4. BloomFilter</a></li>
+<li><a href="#orgd7cfc3e">5. 滑动窗口算法</a></li>
+<li><a href="#org4eb6f4c">6. 循环数组索引</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf70036e" class="outline-2">
+<h2 id="orgf70036e"><span class="section-number-2">1</span> Base64 编码</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+<b>Base64</b> 是一种基于 64 个可打印字符来表示二进制数据的表示方法。由于 2 ** 6 = 64，所以每 6 个比特为一个单元，对应某个可打印字符。
+</p>
+
+<p>
+转换方式：
+</p>
+<ul class="org-ul">
+<li><p>
+首先，对二进制数据进行处理，每 3 个字节一组，一共是 3 x 8 = 24bit，划为 4 组，每组正好 6 个 bit：
+</p>
+<img src="https://cdn.liaoxuefeng.com/cdn/files/attachments/001399415038305edba53df7d784a7fa76c6b7f6526873b000"></li>
+
+<li>得到 4 个数字作为索引，然后查表，获得相应的 4 个字符，就是编码后的字符串</li>
+
+<li>如果要编码的二进制数据不是 3 的倍数，可以用 \x00 字节在末尾补足后，再在编码的末尾加上 1 个或 2 个 = 号，表示补了多少字节</li>
+</ul>
+
+<p>
+简单的实现：
+</p>
+<div class="org-src-container">
+<pre class="src src-js"><span class="org-keyword">function</span> <span class="org-function-name">base64_encode</span> (<span class="org-variable-name">s</span>)
+{
+  <span class="org-comment-delimiter">// </span><span class="org-comment">the result/encoded string, the padding string, and the pad count</span>
+  <span class="org-keyword">var</span> <span class="org-variable-name">base64chars</span> = <span class="org-string">"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"</span>;
+  <span class="org-keyword">var</span> <span class="org-variable-name">r</span> = <span class="org-string">""</span>;
+  <span class="org-keyword">var</span> <span class="org-variable-name">p</span> = <span class="org-string">""</span>;
+  <span class="org-keyword">var</span> <span class="org-variable-name">c</span> = s.length % 3;
+
+  <span class="org-comment-delimiter">// </span><span class="org-comment">add a right zero pad to make this string a multiple of 3 characters</span>
+  <span class="org-keyword">if</span> (c &gt; 0) {
+    <span class="org-keyword">for</span> (; c &lt; 3; c++) {
+      p += <span class="org-string">'='</span>;
+      s += <span class="org-string">"\0"</span>;
+    }
+  }
+
+  <span class="org-comment-delimiter">// </span><span class="org-comment">increment over the length of the string, three characters at a time</span>
+  <span class="org-keyword">for</span> (c = 0; c &lt; s.length; c += 3) {
+
+    <span class="org-comment-delimiter">// </span><span class="org-comment">we add newlines after every 76 output characters, according to the MIME specs</span>
+    <span class="org-keyword">if</span> (c &gt; 0 &amp;&amp; (c / 3 * 4) % 76 == 0) {
+      r += <span class="org-string">"\r\n"</span>;
+    }
+
+    <span class="org-comment-delimiter">// </span><span class="org-comment">these three 8-bit (ASCII) characters become one 24-bit number</span>
+    <span class="org-keyword">var</span> <span class="org-variable-name">n</span> = (s.charCodeAt(c) &lt;&lt; 16) + (s.charCodeAt(c+1) &lt;&lt; 8) + s.charCodeAt(c+2);
+
+    <span class="org-comment-delimiter">// </span><span class="org-comment">this 24-bit number gets separated into four 6-bit numbers</span>
+    n = [(n &gt;&gt;&gt; 18) &amp; 63, (n &gt;&gt;&gt; 12) &amp; 63, (n &gt;&gt;&gt; 6) &amp; 63, n &amp; 63];
+
+    <span class="org-comment-delimiter">// </span><span class="org-comment">those four 6-bit numbers are used as indices into the base64 character list</span>
+    r += base64chars[n[0]] + base64chars[n[1]] + base64chars[n[2]] + base64chars[n[3]];
+  }
+   <span class="org-comment-delimiter">// </span><span class="org-comment">add the actual padding string, after removing the zero pad</span>
+  <span class="org-keyword">return</span> r.substring(0, r.length - p.length) + p;
+}
+
+<span class="org-keyword">function</span> <span class="org-function-name">base64_decode</span> (<span class="org-variable-name">s</span>)
+{
+  <span class="org-keyword">var</span> <span class="org-variable-name">base64chars</span> = <span class="org-string">"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"</span>;
+  <span class="org-comment-delimiter">// </span><span class="org-comment">remove/ignore any characters not in the base64 characters list</span>
+  <span class="org-comment-delimiter">//  </span><span class="org-comment">or the pad character -- particularly newlines</span>
+  s = s.replace(<span class="org-keyword">new</span> <span class="org-type">RegExp</span>(<span class="org-string">'[^'</span>+base64chars.split(<span class="org-string">""</span>)+<span class="org-string">'=]'</span>, <span class="org-string">'g'</span>), <span class="org-string">""</span>);
+
+  <span class="org-comment-delimiter">// </span><span class="org-comment">replace any incoming padding with a zero pad (the 'A' character is zero)</span>
+  <span class="org-keyword">var</span> <span class="org-variable-name">p</span> = (s.charAt(s.length-1) == <span class="org-string">'='</span> ?
+          (s.charAt(s.length-2) == <span class="org-string">'='</span> ? <span class="org-string">'AA'</span> : <span class="org-string">'A'</span>) : <span class="org-string">""</span>);
+  <span class="org-keyword">var</span> <span class="org-variable-name">r</span> = <span class="org-string">""</span>;
+  s = s.substr(0, s.length - p.length) + p;
+
+  <span class="org-comment-delimiter">// </span><span class="org-comment">increment over the length of this encoded string, four characters at a time</span>
+  <span class="org-keyword">for</span> (<span class="org-keyword">var</span> <span class="org-variable-name">c</span> = 0; c &lt; s.length; c += 4) {
+
+    <span class="org-comment-delimiter">// </span><span class="org-comment">each of these four characters represents a 6-bit index in the base64 characters list</span>
+    <span class="org-comment-delimiter">//  </span><span class="org-comment">which, when concatenated, will give the 24-bit number for the original 3 characters</span>
+    <span class="org-keyword">var</span> <span class="org-variable-name">n</span> = (base64inv[s.charAt(c)] &lt;&lt; 18) + (base64inv[s.charAt(c+1)] &lt;&lt; 12) +
+            (base64inv[s.charAt(c+2)] &lt;&lt; 6) + base64inv[s.charAt(c+3)];
+
+    <span class="org-comment-delimiter">// </span><span class="org-comment">split the 24-bit number into the original three 8-bit (ASCII) characters</span>
+    r += String.fromCharCode((n &gt;&gt;&gt; 16) &amp; 255, (n &gt;&gt;&gt; 8) &amp; 255, n &amp; 255);
+  }
+   <span class="org-comment-delimiter">// </span><span class="org-comment">remove any zero pad that was added to make this a multiple of 24 bits</span>
+  <span class="org-keyword">return</span> r.substring(0, r.length - p.length);
+}
+</pre>
+</div>
+
+<p>
+参考链接：：
+</p>
+<ul class="org-ul">
+<li><a href="https://en.wikibooks.org/wiki/Algorithm_Implementation/Miscellaneous/Base64">Algorithm Implementation/Miscellaneous/Base64 - Wikibooks, open books for an open world</a></li>
+</ul>
+</div>
+
+<div id="outline-container-org9773dbc" class="outline-3">
+<h3 id="org9773dbc"><span class="section-number-3">1.1</span> urlsafe base64</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+由于标准的 Base64 编码后可能出现字符 + 和 /，在 URL 中就不能直接作为参数，所以又有一种 "url safe"  的 base64 编码，把字符 + 和 / 分别变成 - 和 _。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org090521d" class="outline-2">
+<h2 id="org090521d"><span class="section-number-2">2</span> LRU Cache</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+LRU Cache 需要保证最近访问的节点保持在限定容量的 Cache 中，如果超过容量则应该把近期最少使用的节点删除掉。
+</p>
+
+<p>
+LRU Cache 可以借助散列表和链表实现，基本思路如下：
+</p>
+<ol class="org-ol">
+<li>通过双向链表来存储所有的 <b>值</b></li>
+<li>通过散列表来存储所有的 <b>键 - 链表节点</b> 对</li>
+<li>访问键时获取对应的节点，如果节点存在便将该节点移到链表一端，同时返回值</li>
+<li>增加键时判断是否达到容量上限，如果达到就删除链表另一端的节点</li>
+</ol>
+
+<p>
+简易的实现：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">public</span> <span class="org-keyword">class</span> <span class="org-type">LRUCache</span>&lt;<span class="org-type">K</span>, <span class="org-type">V</span>&gt; {
+  <span class="org-keyword">class</span> <span class="org-type">Node</span>&lt;<span class="org-type">K</span>, <span class="org-type">V</span>&gt; {
+    <span class="org-type">Node</span>&lt;<span class="org-type">K</span>, <span class="org-type">V</span>&gt; <span class="org-variable-name">prev</span>;
+    <span class="org-type">Node</span>&lt;<span class="org-type">K</span>, <span class="org-type">V</span>&gt; <span class="org-variable-name">next</span>;
+    <span class="org-type">K</span> <span class="org-variable-name">key</span>;
+    <span class="org-type">V</span> <span class="org-variable-name">val</span>;
+
+    Node(<span class="org-type">K</span> <span class="org-variable-name">key</span>, <span class="org-type">V</span> <span class="org-variable-name">val</span>) {
+      <span class="org-keyword">this</span>.key = key;
+      <span class="org-keyword">this</span>.val = val;
+    }
+  }
+
+  <span class="org-keyword">private</span> <span class="org-type">Map</span>&lt;<span class="org-type">K</span>, <span class="org-type">Node</span>&lt;<span class="org-type">K</span>, <span class="org-type">V</span>&gt;&gt; <span class="org-variable-name">map</span> = <span class="org-keyword">new</span> <span class="org-type">HashMap</span>&lt;&gt;();
+  <span class="org-keyword">private</span> <span class="org-type">Node</span>&lt;<span class="org-type">K</span>, <span class="org-type">V</span>&gt; <span class="org-variable-name">head</span>;
+  <span class="org-keyword">private</span> <span class="org-type">Node</span>&lt;<span class="org-type">K</span>, <span class="org-type">V</span>&gt; <span class="org-variable-name">tail</span>;
+
+  <span class="org-keyword">private</span> <span class="org-type">int</span> <span class="org-variable-name">capacity</span>;
+
+  <span class="org-keyword">public</span> <span class="org-function-name">LRUCache</span>(<span class="org-type">int</span> <span class="org-variable-name">capacity</span>) {
+    <span class="org-keyword">this</span>.capacity = capacity;
+    <span class="org-keyword">this</span>.head = <span class="org-keyword">new</span> <span class="org-type">Node</span>&lt;&gt;(<span class="org-constant">null</span>, <span class="org-constant">null</span>);
+    <span class="org-keyword">this</span>.tail = <span class="org-keyword">new</span> <span class="org-type">Node</span>&lt;&gt;(<span class="org-constant">null</span>, <span class="org-constant">null</span>);
+    head.next = tail;
+    tail.prev = head;
+  }
+
+  <span class="org-keyword">public</span> <span class="org-type">V</span> <span class="org-function-name">get</span>(<span class="org-type">K</span> <span class="org-variable-name">key</span>) {
+    <span class="org-type">Node</span>&lt;<span class="org-type">K</span>, <span class="org-type">V</span>&gt; <span class="org-variable-name">node</span> = map.get(key);
+    <span class="org-keyword">if</span> (node != <span class="org-constant">null</span>) {
+      node.prev.next = node.next;
+      node.next.prev = node.prev;
+      appendTail(node);
+      <span class="org-keyword">return</span> node.val;
+    }
+    <span class="org-keyword">return</span> <span class="org-constant">null</span>;
+  }
+
+  <span class="org-keyword">public</span> <span class="org-type">void</span> <span class="org-function-name">set</span>(<span class="org-type">K</span> <span class="org-variable-name">key</span>, <span class="org-type">V</span> <span class="org-variable-name">val</span>) {
+    <span class="org-type">Node</span>&lt;<span class="org-type">K</span>, <span class="org-type">V</span>&gt; <span class="org-variable-name">node</span> = map.get(key);
+
+    <span class="org-keyword">if</span> (node != <span class="org-constant">null</span>) {
+      node.val = val;
+      <span class="org-comment-delimiter">// </span><span class="org-comment">map.put(key, node);</span>
+      node.prev.next = node.next;
+      node.next.prev = node.prev;
+      appendTail(node);
+    } <span class="org-keyword">else</span> {
+      <span class="org-keyword">if</span> (map.size() == capacity) {
+        <span class="org-type">Node</span>&lt;<span class="org-type">K</span>, <span class="org-type">V</span>&gt; <span class="org-variable-name">temp</span> = head.next;
+        head.next = head.next.next;
+        head.next.prev = head;
+        map.remove(temp.key);
+      }
+
+      node = <span class="org-keyword">new</span> <span class="org-type">Node</span>&lt;&gt;(key, val);
+      appendTail(node);
+      map.put(key, node);
+    }
+  }
+
+  <span class="org-keyword">private</span> <span class="org-type">void</span> <span class="org-function-name">appendTail</span>(<span class="org-type">Node</span>&lt;<span class="org-type">K</span>, <span class="org-type">V</span>&gt; <span class="org-variable-name">node</span>) {
+    node.next = tail;
+    node.prev = tail.prev;
+    tail.prev.next = node;
+    tail.prev = node;
+  }
+}
+</pre>
+</div>
+
+<p>
+同时，可以借助 Java 中的 LinkedHashMap 快速实现：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">public</span> <span class="org-keyword">class</span> <span class="org-type">LRUCache</span>&lt;<span class="org-type">K</span>, <span class="org-type">V</span>&gt; <span class="org-keyword">extends</span> <span class="org-type">LinkedHashMap</span>&lt;<span class="org-type">K</span>, <span class="org-type">V</span>&gt; {
+  <span class="org-keyword">private</span> <span class="org-type">int</span> <span class="org-variable-name">maxSize</span>;
+
+  <span class="org-keyword">public</span> <span class="org-function-name">LRUCache</span>(<span class="org-type">int</span> <span class="org-variable-name">initialCapacity</span>, <span class="org-type">float</span> <span class="org-variable-name">loadFactor</span>, <span class="org-type">int</span> <span class="org-variable-name">maxSize</span>) {
+    <span class="org-comment-delimiter">// </span><span class="org-comment">&#21442;&#25968; true &#34920;&#31034;&#25353;&#29031;&#35775;&#38382;&#23545;&#38142;&#34920;&#25490;&#24207;</span>
+    <span class="org-keyword">super</span>(initialCapacity, loadFactor, <span class="org-constant">true</span>);
+    <span class="org-keyword">this</span>.maxSize = maxSize;
+  }
+
+  <span class="org-keyword">protected</span> <span class="org-type">boolean</span> <span class="org-function-name">removeEldestEntry</span>(<span class="org-constant">Map</span>.<span class="org-type">Entry</span>&lt;<span class="org-type">K</span>, <span class="org-type">V</span>&gt; <span class="org-variable-name">eldest</span>) {
+    <span class="org-keyword">return</span> size() &gt; maxSize;
+  }
+}
+</pre>
+</div>
+
+<p>
+参考：<a href="https://yikun.github.io/2015/04/03/%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AALRU-Cache%EF%BC%9F/">如何设计实现一个 LRU Cache | Yikun</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf59f6ca" class="outline-2">
+<h2 id="orgf59f6ca"><span class="section-number-2">3</span> BitMap</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+BitMap 算法通过一个 Bit 数组来标识一个值是否存在，如果该值存在，就将该值所在的 Bit 位置为 1，反之置为 0。
+</p>
+
+<p>
+因为 BitMap 算法中用来标识一个值是否存在只需要一个 Bit 位，因此，相较于直接使用 HashSet 之类的数据结构可以节约很多内存。
+</p>
+
+<p>
+在 Java 中使用时，可以通过 BitSet 直接使用：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">public</span> <span class="org-type">BitSet</span> <span class="org-function-name">fromArray</span>(<span class="org-type">int</span>[] <span class="org-variable-name">array</span>) {
+  <span class="org-type">BitSet</span> <span class="org-variable-name">bs</span> = <span class="org-keyword">new</span> <span class="org-type">BitSet</span>(4_000_000_000);
+
+  <span class="org-keyword">for</span> (<span class="org-type">int</span> <span class="org-variable-name">i</span> = 0; i &lt; array.<span class="org-type">length</span>; ++i) {
+    bs.set(array[i], <span class="org-constant">true</span>);
+  }
+
+  <span class="org-keyword">return</span> bs;
+}
+</pre>
+</div>
+
+<p>
+可以说，使用 BitMap 来处理整数值是很简单的，但是，对于其他类型的对象就不是那么好处理了。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org224855b" class="outline-2">
+<h2 id="org224855b"><span class="section-number-2">4</span> BloomFilter</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+布隆过滤器的原理是：当一个元素被加入集合时，通过 K 个散列函数将这个元素映射成一个位数组中的 K 个点，把它们置为 1。检索时，我们只要看看这些点是不是都是 1 就（大约）知道集合中有没有它了。
+</p>
+
+<p>
+如果这些点有任何一个 0，则被检元素一定不在，如果都是 1，则被检元素很可能在。这就是布隆过滤器的基本思想。
+</p>
+
+<p>
+可以发现，布隆过滤器就是 BitMap 算法的升级版，虽然存在一定的误差，但是，效率上还是很不错的。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd7cfc3e" class="outline-2">
+<h2 id="orgd7cfc3e"><span class="section-number-2">5</span> 滑动窗口算法</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+在 LeetCode 上遇到 <a href="https://leetcode-cn.com/problems/longest-repeating-character-replacement/submissions/">424. 替换后的最长重复字符</a> 这道题的时候，直接的想法就是暴力解决，然后 Time Out。看了题解后发现，使用了不是很熟悉的滑动窗口算法解答。
+</p>
+
+<p>
+算法通常的步骤为：找到第一个窗口，然后根据边界条件缩小左窗口边界，扩展右窗口边界。
+</p>
+
+<p>
+可以参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.zhihu.com/question/314669016/answer/620247024">什么是「滑动窗口算法」（sliding window algorithm），有哪些应用场景？ - 王天笑的回答 - 知乎</a></li>
+<li><a href="https://note.youdao.com/ynoteshare1/index.html?id=270d3cd80b048c1074dcfa5b14ece4b4&amp;type=note">LeetCode笔记-Java版-专题篇-滑动窗口</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4eb6f4c" class="outline-2">
+<h2 id="org4eb6f4c"><span class="section-number-2">6</span> 循环数组索引</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+借助循环数组索引可以避免边界值的判断问题：
+</p>
+<div class="org-src-container">
+<pre class="src src-js"><span class="org-keyword">function</span> <span class="org-function-name">get</span>(<span class="org-variable-name">arr</span>, <span class="org-variable-name">x</span>, <span class="org-variable-name">offset</span>) {
+  <span class="org-keyword">return</span> arr[(arr.length + x + offset) % arr.length];
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:45 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fundamental classes</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">Fundamental classes</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgd56aee9">1. Object</a></li>
+<li><a href="#org2d86c00">2. String</a>
+<ul>
+<li><a href="#org01e0096">2.1. String#intern</a></li>
+</ul>
+</li>
+<li><a href="#orge5079a9">3. Reference</a></li>
+<li><a href="#orgcbc089b">4. 内部类</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd56aee9" class="outline-2">
+<h2 id="orgd56aee9"><span class="section-number-2">1</span> Object</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Java 中 Object 是所有类的基类，提供了一些基本的方法，其中部分方法的实现如下：
+</p>
+<ul class="org-ul">
+<li><p>
+方法 <code>toString()</code> 是少数几个非 <code>native</code> 方法，实现代码很简单：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">public</span> <span class="org-type">String</span> <span class="org-function-name">toString</span>() {
+  <span class="org-keyword">return</span> getClass().getName() + <span class="org-string">"@"</span> + Integer.toHexString(hashCode());
+}
+</pre>
+</div></li>
+
+<li><p>
+方法 <code>hashCode()</code> 是 <code>native</code> 方法，可以参考的是 <code>openjdk</code> 中的实现：
+</p>
+<div class="org-src-container">
+<pre class="src src-c"><span class="org-keyword">static</span> <span class="org-keyword">inline</span> <span class="org-type">intptr_t</span> <span class="org-function-name">get_next_hash</span>(<span class="org-type">Thread</span> * <span class="org-variable-name">Self</span>, <span class="org-type">oop</span> <span class="org-variable-name">obj</span>) {
+  <span class="org-type">intptr_t</span> <span class="org-variable-name">value</span> = 0 ;
+  <span class="org-keyword">if</span> (hashCode == 0) {
+     <span class="org-comment-delimiter">// </span><span class="org-comment">This form uses an unguarded global Park-Miller RNG,</span>
+     <span class="org-comment-delimiter">// </span><span class="org-comment">so it's possible for two threads to race and generate the same RNG.</span>
+     <span class="org-comment-delimiter">// </span><span class="org-comment">On MP system we'll have lots of RW access to a global, so the</span>
+     <span class="org-comment-delimiter">// </span><span class="org-comment">mechanism induces lots of coherency traffic.</span>
+     value = os::random() ;
+  } <span class="org-keyword">else</span>
+  <span class="org-keyword">if</span> (hashCode == 1) {
+     <span class="org-comment-delimiter">// </span><span class="org-comment">This variation has the property of being stable (idempotent)</span>
+     <span class="org-comment-delimiter">// </span><span class="org-comment">between STW operations.  This can be useful in some of the 1-0</span>
+     <span class="org-comment-delimiter">// </span><span class="org-comment">synchronization schemes.</span>
+     <span class="org-type">intptr_t</span> <span class="org-variable-name">addrBits</span> = cast_from_oop&lt;intptr_t&gt;(obj) &gt;&gt; 3 ;
+     value = addrBits ^ (addrBits &gt;&gt; 5) ^ GVars.stwRandom ;
+  } <span class="org-keyword">else</span>
+  <span class="org-keyword">if</span> (hashCode == 2) {
+     value = 1 ;            <span class="org-comment-delimiter">// </span><span class="org-comment">for sensitivity testing</span>
+  } <span class="org-keyword">else</span>
+  <span class="org-keyword">if</span> (hashCode == 3) {
+     value = ++GVars.hcSequence ;
+  } <span class="org-keyword">else</span>
+  <span class="org-keyword">if</span> (hashCode == 4) {
+     value = cast_from_oop&lt;intptr_t&gt;(obj) ;
+  } <span class="org-keyword">else</span> {
+     <span class="org-comment-delimiter">// </span><span class="org-comment">Marsaglia's xor-shift scheme with thread-specific state</span>
+     <span class="org-comment-delimiter">// </span><span class="org-comment">This is probably the best overall implementation -- we'll</span>
+     <span class="org-comment-delimiter">// </span><span class="org-comment">likely make this the default in future releases.</span>
+     <span class="org-type">unsigned</span> <span class="org-variable-name">t</span> = Self-&gt;_hashStateX ;
+     t ^= (t &lt;&lt; 11) ;
+     Self-&gt;_hashStateX = Self-&gt;_hashStateY ;
+     Self-&gt;_hashStateY = Self-&gt;_hashStateZ ;
+     Self-&gt;_hashStateZ = Self-&gt;_hashStateW ;
+     <span class="org-type">unsigned</span> <span class="org-variable-name">v</span> = Self-&gt;_hashStateW ;
+     v = (v ^ (v &gt;&gt; 19)) ^ (t ^ (t &gt;&gt; 8)) ;
+     Self-&gt;_hashStateW = v ;
+     value = v ;
+  }
+  value &amp;= markOopDesc::hash_mask;
+  <span class="org-keyword">if</span> (value == 0) value = 0xBAD ;
+  assert (value != markOopDesc::no_hash, <span class="org-string">"invariant"</span>) ;
+  TEVENT (hashCode: GENERATE) ;
+  <span class="org-keyword">return</span> value;
+}
+</pre>
+</div>
+
+<p>
+可以看到在 openjdk 中 hashCode 的生成有 6 中方式：
+</p>
+<ol class="org-ol">
+<li>随机数</li>
+<li>对象的内存地址的函数</li>
+<li>固定值，为了进行灵敏度测试</li>
+<li>递增序列</li>
+<li>int 类型的该对象的内存地址</li>
+<li>结合当前线程和 xorshift 生成</li>
+</ol>
+
+<p>
+在 JDK8 中默认使用的是最后一种方式，参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://juejin.im/entry/5968876df265da6c232898c2">Java Object.hashCode() 返回的是对象内存地址？ - 后端 - 掘金</a></li>
+<li><a href="http://www.majiang.life/blog/deep-dive-on-java-hashcode/">细说 Java hashCode - 码匠笔记</a></li>
+</ul></li>
+
+<li><p>
+方法 <code>equals()</code> 的默认实现就比较牛逼了，和没有实现差不多：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">public</span> <span class="org-type">boolean</span> <span class="org-function-name">equals</span>(<span class="org-type">Object</span> <span class="org-variable-name">obj</span>) {
+  <span class="org-keyword">return</span> (<span class="org-keyword">this</span> == obj);
+}
+</pre>
+</div></li>
+
+<li><p>
+方法 <code>clone()</code> 的实现方式貌似很直接，创建一个新对象然后将原对象的值拷贝过去就完事了，由于引用对象保存的是对象的引用，因此，默认的克隆方法是浅克隆。
+</p>
+
+<p>
+可以参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://github.com/infobip/infobip-open-jdk-8/blob/master/hotspot/src/share/vm/prims/jvm.cpp#L580">openjdk - jvm.cpp - JVM_ENTRY(jobject, JVM_Clone(JNIEnv* env, jobject handle))</a></li>
+</ul></li>
+
+<li><p>
+方法 <code>finalize()</code> 的使用频率好像并不高，这个方法将会有 GC 在回收对象时调用，默认实现为空：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">protected</span> <span class="org-type">void</span> <span class="org-function-name">finalize</span>() <span class="org-keyword">throws</span> <span class="org-type">Throwable</span> {}
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2d86c00" class="outline-2">
+<h2 id="org2d86c00"><span class="section-number-2">2</span> String</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org01e0096" class="outline-3">
+<h3 id="org01e0096"><span class="section-number-3">2.1</span> String#intern</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+Java 语言中为 8 种基本类型和 <code>String</code> 提供了常量池缓存，通过重用对象达到节省内存的目的。
+</p>
+
+<p>
+<code>String</code> 类型的常量池的使用方式有两种：
+</p>
+<ul class="org-ul">
+<li>直接使用双引号声明出来的 String 对象会直接存储在常量池中</li>
+<li>如果不是用双引号声明的 String 对象，可以使用 String 提供的 intern 方法。intern 方法会从字符串常量池中查询当前字符串是否存在，若不存在就会将当前字符串放入常量池中</li>
+</ul>
+
+<p>
+要注意的是，String 的 String Pool 是一个固定大小的 Hashtable，默认值大小长度是 1009，如果放进 String Pool 的 String 非常多，就会造成 Hash 冲突严重，从而导致链表会很长，而链表长了后直接会造成的影响就是当调用 String.intern 时性能会大幅下降。
+</p>
+
+<p>
+这里需要注意 JDK 1.6 和 JDK 1.7 中该方法的区别：
+</p>
+<ol class="org-ol">
+<li>在 JDK 1.6 中，该方法会把首次遇到的字符串 <b>实例</b> 复制到永久代中，返回 <b>新实例</b> 的引用</li>
+<li>在 JDK 1.7 中，该方法不在复制实例，只是在常量池中记录首次出现的实例 <b>引用</b></li>
+</ol>
+
+<p>
+参考文章：<a href="https://tech.meituan.com/2014/03/06/in-depth-understanding-string-intern.html">深入解析 String#intern - 美团技术团队</a>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge5079a9" class="outline-2">
+<h2 id="orge5079a9"><span class="section-number-2">3</span> Reference</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Java 中的引用可以分为四个类型：
+</p>
+<ul class="org-ul">
+<li><p>
+强引用，默认的引用类型，当被引用的对象可达时其内存永远不会被释放
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-type">Object</span> <span class="org-variable-name">strongReference</span> = <span class="org-keyword">new</span> <span class="org-type">Object</span>();
+</pre>
+</div></li>
+<li><p>
+软引用，当一个对象只存在软引用时，内存不足时就会回收该对象的内存
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-type">SoftReference</span>&lt;<span class="org-type">String</span>&gt; <span class="org-variable-name">softReference</span> = <span class="org-keyword">new</span> <span class="org-type">SoftReference</span>&lt;<span class="org-type">String</span>&gt;(<span class="org-keyword">new</span> <span class="org-type">String</span>(<span class="org-string">"abc"</span>));
+</pre>
+</div></li>
+<li><p>
+弱引用，当一个对象只存在弱引用时，垃圾回收器便会直接回收它的内存
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-type">WeakReference</span>&lt;<span class="org-type">String</span>&gt; <span class="org-variable-name">weakReference</span> = <span class="org-keyword">new</span> <span class="org-type">WeakReference</span>&lt;&gt;(<span class="org-keyword">new</span> <span class="org-type">String</span>(<span class="org-string">"abc"</span>));
+</pre>
+</div></li>
+<li><p>
+虚引用，和该对象不存在任何引用的情况相同
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-type">PhantomReference</span> <span class="org-variable-name">pr</span> = <span class="org-keyword">new</span> <span class="org-type">PhantomReference</span>(<span class="org-keyword">new</span> <span class="org-type">String</span>(<span class="org-string">"abc"</span>), <span class="org-keyword">new</span> <span class="org-type">ReferenceQueue</span>());
+</pre>
+</div></li>
+</ul>
+
+<p>
+其中，可以将一个 <code>ReferenceQueue</code> 作为构造函数的参数传递给其他引用类型，当被引用的对象被回收时，对应的引用就会被放到 <code>ReferenceQueue</code> 中，方便后续的处理。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://juejin.im/post/5b82c02df265da436152f5ad#heading-5">理解 Java 的强引用、软引用、弱引用和虚引用 - 掘金</a></li>
+<li><a href="https://www.cnblogs.com/dreamroute/p/5029899.html">ReferenceQueue 的使用 - 神一样的存在 - 博客园</a></li>
+<li><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/ref/ReferenceQueue.html">ReferenceQueue (Java Platform SE 8 )</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgcbc089b" class="outline-2">
+<h2 id="orgcbc089b"><span class="section-number-2">4</span> 内部类</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Java 内部类是一种编译器行为，创建普通的非静态内部类时编译器往往会创建一个 <code>this$0</code> 引用执行外部类实例，同时为外部内的私有字段创建 <code>access</code> 方法来允许内部类访问私有字段。
+</p>
+
+<p>
+当创建的是局部内部类时，编译器还会为内部类创建局部变量的引用保存。
+</p>
+
+<p>
+详情可参考《Java 核心技术卷卷一》内部类章节。
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:44 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>概念了解</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">概念了解</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org26ff40f">1. DevOps</a></li>
+<li><a href="#orge34eb9c">2. 本福特定律</a></li>
+<li><a href="#org820045e">3. 概率编程语言</a></li>
+<li><a href="#org0d714ae">4. 图像重采样算法</a></li>
+<li><a href="#org0dc9801">5. 快速傅里叶变换</a></li>
+<li><a href="#org5888b63">6. 马儿科夫链</a></li>
+<li><a href="#orgff4cb77">7. 欧几里得-欧拉定理</a></li>
+<li><a href="#org1a95993">8. ABI</a></li>
+<li><a href="#orgd8247b6">9. 虚函数</a></li>
+<li><a href="#org82b020f">10. 内存泄漏和内存溢出</a></li>
+<li><a href="#orgc245f3a">11. Serialization</a></li>
+<li><a href="#org751137d">12. IaaS，PaaS，SaaS</a></li>
+<li><a href="#orgc32c90e">13. 指针和句柄</a></li>
+<li><a href="#org8e2b018">14. 静态类型、动态类型、弱类型、强类型</a></li>
+<li><a href="#org8a1de69">15. 编译运行、解释运行</a></li>
+<li><a href="#orgc4f0689">16. 方法签名</a></li>
+<li><a href="#orgb61f6b1">17. URL Schemes</a></li>
+<li><a href="#org0fba5fb">18. FFI</a></li>
+<li><a href="#org1b8976c">19. 云计算超卖</a></li>
+<li><a href="#org71c47f0">20. 规则引擎</a></li>
+<li><a href="#org2c55ee1">21. 协变和逆变</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org26ff40f" class="outline-2">
+<h2 id="org26ff40f"><span class="section-number-2">1</span> DevOps</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+DevOps 是一个完整的面向IT运维的工作流，以 IT 自动化以及持续集成（CI）、持续部署（CD）为基础，来优化程式开发、测试、系统运维等所有环节。
+</p>
+
+<p>
+可以参考的文章：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.cnblogs.com/liufei1983/p/7152013.html">DevOps 简介 - 刘大飞 - 博客园</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orge34eb9c" class="outline-2">
+<h2 id="orge34eb9c"><span class="section-number-2">2</span> 本福特定律</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+本福特定律，也称为本福特法则，说明一堆从实际生活得出的数据中，以 1 为首位数字的数的出现概率约为总数的三成，接近直觉得出之期望值 1/9 的 3 倍。
+</p>
+
+<ul class="org-ul">
+<li><a href="https://zh.wikipedia.org/wiki/%E6%9C%AC%E7%A6%8F%E7%89%B9%E5%AE%9A%E5%BE%8B">本福特定律 - 维基百科，自由的百科全书</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org820045e" class="outline-2">
+<h2 id="org820045e"><span class="section-number-2">3</span> 概率编程语言</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+概率编程语言（PPL）是一种编程语言，用于描述概率模型，然后在这些模型中进行推理。
+</p>
+
+<ul class="org-ul">
+<li><a href="https://en.wikipedia.org/wiki/Probabilistic_programming_language">Probabilistic programming language - Wikipedia</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0d714ae" class="outline-2">
+<h2 id="org0d714ae"><span class="section-number-2">4</span> 图像重采样算法</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+图像的 size 修改其实就是一个图像重新采样的过程，放大图像称为上采样/插值，缩小图像称为小采样。
+</p>
+
+<ul class="org-ul">
+<li><a href="http://entropymine.com/imageworsener/resample/">Basics of Image Resampling</a></li>
+<li><a href="https://clouard.users.greyc.fr/Pantheon/experiments/rescaling/index-en.html">TUTORIAL: IMAGE RESCALING</a></li>
+<li><a href="https://www.cnblogs.com/wjgaas/p/3597095.html">关于图像重采样插值算法</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0dc9801" class="outline-2">
+<h2 id="org0dc9801"><span class="section-number-2">5</span> 快速傅里叶变换</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+<b>快速傅里叶变换(Fast Fourier Transform, FFT)</b>, 是快速计算序列的离散傅里叶变换或其逆变换的方法。傅里叶分析将信号从原始域转换到频域的表示或者逆过来转换。
+</p>
+
+<ul class="org-ul">
+<li><a href="https://zh.wikipedia.org/wiki/%E5%BF%AB%E9%80%9F%E5%82%85%E9%87%8C%E5%8F%B6%E5%8F%98%E6%8D%A2">维基百科 - 快速傅里叶变换</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org5888b63" class="outline-2">
+<h2 id="org5888b63"><span class="section-number-2">6</span> 马儿科夫链</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+<b>马尔可夫链</b> 为状态空间中经过从一个状态到另一个状态的转换的 <b>随机过程</b>.
+</p>
+
+<ul class="org-ul">
+<li><a href="https://zh.wikipedia.org/wiki/%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E9%93%BE">维基百科 - 马尔可夫链</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgff4cb77" class="outline-2">
+<h2 id="orgff4cb77"><span class="section-number-2">7</span> 欧几里得-欧拉定理</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+<b>欧几里得-欧拉定理(Euclid–Euler theorem)</b> 是一条联系 <b>偶完全数</b> 与 <b>梅森质数</b> 的定理。
+</p>
+
+<ul class="org-ul">
+<li><a href="https://zh.wikipedia.org/wiki/%E6%AD%90%E5%B9%BE%E9%87%8C%E5%BE%97-%E6%AD%90%E6%8B%89%E5%AE%9A%E7%90%86">维基百科 - 欧几里得-欧拉定理</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org1a95993" class="outline-2">
+<h2 id="org1a95993"><span class="section-number-2">8</span> ABI</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+ABI 是应用二进制接口的缩写，和 API 不同，ABI 是指两程序模块间的接口，通常其中一个程序模块会是库或操作系统所提供的服务，而另一边的模块则是用户所运行的程序。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://zh.wikipedia.org/wiki/%E5%BA%94%E7%94%A8%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%8E%A5%E5%8F%A3">应用二进制接口 - 维基百科，自由的百科全书</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd8247b6" class="outline-2">
+<h2 id="orgd8247b6"><span class="section-number-2">9</span> 虚函数</h2>
+<div class="outline-text-2" id="text-9">
+<p>
+在面向对象程序设计领域，C++、Object Pascal 等语言中有虚函数（英语：virtual function）或虚方法（英语：virtual method）的概念，这些在 Java 中和接口的概念相仿。
+</p>
+
+<p>
+在 C 语言中，大概就是函数指针，可以参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://zh.wikipedia.org/wiki/%E8%99%9A%E5%87%BD%E6%95%B0">虚函数 - 维基百科，自由的百科全书</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org82b020f" class="outline-2">
+<h2 id="org82b020f"><span class="section-number-2">10</span> 内存泄漏和内存溢出</h2>
+<div class="outline-text-2" id="text-10">
+<ul class="org-ul">
+<li>内存泄露：申请的内存空间没有被正确释放，导致后续程序里这块内存被永远占用（不可达）</li>
+<li>内存溢出：指存储的数据超出了指定空间的大小，这时数据就会越界</li>
+
+<li><a href="https://www.zhihu.com/question/40560123">内存泄漏和内存溢出有啥区别？ - 知乎</a></li>
+</ul>
+
+<p>
+需要注意的是，虽然 Java 通过根可达性算法解决了循环引用的问题，但是，不代表 Java 中就不存在内存泄漏的问题了，参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://zhuanlan.zhihu.com/p/56214714">深入分析 ThreadLocal 内存泄漏问题 - 知乎</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc245f3a" class="outline-2">
+<h2 id="orgc245f3a"><span class="section-number-2">11</span> Serialization</h2>
+<div class="outline-text-2" id="text-11">
+<p>
+Serialization 这个单词在计算机科学中存在两种含义：
+</p>
+<ul class="org-ul">
+<li>序列化 - 保存对象以便可以重新创建的过程，比如转换对象为二进制串、JSON、XML 等</li>
+<li>串行化 - 线程和进程之间的同步</li>
+</ul>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://en.wikipedia.org/wiki/Synchronization_(computer_science)#Thread_or_process_synchronization">Synchronization (computer science) - Wikipedia</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Serialization_(disambiguation)">Serialization (disambiguation) - Wikipedia</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Serialization">Serialization - Wikipedia</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org751137d" class="outline-2">
+<h2 id="org751137d"><span class="section-number-2">12</span> IaaS，PaaS，SaaS</h2>
+<div class="outline-text-2" id="text-12">
+<ul class="org-ul">
+<li>IaaS：基础设施服务，Infrastructure-as-a-service，提供基础设施，但是具体服务由自己去实现</li>
+<li>PaaS：平台服务，Platform-as-a-service，在基础设施上进一步提供了基础实现，自己去定义</li>
+<li>SaaS：软件服务，Software-as-a-service，直接提供的就是成品</li>
+</ul>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="http://www.ruanyifeng.com/blog/2017/07/iaas-paas-saas.html">IaaS，PaaS，SaaS 的区别 - 阮一峰的网络日志</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc32c90e" class="outline-2">
+<h2 id="orgc32c90e"><span class="section-number-2">13</span> 指针和句柄</h2>
+<div class="outline-text-2" id="text-13">
+<blockquote>
+<p>
+In computer programming, a handle is an abstract reference to a resource that is used when application software references blocks of memory or objects that are managed by another system like a database or an operating system.
+</p>
+</blockquote>
+
+<p>
+简单来说，句柄是被单独的系统管理的对象，我们可以通过句柄间接访问目标对象，系统可以通过句柄来对访问进行控制，而指针，就很自由。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://en.wikipedia.org/wiki/Handle_(computing)">Handle (computing) - Wikipedia</a></li>
+<li><a href="https://www.jianshu.com/p/ce6d7a5eea0a">指针与句柄的区别 - 简书</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org8e2b018" class="outline-2">
+<h2 id="org8e2b018"><span class="section-number-2">14</span> 静态类型、动态类型、弱类型、强类型</h2>
+<div class="outline-text-2" id="text-14">
+<p>
+Program Errors:
+</p>
+<ul class="org-ul">
+<li>trapped errors: 导致程序终止执行，如除 0，Java 中数组越界访问</li>
+<li>untrapped errors: 出错后继续执行，但可能出现任意行为。如 C 里的缓冲区溢出、Jump 到错误地址</li>
+</ul>
+
+<p>
+Forbidden Behaviours: 语言设计时，可以定义一组 forbidden behaviors。它必须包括所有 untrapped errors，但可能包含 trapped errors。
+</p>
+
+<p>
+Well behaved、ill behaved:
+</p>
+<ul class="org-ul">
+<li>well behaved: 如果程序执行不可能出现 forbidden behaviors，则为 well behaved</li>
+<li>ill behaved: 否则为 ill behaved</li>
+</ul>
+
+<p>
+强、弱类型：
+</p>
+<ul class="org-ul">
+<li>强类型 strongly typed: 如果一种语言的所有程序都是 well behaved —— 即不可能出现 forbidden behaviors，那么该语言为 strongly typed</li>
+<li>弱类型 weakly typed: 否则为 weakly typed。比如 C 语言的缓冲区溢出，属于 untrapped errors，即属于 forbidden behaviors，故 C 是弱类型</li>
+</ul>
+
+<p>
+动态、静态类型：
+</p>
+<ul class="org-ul">
+<li>静态类型 statically: 如果在编译时拒绝 ill behaved 程序，则是 statically typed</li>
+<li>动态类型 dynamiclly: 如果在运行时拒绝 ill behaviors，则是 dynamiclly typed</li>
+</ul>
+
+<p>
+Python 是强类型、动态类型的语言。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8a1de69" class="outline-2">
+<h2 id="org8a1de69"><span class="section-number-2">15</span> 编译运行、解释运行</h2>
+<div class="outline-text-2" id="text-15">
+<p>
+无论是编译执行还是解释执行往往都需要经过词法分析、语法分析的步骤生成抽象语法树，往往，在生成抽象语法树后，解释运行和编译运行就出现了区别：
+</p>
+<ul class="org-ul">
+<li>编译运行通常会将抽象语法树优化生成中间代码，然后将中间代码转译为目标平台机器码后执行，虽然还是 CPU 在解释执行机器码</li>
+<li>解释运行通常会将抽象语法树翻译为字节码，然后由解释器、虚拟机执行，虚拟机或解释器可以选择通过 JIT 将中间语言进一步编译为机器码，但也可以选择直接解释执行 AST</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc4f0689" class="outline-2">
+<h2 id="orgc4f0689"><span class="section-number-2">16</span> 方法签名</h2>
+<div class="outline-text-2" id="text-16">
+<ul class="org-ul">
+<li><a href="https://en.wikipedia.org/wiki/Type_signature">Type signature - Wikipedia</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb61f6b1" class="outline-2">
+<h2 id="orgb61f6b1"><span class="section-number-2">17</span> URL Schemes</h2>
+<div class="outline-text-2" id="text-17">
+<p>
+在现代操作系统中，我们常常可以通过类似 <code>thunder://xxxxx</code> 的 URL Schemes 启动本地应用程序，这是一个方便但又可能带来问题的功能。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.anquanke.com/post/id/162370">从 CVE-2018-8495 看 PC 端 url scheme 的安全问题 - 安全客，安全资讯平台</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0fba5fb" class="outline-2">
+<h2 id="org0fba5fb"><span class="section-number-2">18</span> FFI</h2>
+<div class="outline-text-2" id="text-18">
+<p>
+可以简单的理解为一个语言调用另一个语言的功能，参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://en.wikipedia.org/wiki/Foreign_function_interface">Foreign function interface - Wikipedia</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org1b8976c" class="outline-2">
+<h2 id="org1b8976c"><span class="section-number-2">19</span> 云计算超卖</h2>
+<div class="outline-text-2" id="text-19">
+<p>
+指本来只有 10 的资源缺卖了 10+ 出去，利用的是大多数情况下资源不会满占的特性，被坑到的时候就很操蛋。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org71c47f0" class="outline-2">
+<h2 id="org71c47f0"><span class="section-number-2">20</span> 规则引擎</h2>
+<div class="outline-text-2" id="text-20">
+<p>
+在业务代码中，通常会存在大量的 if-else 代码，当业务越来越复杂，同一个位置需要处理大量的分支情况的时候，代码就会变得越来越难以维护。
+</p>
+
+<p>
+针对这样的场景，可以考虑通过规则引擎来替代大量 if-else 的场景。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2c55ee1" class="outline-2">
+<h2 id="org2c55ee1"><span class="section-number-2">21</span> 协变和逆变</h2>
+<div class="outline-text-2" id="text-21">
+<p>
+约定：
+</p>
+<ul class="org-ul">
+<li><code>A ≦ B</code> 意味着 A 是 B 的子类型</li>
+<li><code>A → B</code> 指的是以 A 为参数类型，以 B 为返回值类型的函数类型</li>
+<li><code>x : A</code> 意味着 x 的类型为 A</li>
+</ul>
+
+<p>
+协变和逆变的概念可以借助实际的变量类型来理解：
+</p>
+<dl class="org-dl">
+<dt>协变和普通变量</dt><dd><p>
+在 C# 中，List&lt;T&gt; 类实现 IEnumerable&lt;T&gt; 接口，因此 List&lt;Derived&gt; 实现 IEnumerable&lt;Derived&gt;：
+</p>
+<pre class="example">
+IEnumerable&lt;Derived&gt; d = new List&lt;Derived&gt;();
+IEnumerable&lt;Base&gt; b = d;
+</pre>
+
+<p>
+简单来说，协变就和面向对象概念中的多态一样，指可以使用父类型引用指向子类型实例的情况。
+</p></dd>
+
+<dt>逆变和函数变量</dt><dd><p>
+假如我有这样一个类型链：C ≦ B ≦ A，此时有一个函数是这样的：f(B → B)，这个函数接收一个 B → B 函数作为参数，那么这种情况下，怎样的函数可以作为 f 的参数呢？
+</p>
+
+<p>
+首先，对于 <code>C → *</code> 来说都是不行的，因为 f 调用函数时参数类型可能是 B 或 B 的其他子类型，而 <code>C → *</code> 只支持 C 类型的入参。
+</p>
+
+<p>
+然后，对于 <code>* → A</code> 来说也是不行的，因为 f 要求的返回值是 B 或 B 的其他子类型，但是 <code>* → A</code> 可能会返回 B 的父类型 A。
+</p>
+
+<p>
+最后，对于 <code>A → C</code> 来说却是可行的，因为 f 的参数只会是 B 或 B 的其他子类型，而 <code>A → C</code> 的入参类型是 A，满足。同时，函数 <code>A → C</code> 的返回值是 C，是 B 的子类型，返回值类型也满足。
+</p>
+
+<p>
+这时，神奇的情况便发生了，当函数类型是 <code>B → B</code> 时，我们可以使用 <code>&lt;? super B&gt; → &lt;? extend B&gt;</code> 进行赋值：
+</p>
+<pre class="example">
+Action&lt;Base&gt; b = (target) =&gt; { Console.WriteLine(target.GetType().Name); };
+Action&lt;Derived&gt; d = b;
+</pre>
+
+<p>
+这就是逆变。
+</p></dd>
+</dl>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://zh.wikipedia.org/wiki/%E5%8D%8F%E5%8F%98%E4%B8%8E%E9%80%86%E5%8F%98">协变与逆变 - 维基百科，自由的百科全书</a></li>
+<li><a href="https://docs.microsoft.com/zh-cn/dotnet/standard/generics/covariance-and-contravariance?redirectedfrom=MSDN">泛型中的协变和逆变 | Microsoft Docs</a></li>
+<li><a href="https://jkchao.github.io/typescript-book-chinese/tips/covarianceAndContravariance.html#%E4%B8%80%E4%B8%AA%E6%9C%89%E8%B6%A3%E7%9A%84%E9%97%AE%E9%A2%98">协变与逆变 | 深入理解 TypeScript</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

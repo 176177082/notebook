@@ -1,0 +1,2118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:47 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>.NET - C# 基础</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">.NET - C# 基础</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgd943350">1. 程序部分</a>
+<ul>
+<li><a href="#orge852cda">1.1. C# 通用程序结构</a></li>
+<li><a href="#orgc24739a">1.2. Main() 和 命令行参数</a>
+<ul>
+<li><a href="#org2f0084e">1.2.1. Main 方法相关</a></li>
+<li><a href="#org53353a9">1.2.2. 命令行参数</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgeb1e7d0">2. 语言部分</a>
+<ul>
+<li><a href="#orgdfd0475">2.1. 语句、表达式和运算符</a>
+<ul>
+<li><a href="#orgeb26bf2">2.1.1. 语句的类型</a></li>
+<li><a href="#orgfaee031">2.1.2. Lambda 表达式</a></li>
+</ul>
+</li>
+<li><a href="#orge38a318">2.2. 类型、变量和值</a>
+<ul>
+<li><a href="#org7e690bb">2.2.1. 值类型和引用类型</a></li>
+</ul>
+</li>
+<li><a href="#org239f17d">2.3. 类和结构</a>
+<ul>
+<li><a href="#org4d4b5f8">2.3.1. 结构</a></li>
+<li><a href="#org36763b3">2.3.2. 继承</a></li>
+<li><a href="#org651ca8e">2.3.3. 多态性</a></li>
+<li><a href="#orgf913590">2.3.4. 抽象类、密封类及类成员</a></li>
+<li><a href="#orgdbbec34">2.3.5. 静态类和静态类成员</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org6e75f8e">3. 平台部分</a></li>
+<li><a href="#org2cb8eea">4. 类和结构</a>
+<ul>
+<li><a href="#org2d767b0">4.1. 示例代码</a></li>
+<li><a href="#orgbdc3992">4.2. 成员</a>
+<ul>
+<li><a href="#org2c2d273">4.2.1. 字段</a></li>
+<li><a href="#orgab6cbae">4.2.2. 常量</a></li>
+<li><a href="#org2f1a38e">4.2.3. 属性</a></li>
+<li><a href="#orgb404e1d">4.2.4. 方法</a></li>
+<li><a href="#org0ab504b">4.2.5. 事件</a></li>
+<li><a href="#org6de5e1c">4.2.6. 运算符</a></li>
+<li><a href="#orgb5ad8d5">4.2.7. 索引器</a></li>
+<li><a href="#orga141867">4.2.8. 构造函数</a></li>
+<li><a href="#orgbbf02d9">4.2.9. 终结器(析构函数)</a></li>
+<li><a href="#org8da8ae6">4.2.10. 嵌套类型</a></li>
+</ul>
+</li>
+<li><a href="#org7e6e9fe">4.3. 可访问性</a></li>
+<li><a href="#org9e65dbd">4.4. 继承</a></li>
+<li><a href="#org06e433f">4.5. 接口</a></li>
+</ul>
+</li>
+<li><a href="#org1a64d08">5. 数组</a>
+<ul>
+<li><a href="#orgabb1c80">5.1. 作为对象的数组</a></li>
+<li><a href="#orgb1c2cb4">5.2. 将数组作为参数传递</a></li>
+</ul>
+</li>
+<li><a href="#orgb2962d7">6. 字符串</a>
+<ul>
+<li><a href="#org50666e7">6.1. 声明和初始化字符串</a></li>
+<li><a href="#orge74b4c8">6.2. 字符串对象的不可变性</a></li>
+<li><a href="#org4993a57">6.3. 逐字字符串(@)</a></li>
+<li><a href="#org8bb376e">6.4. 字符串转义序列(转义字符表)</a></li>
+<li><a href="#orgbfc818a">6.5. 格式化字符串(string.Format)</a>
+<ul>
+<li><a href="#org817a1df">6.5.1. 常用格式化表示符</a></li>
+</ul>
+</li>
+<li><a href="#orgf6a794b">6.6. 方法</a>
+<ul>
+<li><a href="#org43684d7">6.6.1. Split</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org3f61401">7. 异常和异常处理</a>
+<ul>
+<li><a href="#org0f6ee34">7.1. 异常概述</a></li>
+</ul>
+</li>
+<li><a href="#org2a8e133">8. 泛型</a>
+<ul>
+<li><a href="#org56c77f7">8.1. 泛型概述</a></li>
+<li><a href="#org5ad281d">8.2. 示例代码</a></li>
+</ul>
+</li>
+<li><a href="#org1ce7d9a">9. 枚举类型</a></li>
+<li><a href="#org4e5128a">10. 委托</a></li>
+<li><a href="#org0cb3c1b">11. 事件</a></li>
+<li><a href="#orgd69da86">12. 创建和引发异常</a></li>
+<li><a href="#org5fa04d8">13. 相关链接</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd943350" class="outline-2">
+<h2 id="orgd943350"><span class="section-number-2">1</span> 程序部分</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-orge852cda" class="outline-3">
+<h3 id="orge852cda"><span class="section-number-3">1.1</span> C# 通用程序结构</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+C# 程序可由一个或多个文件组成。每个文件均可包含零个或多个命名空间。一个命名空间除了可包含其他命名空间外,还可包含类、结构、接口、枚举、委托等类型。下面是包含所有这些元素的 C# 程序主干。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-csharp">// A skeleton of a C# program
+using System;
+namespace YourNamespace
+{
+  class YourClass
+  {
+  }
+
+  struct YourStruct
+  {
+  }
+
+  interface IYourInterface
+  {
+  }
+
+  delegate int YourDelegate();
+
+  enum YourEnum
+  {
+  }
+
+  namespace YourNestedNamespace
+  {
+    struct YourStruct
+    {
+    }
+  }
+
+  class YourMainClass
+  {
+    static void Main(string[] args)
+      {
+	//Your program starts here...
+      }
+  }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc24739a" class="outline-3">
+<h3 id="orgc24739a"><span class="section-number-3">1.2</span> Main() 和 命令行参数</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+<b>Main</b> 方法是 C# 应用程序的入口点。 （库和服务不要求使用 Main 方法作为入口点）<br>
+<b>Main</b> 方法是应用程序启动后调用的第一个方法
+</p>
+
+<p>
+<span class="underline">C# 程序中只能有一个入口点。</span>
+如果多个类包含 Main 方法，必须使用 /main 编译器选项来编译程序，以指定将哪个 Main 方法用作入口点。
+</p>
+</div>
+
+<div id="outline-container-org2f0084e" class="outline-4">
+<h4 id="org2f0084e"><span class="section-number-4">1.2.1</span> Main 方法相关</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<ol class="org-ol">
+<li>Main 在类或结构中声明。 Main 必须是静态方法，不得为公共方法</li>
+<li>Main 可以具有 <b>void</b> 、 <b>int</b> 返回类型开头</li>
+<li>使用或不使用包含命令行自变量的 <span class="underline">string[]</span> 参数声明 Main 方法都行</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org53353a9" class="outline-4">
+<h4 id="org53353a9"><span class="section-number-4">1.2.2</span> 命令行参数</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<p>
+可以通过以下方式之一定义方法来将自变量发送到 Main 方法:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-csharp">static int Main(string[] args)
+
+
+  static void Main(string[] args)
+
+// 个人更喜欢argv
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgeb1e7d0" class="outline-2">
+<h2 id="orgeb1e7d0"><span class="section-number-2">2</span> 语言部分</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orgdfd0475" class="outline-3">
+<h3 id="orgdfd0475"><span class="section-number-3">2.1</span> 语句、表达式和运算符</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+构成应用程序的 C# 代码由关键字、表达式和运算符组成的语句所组成。
+</p>
+</div>
+
+<div id="outline-container-orgeb26bf2" class="outline-4">
+<h4 id="orgeb26bf2"><span class="section-number-4">2.1.1</span> 语句的类型</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">类别</th>
+<th scope="col" class="org-left">C#关键字/说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">声明语句</td>
+<td class="org-left">声明语句引入新的变量或常量. 变量声明可以选择为变量赋值. <span class="underline">在常量(const)声明中必须赋值</span></td>
+</tr>
+
+<tr>
+<td class="org-left">表达式语句</td>
+<td class="org-left">用于计算值的表达式语句必须在变量中存储该值</td>
+</tr>
+
+<tr>
+<td class="org-left">选择语句</td>
+<td class="org-left">选择语句用于根据一个或多个指定条件分支到不同的代码段, <a href="https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/selection-statements">选择语句参考指南</a></td>
+</tr>
+
+<tr>
+<td class="org-left">迭代语句</td>
+<td class="org-left">迭代语句用于遍历集合（如数组），或重复执行同一组语句直到满足指定的条件, <a href="https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/iteration-statements">迭代语句参考指南</a></td>
+</tr>
+
+<tr>
+<td class="org-left">跳转语句</td>
+<td class="org-left">跳转语句将控制转移给另一代码段, <a href="https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/jump-statements">跳转语句参考指南</a></td>
+</tr>
+
+<tr>
+<td class="org-left">异常处理语句</td>
+<td class="org-left">异常处理语句用于从运行时发生的异常情况正常恢复, <a href="https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/exception-handling-statements">异常处理语句参考指南</a></td>
+</tr>
+
+<tr>
+<td class="org-left">&#x2026;</td>
+<td class="org-left">&#x2026;</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-orgfaee031" class="outline-4">
+<h4 id="orgfaee031"><span class="section-number-4">2.1.2</span> Lambda 表达式</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<p>
+Lambda 基本形式: <b>(input-parameters) =&gt; expression</b>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge38a318" class="outline-3">
+<h3 id="orge38a318"><span class="section-number-3">2.2</span> 类型、变量和值</h3>
+<div class="outline-text-3" id="text-2-2">
+<ul class="org-ul">
+<li><b>备注</b>: 在 C# 中, bool 不能转化为 int, 所以条件判断不能直接用整型值代替bool值</li>
+</ul>
+</div>
+
+<div id="outline-container-org7e690bb" class="outline-4">
+<h4 id="org7e690bb"><span class="section-number-4">2.2.1</span> 值类型和引用类型</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<ul class="org-ul">
+<li><b>值类型</b>
+<ul class="org-ul">
+<li>值类型直接包含值, 即对于值类型变量, 没有单独的堆分配或垃圾回收开销</li>
+<li>值类型分为两类: 结构和枚举, (内置数值类型是结构, 包含可以访问的属性和方法)</li>
+</ul></li>
+<li><b>引用类型</b>
+<ul class="org-ul">
+<li>定义为 <span class="underline">类, 委托, 数组或接口</span> 的类型是引用类型</li>
+<li>所有数组都是引用类型，即使元素是值类型，也不例外</li>
+</ul></li>
+<li><b>默认值</b>
+<ul class="org-ul">
+<li>值类型: 0</li>
+<li>引用类型: null</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org239f17d" class="outline-3">
+<h3 id="org239f17d"><span class="section-number-3">2.3</span> 类和结构</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+类是引用类型, 结构是值类型
+</p>
+</div>
+
+<div id="outline-container-org4d4b5f8" class="outline-4">
+<h4 id="org4d4b5f8"><span class="section-number-4">2.3.1</span> 结构</h4>
+<div class="outline-text-4" id="text-2-3-1">
+<p>
+通过结构关键字 <b>struct</b> 来定义结构
+</p>
+<ul class="org-ul">
+<li>在结构声明中，除非将字段声明为 const 或 static，否则无法初始化(在声明同时初始化)</li>
+<li>结构不能声明默认构造函数（没有参数的构造函数）或终结器</li>
+<li>结构可以声明具有参数的构造函数</li>
+<li>一个结构无法继承自另一个结构或类，并且它不能为类的基类。 所有结构都直接继承自 System.ValueType，后者继承自 System.Object</li>
+<li>结构可以实现接口</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org36763b3" class="outline-4">
+<h4 id="org36763b3"><span class="section-number-4">2.3.2</span> 继承</h4>
+<div class="outline-text-4" id="text-2-3-2">
+<p>
+<b>备注</b>: 结构不支持继承，但它们可以实现接口
+</p>
+
+<p>
+定义要从其他类派生的类时，派生类会隐式获得基类的所有成员 <span class="underline">(除了其构造函数和终结器)</span>
+</p>
+
+<p>
+<b>基类成员的派生隐藏</b>: 派生类可以通过使用相同名称和签名声明成员来隐藏基类成员.
+new 修饰符可以用于显式指示成员不应作为基类成员的重写。 使用 new 不是必需的，但如果未使用 new，则会生成编译器警告
+</p>
+</div>
+</div>
+
+<div id="outline-container-org651ca8e" class="outline-4">
+<h4 id="org651ca8e"><span class="section-number-4">2.3.3</span> 多态性</h4>
+<div class="outline-text-4" id="text-2-3-3">
+<ul class="org-ul">
+<li><b>虚成员</b>: 当派生类从基类继承时，它会获得基类的所有方法、字段、属性和事件。 派生类的设计器可以选择是否
+<ul class="org-ul">
+<li>重写基类中的虚拟成员</li>
+<li>继承最接近的基类方法而不重写它</li>
+<li>定义隐藏基类实现的成员的新非虚实现</li>
+</ul></li>
+</ul>
+
+<p>
+仅当基类成员声明为 virtual 或 abstract 时，派生类才能重写基类成员。派生成员必须使用 override 关键字显式指示该方法将参与虚调用。 以下代码提供了一个示例：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-csharp">public class BaseClass
+{
+  public virtual void DoWork() { }
+  public virtual int WorkProperty
+    {
+      get { return 0; }
+    }
+}
+public class DerivedClass : BaseClass
+{
+  public override void DoWork() { }
+  public override int WorkProperty
+    {
+      get { return 0; }
+    }
+}
+</pre>
+</div>
+
+<p>
+字段不能是虚拟的，只有方法、属性、事件和索引器才可以是虚拟的。当派生类重写某个虚拟成员时，即使该派生类的实例被当作基类的实例访问，也会调用该成员。以下代码提供了一个示例：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-csharp">DerivedClass B = new DerivedClass();
+B.DoWork();  // Calls the new method.
+
+BaseClass A = (BaseClass)B;
+A.DoWork();  // Also calls the new method.
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><b>使用新成员隐藏基类成员</b>
+如果希望派生成员具有与基类中的成员相同的名称，但又不希望派生成员参与虚调用，则可以使用 new 关键字。
+<span class="underline">new 关键字放置在要替换的类成员的返回类型之前</span></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-csharp">public class BaseClass
+{
+  public void DoWork() { WorkField++; }
+  public int WorkField;
+  public int WorkProperty
+    {
+      get { return 0; }
+    }
+}
+
+public class DerivedClass : BaseClass
+{
+  public new void DoWork() { WorkField++; }
+  public new int WorkField;
+  public new int WorkProperty
+    {
+      get { return 0; }
+    }
+}
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><b>more</b>&#x2026;</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf913590" class="outline-4">
+<h4 id="orgf913590"><span class="section-number-4">2.3.4</span> 抽象类、密封类及类成员</h4>
+<div class="outline-text-4" id="text-2-3-4">
+<p>
+使用 abstract 关键字可以创建不完整且 <span class="underline">必须在派生类中实现的类和 class 成员</span>
+使用 sealed 关键字可以防止继承以前标记为 virtual 的类或某些类成员
+</p>
+
+<ul class="org-ul">
+<li>通过在类定义前面放置关键字 abstract，可以将类声明为抽象类</li>
+<li><b>抽象类不能实例化,</b> 抽象类的用途是提供一个可供多个派生类共享的通用基类定义</li>
+<li>抽象类也可以定义 <b>抽象方法</b>. 方法是将关键字 abstract 添加到方法的返回类型的前面</li>
+<li>抽象方法没有实现，所以方法定义后面是分号，而不是常规的方法块。
+<span class="underline">抽象类的派生类必须实现所有抽象方法</span> 。当抽象类从基类继承虚方法时， <span class="underline">抽象类可以使用抽象方法重写该虚方法</span></li>
+</ul>
+
+<p>
+<b>代码示例</b>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-csharp">public abstract class A
+{
+  public abstract void DoWork(int i);
+}
+
+// compile with: /target:library
+public class D
+{
+  public virtual void DoWork(int i)
+    {
+      // Original implementation.
+    }
+}
+
+public abstract class E : D
+{
+  public abstract override void DoWork(int i);
+}
+
+public class F : E
+{
+  public override void DoWork(int i)
+    {
+      // New implementation.
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdbbec34" class="outline-4">
+<h4 id="orgdbbec34"><span class="section-number-4">2.3.5</span> 静态类和静态类成员</h4>
+<div class="outline-text-4" id="text-2-3-5">
+<p>
+<span class="underline">静态类无法实例化</span>
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6e75f8e" class="outline-2">
+<h2 id="org6e75f8e"><span class="section-number-2">3</span> 平台部分</h2>
+</div>
+<div id="outline-container-org2cb8eea" class="outline-2">
+<h2 id="org2cb8eea"><span class="section-number-2">4</span> 类和结构</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+类和结构是 .NET Framework 通用类型系统的两种基本构造每种本质上都是一种数据结构, 其中封装了同属一个逻辑单元的一组数据和行.
+数据和行为是类或结构的成员, 包括方法、属性和事件等
+</p>
+
+<ul class="org-ul">
+<li>类是引用类型</li>
+<li>结构是值类型</li>
+</ul>
+
+<p>
+一般来说, 类用于对更复杂的行为或应在类对象创建后进行修改的数据建模结构最适用于所含大部分数据不得在结构创建后进行修改的小型数据结构
+</p>
+
+<ul class="org-ul">
+<li>封装有时称为面向对象的编程的第一支柱或原则.
+根据封装原则, 类或结构可以指定自己的每个成员对外部代码的可访问性.
+可以隐藏不得在类或程序集外部使用的方法和变量, 以限制编码错误或恶意攻击发生的可能性</li>
+</ul>
+
+<p>
+<a href="https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/">官方指南</a>
+</p>
+</div>
+
+<div id="outline-container-org2d767b0" class="outline-3">
+<h3 id="org2d767b0"><span class="section-number-3">4.1</span> 示例代码</h3>
+<div class="outline-text-3" id="text-4-1">
+<div class="org-src-container">
+<pre class="src src-csharp">using System;
+
+namespace ProgrammingGuide
+{
+  // Class definition.
+  public class CustomClass
+  {
+    // Class members.
+    //
+    // Property.
+    public int Number { get; set; }
+
+    // Method.
+    public int Multiply(int num)
+      {
+	return num * Number;
+      }
+
+    // Instance Constructor.
+    public CustomClass()
+      {
+	Number = 0;
+      }
+  }
+
+  // Another class definition that contains Main, the program entry point.
+  class Program
+  {
+    static void Main(string[] args)
+      {
+	// Create an object of type CustomClass.
+	CustomClass custClass = new CustomClass();
+
+	// Set the value of the public property.
+	custClass.Number = 27;
+
+	// Call the public method.
+	int result = custClass.Multiply(4);
+	Console.WriteLine($"The result is {result}.");
+      }
+  }
+}
+// The example displays the following output:
+//      The result is 108.
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbdc3992" class="outline-3">
+<h3 id="orgbdc3992"><span class="section-number-3">4.2</span> 成员</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+字段, 常量, 属性, 方法, 构造函数, 事件, 终结器, 索引器, 运算符, 嵌套类型
+</p>
+</div>
+
+<div id="outline-container-org2c2d273" class="outline-4">
+<h4 id="org2c2d273"><span class="section-number-4">4.2.1</span> 字段</h4>
+<div class="outline-text-4" id="text-4-2-1">
+<p>
+字段是在类或结构中直接声明的任意类型的变量
+</p>
+
+<p>
+类或结构可能具有 <span class="underline">实例字段</span> 或 <span class="underline">静态字段</span>
+实例字段特定于类型的实例.
+如果你有包含实例字段 F 的类 T，则可以创建两个类型为 T 的对象并修改每个对象中 F 的值，而不会影响另一个对象中的值.
+与此相比，静态字段属于类本身，并在该类的所有实例之间共享。 从实例 A 进行的更改将立刻呈现给实例 B 和 C（如果它们访问该字段）
+</p>
+
+<p>
+字段是通过指定该字段的访问级别在类块中声明的，其后跟字段的类型，再跟字段的名称。 例如:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-csharp">public class CalendarEntry
+{
+  // private field
+  private DateTime date;
+
+  // public field (Generally not recommended.)
+  public string day;
+
+  // Public property exposes date field safely.
+  public DateTime Date
+    {
+      get
+      {
+	return date;
+      }
+      set
+      {
+	// Set some reasonable boundaries for likely birth dates.
+	if (value.Year &gt; 1900 &amp;&amp; value.Year &lt;= DateTime.Today.Year)
+	{
+	  date = value;
+	}
+	else
+	  throw new ArgumentOutOfRangeException();
+      }
+
+    }
+
+  // Public method also exposes date field safely.
+  // Example call: birthday.SetDate("1975, 6, 30");
+  public void SetDate(string dateString)
+    {
+      DateTime dt = Convert.ToDateTime(dateString);
+
+      // Set some reasonable boundaries for likely birth dates.
+      if (dt.Year &gt; 1900 &amp;&amp; dt.Year &lt;= DateTime.Today.Year)
+      {
+	date = dt;
+      }
+      else
+	throw new ArgumentOutOfRangeException();
+    }
+
+  public TimeSpan GetTimeSpan(string dateString)
+    {
+      DateTime dt = Convert.ToDateTime(dateString);
+
+      if (dt != null &amp;&amp; dt.Ticks &lt; date.Ticks)
+      {
+	return date - dt;
+      }
+      else
+	throw new ArgumentOutOfRangeException();
+
+    }
+}
+</pre>
+</div>
+
+<p>
+声明字段时，可以使用赋值运算符为字段指定一个初始值.
+字段会在对象实例的构造函数被调用之前即刻初始化。 如果构造函数分配了字段的值，则它将覆盖在字段声明期间给定的任何值. <br>
+<b>注</b>:字段初始化表达式不能引用其他实例字段
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgab6cbae" class="outline-4">
+<h4 id="orgab6cbae"><span class="section-number-4">4.2.2</span> 常量</h4>
+<div class="outline-text-4" id="text-4-2-2">
+<p>
+常量是不可变的值，在编译时是已知的，在程序的生命周期内不会改变。常量使用 const 修饰符声明。 <span class="underline">仅 C# 内置类型（不包括 System.Object）可声明为 const</span>
+用户定义的类型（包括类、结构和数组）不能为 const。使用 <span class="underline">readonly</span> 修饰符创建在运行时一次性（例如在构造函数中）初始化的类、结构或数组，此后不能更改
+</p>
+
+<ul class="org-ul">
+<li>C# 不支持 const 方法、属性或事件</li>
+<li>常量在声明时必须初始化</li>
+<li>常量是作为静态字段访问的，因为常量的值对于该类型的所有实例都是相同的</li>
+<li>不使用 static 关键字来声明这些常量</li>
+<li>不在定义常量的类中的表达式必须使用类名、句点和常量名称来访问该常量</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2f1a38e" class="outline-4">
+<h4 id="org2f1a38e"><span class="section-number-4">4.2.3</span> 属性</h4>
+<div class="outline-text-4" id="text-4-2-3">
+<p>
+属性是一种成员，它提供灵活的机制来读取、写入或计算私有字段的值。属性可用作公共数据成员，但它们实际上是称为访问器的特殊方法。这使得可以轻松访问数据，还有助于提高方法的安全性和灵活性。
+</p>
+
+<ul class="org-ul">
+<li><b>属性概述</b>
+<ul class="org-ul">
+<li>属性允许类公开获取和设置值的公共方法，而隐藏实现或验证代码</li>
+<li><b>get</b> 属性访问器用于返回属性值，而 <b>set</b> 属性访问器用于分配新值。 这些访问器可以具有不同的访问级别</li>
+<li><b>value</b> 关键字用于定义由 <b>set</b> 访问器分配的值</li>
+<li>属性可以是读-写属性（既有 get 访问器又有 set 访问器）、只读属性（有 get 访问器，但没有 set 访问器）或只写访问器（有 set 访问器，但没有 get 访问器）</li>
+<li>不需要自定义访问器代码的简单属性可以作为表达式主体定义或自动实现的属性来实现 {get;set;}</li>
+</ul></li>
+</ul>
+
+<p>
+<b>代码示例</b>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-csharp">using System;
+
+class TimePeriod
+{
+  private double seconds;
+
+  public double Hours
+    {
+      get { return seconds / 3600; }
+      set {
+	if (value &lt; 0 || value &gt; 24)
+	  throw new ArgumentOutOfRangeException(
+	    $"{nameof(value)} must be between 0 and 24.");
+
+	seconds = value * 3600;
+      }
+    }
+}
+
+class Program
+{
+  static void Main()
+    {
+      TimePeriod t = new TimePeriod();
+      // The property assignment causes the 'set' accessor to be called.
+      t.Hours = 24;
+
+      // Retrieving the property causes the 'get' accessor to be called.
+      Console.WriteLine($"Time in hours: {t.Hours}");
+    }
+}
+// The example displays the following output:
+//    Time in hours: 24
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb404e1d" class="outline-4">
+<h4 id="orgb404e1d"><span class="section-number-4">4.2.4</span> 方法</h4>
+<div class="outline-text-4" id="text-4-2-4">
+<p>
+方法是包含一系列语句的代码块。程序通过调用该方法并指定任何所需的方法参数使语句得以执行。在 C# 中，每个执行的指令均在方法的上下文中执行。
+Main 方法是每个 C# 应用程序的入口点，并在启动程序时由公共语言运行时 (CLR) 调用
+</p>
+
+<ul class="org-ul">
+<li><b>方法签名</b>: 过指定访问级别、可选修饰符、返回值、方法的名称以及任何方法参数，在 public 类 private或 abstract 结构 sealed中声明方法。这些部件一起构成方法的签名</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0ab504b" class="outline-4">
+<h4 id="org0ab504b"><span class="section-number-4">4.2.5</span> 事件</h4>
+<div class="outline-text-4" id="text-4-2-5">
+<p>
+类或对象可以通过事件向其他类或对象通知发生的相关事情。发送（或 引发）事件的类称为“发行者” ，接收（或 处理）事件的类称为“订户”
+</p>
+
+<ul class="org-ul">
+<li><b>事件概述</b>
+<ul class="org-ul">
+<li>发行者确定何时引发事件；订户确定对事件作出何种响应</li>
+<li>一个事件可以有多个订户。 订户可以处理来自多个发行者的多个事件</li>
+<li>没有订户的事件永远也不会引发</li>
+<li>事件通常用于表示用户操作，例如单击按钮或图形用户界面中的菜单选项</li>
+<li>当事件具有多个订户时，引发该事件时会同步调用事件处理程序。 若要异步调用事件，请参阅 Calling Synchronous Methods Asynchronously</li>
+<li>在 .NET Framework 类库中，事件基于 EventHandler 委托和 EventArgs 基类</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org6de5e1c" class="outline-4">
+<h4 id="org6de5e1c"><span class="section-number-4">4.2.6</span> 运算符</h4>
+<div class="outline-text-4" id="text-4-2-6">
+<p>
+<a href="https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/statements-expressions-operators/operators">相关资料链接</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb5ad8d5" class="outline-4">
+<h4 id="orgb5ad8d5"><span class="section-number-4">4.2.7</span> 索引器</h4>
+<div class="outline-text-4" id="text-4-2-7">
+<p>
+索引器允许类或结构的实例就像数组一样进行索引。无需显式指定类型或实例成员，即可设置或检索索引值。索引器类似于属性，不同之处在于它们的访问器需要使用参数
+</p>
+
+<ul class="org-ul">
+<li><b>索引器概述</b>
+<ul class="org-ul">
+<li>使用索引器可以用类似于数组的方式为对象建立索引</li>
+<li>get 取值函数返回值。 set 取值函数分配值</li>
+<li>this 关键字用于定义索引器</li>
+<li>value 关键字用于定义 set 索引器所赋的值</li>
+<li>索引器不必根据整数值进行索引；由你决定如何定义特定的查找机制</li>
+<li>索引器可被重载</li>
+<li>索引器可以有多个形参，例如当访问二维数组时</li>
+</ul></li>
+</ul>
+
+<p>
+以下示例定义了一个泛型类，其中包含用于赋值和检索值的简单 get 和 set 访问器方法。
+Program 类创建了此类的一个实例，用于存储字符串。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-csharp">using System;
+
+class SampleCollection&lt;T&gt;
+{
+  // Declare an array to store the data elements.
+  private T[] arr = new T[100];
+
+  // Define the indexer to allow client code to use [] notation.
+  public T this[int i]
+    {
+      get { return arr[i]; }
+      set { arr[i] = value; }
+    }
+}
+
+class Program
+{
+  static void Main()
+    {
+      var stringCollection = new SampleCollection&lt;string&gt;();
+      stringCollection[0] = "Hello, World";
+      Console.WriteLine(stringCollection[0]);
+    }
+}
+// The example displays the following output:
+//       Hello, World.
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga141867" class="outline-4">
+<h4 id="orga141867"><span class="section-number-4">4.2.8</span> 构造函数</h4>
+<div class="outline-text-4" id="text-4-2-8">
+<p>
+每当创建类或结构时，将会调用其构造函数。类或结构可能具有采用不同参数的多个构造函数。使用构造函数，程序员能够设置默认值、限制实例化，并编写灵活易读的代码
+</p>
+
+<ul class="org-ul">
+<li><b>默认构造函数</b>: 如果没有为类提供构造函数，默认情况下，
+C# 将创建一个会实例化对象并将成员变量设置为默认值的构造函数.
+如果没有为结构提供构造函数，C# 将依赖于隐式默认构造函数，自动将值类型的每个字段初始化为其默认值</li>
+
+<li><b>构造函数语法</b>: 构造函数是一种方法，其名称与其类型的名称相同。其方法签名仅包含方法名称和其参数列表；它不包含返回类型</li>
+</ul>
+
+<p>
+<b>代码示例</b>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-csharp">public class Person
+{
+  private string last;
+  private string first;
+
+  public Person(string lastName, string firstName)
+    {
+      last = lastName;
+      first = firstName;
+    }
+
+  // Remaining implementation of Person class.
+}
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><b>静态构造函数</b>: 类或结构也可以具有静态构造函数，该静态构造函数初始化类型的静态成员。静态构造函数是无参数构造函数。 如果未提供静态构造函数来初始化静态字段，C# 编译器将提供默认静态构造函数，该静态构造函数会将静态字段初始化为其默认值</li>
+</ul>
+
+<p>
+<b>代码示例</b>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-csharp">public class Adult : Person
+{
+  private static int minimumAge;
+
+  public Adult(string lastName, string firstName) : base(lastName, firstName)
+    { }
+
+  static Adult()
+    {
+      minimumAge = 18;
+    }
+
+  // Remaining implementation of Adult class.
+}
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgbbf02d9" class="outline-4">
+<h4 id="orgbbf02d9"><span class="section-number-4">4.2.9</span> 终结器(析构函数)</h4>
+<div class="outline-text-4" id="text-4-2-9">
+<p>
+终结器用于析构类的实例
+</p>
+
+<ul class="org-ul">
+<li><b>备注</b>
+<ul class="org-ul">
+<li>无法在结构中定义终结器, 它们仅用于类</li>
+<li>一个类只能有一个终结器</li>
+<li>不能继承或重载终结器</li>
+<li>不能手动调用终结器, 可以自动调用它们</li>
+<li>终结器不使用修饰符或参数</li>
+</ul></li>
+</ul>
+
+<p>
+终结器可以作为表达式主体定义实现
+</p>
+
+<div class="org-src-container">
+<pre class="src src-csharp">using System;
+
+public class Destroyer
+{
+  public override string ToString() =&gt; GetType().Name;
+
+  ~Destroyer() =&gt; Console.WriteLine($"The {ToString()} destructor is executing.");
+}
+</pre>
+</div>
+
+<p>
+终结器隐式调用对象基类上的 Finalize。 因此，对终结器的调用会隐式转换为以下代码
+</p>
+
+<div class="org-src-container">
+<pre class="src src-csharp">protected override void Finalize()
+{
+  try
+  {
+    // Cleanup statements...
+  }
+  finally
+  {
+    base.Finalize();
+  }
+}
+</pre>
+</div>
+
+<p>
+这意味着, 对继承链（从派生程度最高到派生程度最低）中的所有实例以递归方式调用 Finalize 方法
+</p>
+
+<ul class="org-ul">
+<li><b>示例</b>
+以下示例创建了三个类，并且这三个类构成了一个继承链。类 First 是基类，Second 派生自 First，Third 派生自 Second.
+这三个类都具有终结器.
+在 Main 中，已创建派生程度最高的类的一个实例.
+程序运行时，请注意，将按顺序（从派生程度最高到派生程度最低）自动调用这三个类的终结器</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-csharp">class First
+{
+  ~First()
+    {
+      System.Diagnostics.Trace.WriteLine("First's destructor is called.");
+    }
+}
+
+class Second : First
+{
+  ~Second()
+    {
+      System.Diagnostics.Trace.WriteLine("Second's destructor is called.");
+    }
+}
+
+class Third : Second
+{
+  ~Third()
+    {
+      System.Diagnostics.Trace.WriteLine("Third's destructor is called.");
+    }
+}
+
+class TestDestructors
+{
+  static void Main()
+    {
+      Third t = new Third();
+    }
+
+}
+/* Output (to VS Output Window):
+   Third's destructor is called.
+   Second's destructor is called.
+   First's destructor is called.
+*/
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8da8ae6" class="outline-4">
+<h4 id="org8da8ae6"><span class="section-number-4">4.2.10</span> 嵌套类型</h4>
+<div class="outline-text-4" id="text-4-2-10">
+<p>
+在类或结构中定义的类型称为嵌套类型。 例如:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-csharp">class Container
+{
+  class Nested
+  {
+    Nested() { }
+  }
+}
+</pre>
+</div>
+
+<p>
+不论外部类型是类还是结构，嵌套类型均默认为 private；仅可从其包含类型中进行访问。 在上一个示例中，Nested 类无法访问外部类型。
+</p>
+
+<p>
+还可指定访问修饰符来定义嵌套类型的可访问性，如下所示：
+</p>
+<ul class="org-ul">
+<li>类的嵌套类型可以是 public、protected、internal、protected internal 以及 private。</li>
+<li>结构的嵌套类型可以是 public、internal 或 private</li>
+</ul>
+
+<p>
+<a href="https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/nested-types">更多信息链接</a>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7e6e9fe" class="outline-3">
+<h3 id="org7e6e9fe"><span class="section-number-3">4.3</span> 可访问性</h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+使用访问修饰符 public、protected、internal、protected internal 和 private 可指定类型及其成员对客户端代码的可访问性。
+<span class="underline">可访问性的默认值为 private</span>
+</p>
+
+<p>
+<a href="https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/access-modifiers">访问修饰符</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9e65dbd" class="outline-3">
+<h3 id="org9e65dbd"><span class="section-number-3">4.4</span> 继承</h3>
+<div class="outline-text-3" id="text-4-4">
+<p>
+继承（以及封装和多态）是面向对象的编程的三个主要特征之一。通过继承，可以创建重用、扩展和修改在其他类中定义的行为的新类。其成员被继承的类称为“基类”，继承这些成员的类称为“派生类”。派生类只能有一个直接基类。 但是，继承是可传递的。如果 ClassC 派生自 ClassB，并且 ClassB 派生自 ClassA，则 ClassC 会继承在 ClassB 和 ClassA 中声明的成员
+</p>
+
+<p>
+<b>备注</b>: 结构不支持继承，但它们可以实现接口
+</p>
+
+<p>
+<a href="https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/classes-and-structs/inheritance">官方指南</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org06e433f" class="outline-3">
+<h3 id="org06e433f"><span class="section-number-3">4.5</span> 接口</h3>
+<div class="outline-text-3" id="text-4-5">
+<p>
+类和结构可以继承多个接口。 <span class="underline">继承自接口意味着类型实现接口中定义的所有方法</span>
+</p>
+
+<p>
+<a href="https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/interfaces/index">官方指南</a>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1a64d08" class="outline-2">
+<h2 id="org1a64d08"><span class="section-number-2">5</span> 数组</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+数组具有以下属性
+</p>
+<ul class="org-ul">
+<li>数组可以是一维、多维或交错的</li>
+<li>创建数组实例时，将建立纬度数量和每个纬度的长度。 这些值在 <span class="underline">实例的生存期</span> 内无法更改</li>
+<li><span class="underline">数值数组元素的默认值设置为零，而引用元素设置为 null</span></li>
+<li>交错数组是数组的数组，因此其元素为引用类型且被初始化为 null</li>
+<li>数组从零开始编制索引：包含 n 元素的数组从 0 索引到 n-1</li>
+<li>数组元素可以是任何类型，其中包括数组类型</li>
+<li>数组类型是从抽象的基类型 Array 派生的引用类型由于此类型实现 IEnumerable 和 IEnumerable&lt;T&gt;，因此可以在 C# 中的所有数组上使用 foreach 迭代</li>
+</ul>
+</div>
+
+<div id="outline-container-orgabb1c80" class="outline-3">
+<h3 id="orgabb1c80"><span class="section-number-3">5.1</span> 作为对象的数组</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+在 C# 中，数组实际上是对象，而不只是如在 C 和 C++ 中的连续内存的可寻址区域
+Array 是所有数组类型的抽象基类型可以使用 Array 具有的属性和其他类成员
+</p>
+
+<p>
+创建数组: type[] arrayName;
+</p>
+
+<p>
+代码例:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-csharp">int[] scores = new int[] { 97, 92, 81, 60 };
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb1c2cb4" class="outline-3">
+<h3 id="orgb1c2cb4"><span class="section-number-3">5.2</span> 将数组作为参数传递</h3>
+<div class="outline-text-3" id="text-5-2">
+<p>
+代码示例
+</p>
+
+<div class="org-src-container">
+<pre class="src src-csharp">class ArrayClass
+{
+  static void PrintArray(string[] arr)
+    {
+      for (int i = 0; i &lt; arr.Length; i++)
+      {
+	System.Console.Write(arr[i] + "{0}", i &lt; arr.Length - 1 ? " " : "");
+      }
+      System.Console.WriteLine();
+    }
+
+  static void ChangeArray(string[] arr)
+    {
+      // The following attempt to reverse the array does not persist when
+      // the method returns, because arr is a value parameter.
+      arr = (arr.Reverse()).ToArray();
+      // The following statement displays Sat as the first element in the array.
+      System.Console.WriteLine("arr[0] is {0} in ChangeArray.", arr[0]);
+    }
+
+  static void ChangeArrayElements(string[] arr)
+    {
+      // The following assignments change the value of individual array
+      // elements.
+      arr[0] = "Sat";
+      arr[1] = "Fri";
+      arr[2] = "Thu";
+      // The following statement again displays Sat as the first element
+      // in the array arr, inside the called method.
+      System.Console.WriteLine("arr[0] is {0} in ChangeArrayElements.", arr[0]);
+    }
+
+  static void Main()
+    {
+      // Declare and initialize an array.
+      string[] weekDays = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
+
+      // Pass the array as an argument to PrintArray.
+      PrintArray(weekDays);
+
+      // ChangeArray tries to change the array by assigning something new
+      // to the array in the method.
+      ChangeArray(weekDays);
+
+      // Print the array again, to verify that it has not been changed.
+      System.Console.WriteLine("Array weekDays after the call to ChangeArray:");
+      PrintArray(weekDays);
+      System.Console.WriteLine();
+
+      // ChangeArrayElements assigns new values to individual array
+      // elements.
+      ChangeArrayElements(weekDays);
+
+      // The changes to individual elements persist after the method returns.
+      // Print the array, to verify that it has been changed.
+      System.Console.WriteLine("Array weekDays after the call to ChangeArrayElements:");
+      PrintArray(weekDays);
+    }
+}
+// Output:
+// Sun Mon Tue Wed Thu Fri Sat
+// arr[0] is Sat in ChangeArray.
+// Array weekDays after the call to ChangeArray:
+// Sun Mon Tue Wed Thu Fri Sat
+//
+// arr[0] is Sat in ChangeArrayElements.
+// Array weekDays after the call to ChangeArrayElements:
+// Sat Fri Thu Wed Thu Fri Sat
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgb2962d7" class="outline-2">
+<h2 id="orgb2962d7"><span class="section-number-2">6</span> 字符串</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+字符串是值为文本的 <span class="underline">String</span> 类型对象.
+文本在内部存储为 <span class="underline">Char</span> 对象的依序只读集合.
+在 C# 字符串末尾没有 null 终止字符; 因此, 一个 C# 字符串可以包含任何数量的嵌入的 null 字符 ('\0').
+字符串的 <span class="underline">Length</span> 属性表示其包含的 <span class="underline">Char</span> 对象数量, 而非 Unicode 字符数
+</p>
+
+<p>
+<b>string</b> 与 <b>System.String</b> 是等效的
+</p>
+
+<p>
+字符串可以通过下标访问单个字符
+</p>
+</div>
+
+<div id="outline-container-org50666e7" class="outline-3">
+<h3 id="org50666e7"><span class="section-number-3">6.1</span> 声明和初始化字符串</h3>
+<div class="outline-text-3" id="text-6-1">
+<p>
+可以使用各种方法声明和初始化字符串, 如以下示例中所示:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-csharp">// Declare without initializing.
+string message1;
+
+// Initialize to null.
+string message2 = null;
+
+// Initialize as an empty string.
+// Use the Empty constant instead of the literal "".
+string message3 = System.String.Empty;
+
+//Initialize with a regular string literal.
+string oldPath = "c:\\Program Files\\Microsoft Visual Studio 8.0";
+
+// Initialize with a verbatim string literal.
+string newPath = @"c:\Program Files\Microsoft Visual Studio 9.0";
+
+// Use System.String if you prefer.
+System.String greeting = "Hello World!";
+
+// In local variables (i.e. within a method body)
+// you can use implicit typing.
+var temp = "I'm still a strongly-typed System.String!";
+
+// Use a const string to prevent 'message4' from
+// being used to store another string value.
+const string message4 = "You can't get rid of me!";
+
+// Use the String constructor only when creating
+// a string from a char*, char[], or sbyte*. See
+// System.String documentation for details.
+char[] letters = { 'A', 'B', 'C' };
+string alphabet = new string(letters);
+</pre>
+</div>
+
+<p>
+请注意, 不要使用 <span class="underline">new</span> 运算符创建字符串对象, 除非使用字符数组初始化字符串
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge74b4c8" class="outline-3">
+<h3 id="orge74b4c8"><span class="section-number-3">6.2</span> 字符串对象的不可变性</h3>
+<div class="outline-text-3" id="text-6-2">
+<p>
+字符串对象是 "不可变的": 它们在创建后无法更改看起来是在修改字符串的所有 String 方法和 C# 运算符实际上都是在新的字符串对象中返回结果
+<b>即</b>: 修改字符串时, 返回新的字符串对象, 旧的字符串对象被释放
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4993a57" class="outline-3">
+<h3 id="org4993a57"><span class="section-number-3">6.3</span> 逐字字符串(@)</h3>
+<div class="outline-text-3" id="text-6-3">
+<p>
+由 <span class="underline">@</span> 修饰的字符串不进行转义变化 <br>
+<span class="underline">使用双引号在逐字字符串内部嵌入引号</span>
+</p>
+
+<p>
+逐字字符串的一些常见用法:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-csharp">string filePath = @"C:\Users\scoleridge\Documents\";
+//Output: C:\Users\scoleridge\Documents\
+
+string text = @"My pensive SARA ! thy soft cheek reclined
+      Thus on mine arm, most soothing sweet it is
+      To sit beside our Cot,...";
+/* Output:
+   My pensive SARA ! thy soft cheek reclined
+   Thus on mine arm, most soothing sweet it is
+   To sit beside our Cot,...
+*/
+
+string quote = @"Her name was ""Sara.""";
+//Output: Her name was "Sara."
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8bb376e" class="outline-3">
+<h3 id="org8bb376e"><span class="section-number-3">6.4</span> 字符串转义序列(转义字符表)</h3>
+<div class="outline-text-3" id="text-6-4">
+<table>
+
+
+<colgroup>
+<col  class="org-center">
+
+<col  class="org-center">
+
+<col  class="org-center">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-center">转义序列</th>
+<th scope="col" class="org-center">字符名称</th>
+<th scope="col" class="org-center">Unicode编码</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-center">\'</td>
+<td class="org-center">单引号</td>
+<td class="org-center">0x0027</td>
+</tr>
+
+<tr>
+<td class="org-center">\"</td>
+<td class="org-center">双引号</td>
+<td class="org-center">0x0022</td>
+</tr>
+
+<tr>
+<td class="org-center">\\</td>
+<td class="org-center">反斜杠</td>
+<td class="org-center">0x005C</td>
+</tr>
+
+<tr>
+<td class="org-center">\0</td>
+<td class="org-center">null</td>
+<td class="org-center">0x0000</td>
+</tr>
+
+<tr>
+<td class="org-center">\a</td>
+<td class="org-center">警报</td>
+<td class="org-center">0x0007</td>
+</tr>
+
+<tr>
+<td class="org-center">\b</td>
+<td class="org-center">Backspace</td>
+<td class="org-center">0x0008</td>
+</tr>
+
+<tr>
+<td class="org-center">\f</td>
+<td class="org-center">换页</td>
+<td class="org-center">0x000C</td>
+</tr>
+
+<tr>
+<td class="org-center">\r</td>
+<td class="org-center">回车</td>
+<td class="org-center">0x000A</td>
+</tr>
+
+<tr>
+<td class="org-center">\n</td>
+<td class="org-center">换行</td>
+<td class="org-center">0x000D</td>
+</tr>
+
+<tr>
+<td class="org-center">\t</td>
+<td class="org-center">水平制表符</td>
+<td class="org-center">0x0009</td>
+</tr>
+
+<tr>
+<td class="org-center">\U</td>
+<td class="org-center">代理项对的Unicode转义序列</td>
+<td class="org-center">\Unnnnnnnn</td>
+</tr>
+
+<tr>
+<td class="org-center">\u</td>
+<td class="org-center">Unicode转义序列</td>
+<td class="org-center">\u0041 = "A"</td>
+</tr>
+
+<tr>
+<td class="org-center">\v</td>
+<td class="org-center">垂直制表符</td>
+<td class="org-center">0x000B</td>
+</tr>
+
+<tr>
+<td class="org-center">\x</td>
+<td class="org-center">除长度可变外, Unicode 转义序列与"\u"类似</td>
+<td class="org-center">\x0041 = "A"</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+在编译时, 逐字字符串被转换为普通字符串, 并具有所有相同的转义序列
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbfc818a" class="outline-3">
+<h3 id="orgbfc818a"><span class="section-number-3">6.5</span> 格式化字符串(string.Format)</h3>
+<div class="outline-text-3" id="text-6-5">
+<p>
+String.Format和WriteLine都遵守同样的格式化规则.
+格式化的格式如下:"{ N [, M ][: formatString ]}", arg1, &#x2026; argN, 在这个格式中
+</p>
+
+<ol class="org-ol">
+<li>N是从0开始的整数, 表示要格式化的参数的个数</li>
+<li>M是一个可选的整数, 表示格式化后的参数所占的宽度,
+如果M是负数, 那么格式化后的值就是左对齐的, 如果M是正数, 那么格式化后的值是右对齐的</li>
+<li>formatString是另外一个可选的参数, 表示格式代码</li>
+</ol>
+
+<p>
+例: string.Format("{0,-5:F2}", 1.234);
+</p>
+</div>
+
+<div id="outline-container-org817a1df" class="outline-4">
+<h4 id="org817a1df"><span class="section-number-4">6.5.1</span> 常用格式化表示符</h4>
+<div class="outline-text-4" id="text-6-5-1">
+<table>
+
+
+<colgroup>
+<col  class="org-center">
+
+<col  class="org-center">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-center">字母</th>
+<th scope="col" class="org-center">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-center">D/d</td>
+<td class="org-center">Decimal 十进制格式</td>
+</tr>
+
+<tr>
+<td class="org-center">F/f</td>
+<td class="org-center">Fixed point 固定精度格式</td>
+</tr>
+
+<tr>
+<td class="org-center">N/n</td>
+<td class="org-center">用逗号分割千位的数字, 比如1234将会被变成1,234</td>
+</tr>
+
+<tr>
+<td class="org-center">X/x</td>
+<td class="org-center">Hex 16进制格式</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf6a794b" class="outline-3">
+<h3 id="orgf6a794b"><span class="section-number-3">6.6</span> 方法</h3>
+<div class="outline-text-3" id="text-6-6">
+</div>
+<div id="outline-container-org43684d7" class="outline-4">
+<h4 id="org43684d7"><span class="section-number-4">6.6.1</span> Split</h4>
+<div class="outline-text-4" id="text-6-6-1">
+<p>
+分割字符串
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org3f61401" class="outline-2">
+<h2 id="org3f61401"><span class="section-number-2">7</span> 异常和异常处理</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+异常处理功能使用 try、catch 和 finally 关键字来尝试执行可能失败的操作、在你确定合理的情况下处理故障，以及在事后清除资源异常是使用 throw 关键字创建而成
+</p>
+
+<p>
+在以下示例中，方法用于测试除数是否为零，并捕获相应的错误.
+如果没有异常处理功能，此程序将终止，并显示 DivideByZeroException was unhandled 错误
+</p>
+
+<div class="org-src-container">
+<pre class="src src-csharp">class ExceptionTest
+{
+  static double SafeDivision(double x, double y)
+    {
+      if (y == 0)
+	throw new System.DivideByZeroException();
+      return x / y;
+    }
+  static void Main()
+    {
+      // Input for test purposes. Change the values to see
+      // exception handling behavior.
+      double a = 98, b = 0;
+      double result = 0;
+
+      try
+      {
+	result = SafeDivision(a, b);
+	Console.WriteLine("{0} divided by {1} = {2}", a, b, result);
+      }
+      catch (DivideByZeroException e)
+      {
+	Console.WriteLine("Attempted divide by zero.");
+      }
+    }
+}
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org0f6ee34" class="outline-3">
+<h3 id="org0f6ee34"><span class="section-number-3">7.1</span> 异常概述</h3>
+<div class="outline-text-3" id="text-7-1">
+<p>
+异常具有以下属性:
+</p>
+<ul class="org-ul">
+<li>异常是最终全都派生自 System.Exception 的类型</li>
+<li>在可能抛出异常的语句周围使用 try 代码块</li>
+<li>在 try 代码块中出现异常后，控制流会跳转到调用堆栈中任意位置上的首个相关异常处理程序。 在 C# 中，catch 关键字用于定义异常处理程序</li>
+<li>如果给定的异常没有对应的异常处理程序，那么程序会停止执行，并显示错误消息</li>
+<li>除非可以处理异常并让应用程序一直处于已知状态，否则不捕获异常。 如果捕获 System.Exception，使用 catch 代码块末尾的 throw 关键字重新抛出异常</li>
+<li>如果 catch 代码块定义异常变量，可以用它来详细了解所发生的异常类型</li>
+<li>使用 throw 关键字，程序可以显式生成异常</li>
+<li>异常对象包含错误详细信息，如调用堆栈的状态和错误的文本说明</li>
+<li>即使有异常抛出，finally 代码块中的代码仍会执行。 使用 finally 代码块可释放资源。例如，关闭在 try 代码块中打开的任何流或文件</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2a8e133" class="outline-2">
+<h2 id="org2a8e133"><span class="section-number-2">8</span> 泛型</h2>
+<div class="outline-text-2" id="text-8">
+</div>
+<div id="outline-container-org56c77f7" class="outline-3">
+<h3 id="org56c77f7"><span class="section-number-3">8.1</span> 泛型概述</h3>
+<div class="outline-text-3" id="text-8-1">
+<ul class="org-ul">
+<li>使用泛型类型可以最大限度地重用代码、保护类型安全性以及提高性能</li>
+<li>泛型最常见的用途是创建集合类</li>
+<li>可以创建自己的泛型接口、泛型类、泛型方法、泛型事件和泛型委托</li>
+<li>可以对泛型类进行约束以访问特定数据类型的方法</li>
+<li>在泛型数据类型中所用类型的信息可在运行时通过使用反射来获取</li>
+<li>.NET Framework 类库在 System.Collections.Generic 命名空间中包含几个新的泛型集合类应尽可能使用这些类来代替某些类, 如 System.Collections 命名空间中的 ArrayList</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org5ad281d" class="outline-3">
+<h3 id="org5ad281d"><span class="section-number-3">8.2</span> 示例代码</h3>
+<div class="outline-text-3" id="text-8-2">
+<div class="org-src-container">
+<pre class="src src-csharp">// Declare the generic class.
+public class GenericList&lt;T&gt;
+{
+  void Add(T input) { }
+}
+
+class TestGenericList
+{
+  private class ExampleClass { }
+  static void Main()
+    {
+      // Declare a list of type int.
+      GenericList&lt;int&gt; list1 = new GenericList&lt;int&gt;();
+
+      // Declare a list of type string.
+      GenericList&lt;string&gt; list2 = new GenericList&lt;string&gt;();
+
+      // Declare a list of type ExampleClass.
+      GenericList&lt;ExampleClass&gt; list3 = new GenericList&lt;ExampleClass&gt;();
+    }
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org1ce7d9a" class="outline-2">
+<h2 id="org1ce7d9a"><span class="section-number-2">9</span> 枚举类型</h2>
+<div class="outline-text-2" id="text-9">
+<p>
+枚举类型使用关键字 <code>enum</code> 定义，默认为 <code>int</code> 类型，通过冒号 <code>:</code> 指定其他 <b>整数类型</b>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-csharp">enum Day { Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday };
+enum Month : byte { Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec }; 
+</pre>
+</div>
+
+<p>
+枚举类型变量的定义：
+</p>
+<div class="org-src-container">
+<pre class="src src-csharp">Day today = Day.Monday;
+</pre>
+</div>
+
+<p>
+枚举类型变量可以强转为整型变量：
+</p>
+<div class="org-src-container">
+<pre class="src src-csharp">int dayNumber =(int)today;
+Console.WriteLine("{0} is day number #{1}.", today, dayNumber);
+</pre>
+</div>
+
+<p>
+可以直接使用枚举类型变量进行位运算：
+</p>
+<div class="org-src-container">
+<pre class="src src-csharp">meetingDays = Days.Tuesday | Days.Thursday;
+</pre>
+</div>
+
+<p>
+<b>Note:</b> 枚举类型的定义可以在 <b>名称空间</b> 或 <b>类</b> 中，不能定义在 <b>方法</b> 内部。
+</p>
+
+<ul class="org-ul">
+<li><a href="https://docs.microsoft.com/zh-cn/dotnet/api/system.enum">Enum Class</a> - 枚举方法</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4e5128a" class="outline-2">
+<h2 id="org4e5128a"><span class="section-number-2">10</span> 委托</h2>
+<div class="outline-text-2" id="text-10">
+<div class="org-src-container">
+<pre class="src src-csharp">public delegate void Del(string message);  // 声明委托
+
+// Create a method for a delegate.
+public static void DelegateMethod(string message)
+{
+  System.Console.WriteLine(message);
+}
+
+// Instantiate the delegate.
+Del handler = DelegateMethod;
+
+// Call the delegate.
+handler("Hello World");
+</pre>
+</div>
+
+<p>
+委托表示对具有特定参数列表和返回类型的 <b>方法的引用</b>.
+</p>
+
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/7735159/why-use-new-delegatetypedelegate">Why use “new DelegateType(Delegate)” ?</a></li>
+<li><a href="https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/delegates/how-to-declare-instantiate-and-use-a-delegate">How to: Declare, Instantiate, and Use a Delegate</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0cb3c1b" class="outline-2">
+<h2 id="org0cb3c1b"><span class="section-number-2">11</span> 事件</h2>
+<div class="outline-text-2" id="text-11">
+<div class="org-src-container">
+<pre class="src src-csharp">// 声明事件处理程序对应的委托类型
+public delegate void BoilerLogHandler(string status);
+
+// 声明事件本身
+public event BoilerLogHandler BoilerEventLog;
+
+// 触发事件
+BoilerEventLog();
+</pre>
+</div>
+
+<p>
+可以将事件理解为封装了委托的数据结构，添加事件处理程序的时候就是在添加委托的引用。
+</p>
+
+<p>
+而触发事件就是将调用委托引用的方法，并自动传递参数。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd69da86" class="outline-2">
+<h2 id="orgd69da86"><span class="section-number-2">12</span> 创建和引发异常</h2>
+<div class="outline-text-2" id="text-12">
+<ul class="org-ul">
+<li><p>
+方法无法完成其定义的功能
+</p>
+<div class="org-src-container">
+<pre class="src src-csharp">static void CopyObject(SampleClass original)
+{
+  if (original == null)
+  {
+    throw new System.ArgumentException("Parameter cannot be null", "original");
+  }
+
+}
+</pre>
+</div></li>
+
+<li><p>
+对某个对象进行不适当的调用
+</p>
+<div class="org-src-container">
+<pre class="src src-csharp">class ProgramLog
+{
+  System.IO.FileStream logFile = null;
+  void OpenLog(System.IO.FileInfo fileName, System.IO.FileMode mode) {}
+
+  void WriteLog()
+    {
+      if (!this.logFile.CanWrite)
+      {
+	throw new System.InvalidOperationException("Logfile cannot be read-only");
+      }
+      // Else write data to the log and return.
+    }
+}
+</pre>
+</div></li>
+
+<li><p>
+方法的参数引发了异常
+</p>
+<div class="org-src-container">
+<pre class="src src-csharp">static int GetValueFromArray(int[] array, int index)
+{
+  try
+  {
+    return array[index];
+  }
+  catch (System.IndexOutOfRangeException ex)
+  {
+    System.ArgumentException argEx = new System.ArgumentException("Index is out of range", "index", ex);
+    throw argEx;
+  }
+}
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org5fa04d8" class="outline-2">
+<h2 id="org5fa04d8"><span class="section-number-2">13</span> 相关链接</h2>
+<div class="outline-text-2" id="text-13">
+<ul class="org-ul">
+<li><a href="https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/index">C#编程指南</a></li>
+<li><a href="https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/">C# 语言参考</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

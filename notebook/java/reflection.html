@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:45 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Java - 反射</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">Java - 反射</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org96bc3df">1. Classes</a>
+<ul>
+<li><a href="#org6f8fd1b">1.1. 获取类对象</a></li>
+<li><a href="#orgf85c0ea">1.2. 获取类修饰符和类型</a></li>
+<li><a href="#org1a55fb2">1.3. 获取类成员</a></li>
+</ul>
+</li>
+<li><a href="#org202acbd">2. Members</a></li>
+<li><a href="#org8bf162a">3. Arrays</a></li>
+<li><a href="#orgfaf43e6">4. Enumerated</a></li>
+<li><a href="#orge082b11">5. 泛型</a>
+<ul>
+<li><a href="#org2963278">5.1. 获取类型参数</a></li>
+</ul>
+</li>
+<li><a href="#org898b61a">6. Hierarchy</a></li>
+<li><a href="#org5b37e6d">7. 动态代理</a></li>
+<li><a href="#org6aa4486">8. 相关问题</a>
+<ul>
+<li><a href="#org1fd2b77">8.1. 如果通过反射获取一个包下的所有类</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org96bc3df" class="outline-2">
+<h2 id="org96bc3df"><span class="section-number-2">1</span> Classes</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+对于每种类型对象，Java 虚拟机都实例化 <code>java.lang.Class</code> 的不可变实例，该实例提供了检查对象的运行时属性的方法，包括其成员和类型信息。
+</p>
+</div>
+
+<div id="outline-container-org6f8fd1b" class="outline-3">
+<h3 id="org6f8fd1b"><span class="section-number-3">1.1</span> 获取类对象</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+所有反射操作的入口点是 <code>java.lang.Class</code>. 除了 <code>java.lang.reflect.ReflectPermission</code> 之外， <code>java.lang.reflect</code> 中的所有类都没有公共构造函数。
+</p>
+
+<p>
+因此，要获得这些类，都需要在 <code>Class</code> 上调用适当的方法。
+</p>
+
+<ul class="org-ul">
+<li><p>
+<b>Object.getClass()</b>
+</p>
+
+<p>
+对于任意一个对象实例，都可以通过 <code>Object.getClass()</code> 方法获取其类对象。
+</p>
+
+<p>
+<b>NOTE:</b> 每个枚举值都是该枚举类的唯一实例。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-comment-delimiter">// </span><span class="org-comment">string</span>
+<span class="org-type">Class</span> <span class="org-variable-name">c</span> = <span class="org-string">"foo"</span>.getClass();
+
+<span class="org-comment-delimiter">// </span><span class="org-comment">enum</span>
+<span class="org-keyword">enum</span> <span class="org-type">E</span> { <span class="org-variable-name">A</span>, <span class="org-variable-name">B</span> }
+<span class="org-type">Class</span> <span class="org-variable-name">c</span> = A.getClass();
+
+<span class="org-comment-delimiter">// </span><span class="org-comment">array</span>
+<span class="org-type">byte</span>[] <span class="org-variable-name">bytes</span> = <span class="org-keyword">new</span> <span class="org-type">byte</span>[1024];
+<span class="org-type">Class</span> <span class="org-variable-name">c</span> = bytes.getClass();
+
+<span class="org-comment-delimiter">// </span><span class="org-comment">collection</span>
+<span class="org-type">Set</span>&lt;<span class="org-type">String</span>&gt; <span class="org-variable-name">s</span> = <span class="org-keyword">new</span> <span class="org-type">HashSet</span>&lt;<span class="org-type">String</span>&gt;();
+<span class="org-type">Class</span> <span class="org-variable-name">c</span> = s.getClass();
+</pre>
+</div></li>
+
+<li><p>
+<b>The .class Syntax</b>
+</p>
+
+<p>
+这是一个语法特性，并不是在说每个类对象都存在 <code>class</code> 这个字段。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-type">boolean</span> <span class="org-variable-name">b</span>;
+<span class="org-type">Class</span> <span class="org-variable-name">c</span> = b.getClass();   <span class="org-comment-delimiter">// </span><span class="org-comment">compile-time error</span>
+
+<span class="org-type">Class</span> <span class="org-variable-name">c</span> = <span class="org-type">boolean</span>.<span class="org-keyword">class</span>;  <span class="org-comment-delimiter">// </span><span class="org-comment">correct</span>
+
+<span class="org-type">Class</span> <span class="org-variable-name">c</span> = <span class="org-constant">java</span>.<span class="org-constant">io</span>.PrintStream.<span class="org-keyword">class</span>;
+<span class="org-type">Class</span> <span class="org-variable-name">c</span> = <span class="org-type">int</span>[][][].<span class="org-keyword">class</span>;
+</pre>
+</div>
+
+<p>
+没有引用到实例的引用是无法使用 <code>Object.getClass()</code> 的吗？
+</p></li>
+
+<li><p>
+<b>Class.forName()</b>
+</p>
+
+<p>
+这种方式给我一种 <code>eval()</code> 的感觉&#x2026;&#x2026;
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-type">Class</span> <span class="org-variable-name">c</span> = Class.forName(<span class="org-string">"com.duke.MyLocaleServiceProvider"</span>);
+</pre>
+</div>
+
+<p>
+而且，用在数组上才是最骚的：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-type">Class</span> <span class="org-variable-name">cDoubleArray</span> = Class.forName(<span class="org-string">"[D"</span>);
+
+<span class="org-type">Class</span> <span class="org-variable-name">cStringArray</span> = Class.forName(<span class="org-string">"[[Ljava.lang.String;"</span>);
+</pre>
+</div></li>
+
+<li><p>
+<b>TYPE Field for Primitive Type Wrappers</b>
+</p>
+
+<p>
+原始数据类型的包装类型可以通过 <code>TYPE</code> 这个 <b>字段</b> 来获取对应的类对象。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-type">Class</span> <span class="org-variable-name">c</span> = <span class="org-constant">Double</span>.TYPE;
+<span class="org-type">Class</span> <span class="org-variable-name">c</span> = <span class="org-constant">Void</span>.TYPE;
+</pre>
+</div>
+
+<p>
+emmm, void 是类型吗？
+</p></li>
+
+<li><p>
+<b>Methods that Return Classes</b>
+</p>
+
+<p>
+有一堆方法可以返回一个类对象，而且是看名字就知道用法的那种：
+</p>
+<div class="org-src-container">
+<pre class="src src-java">Class.getSuperclass();
+Class.getClasses();
+Class.getDeclaredClasses();
+Class.getDeclaringClass();
+<span class="org-constant">java</span>.<span class="org-constant">lang</span>.<span class="org-constant">reflect</span>.Field.getDeclaringClass();
+<span class="org-constant">java</span>.<span class="org-constant">lang</span>.<span class="org-constant">reflect</span>.Method.getDeclaringClass();
+<span class="org-constant">java</span>.<span class="org-constant">lang</span>.<span class="org-constant">reflect</span>.Constructor.getDeclaringClass();
+Class.getEnclosingClass();
+</pre>
+</div>
+
+<p>
+无限反射，最为致命。
+</p></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf85c0ea" class="outline-3">
+<h3 id="orgf85c0ea"><span class="section-number-3">1.2</span> 获取类修饰符和类型</h3>
+<div class="outline-text-3" id="text-1-2">
+<blockquote>
+<p>
+Access modifiers: <code>public</code>, <code>protected</code>, and <code>private</code>
+Modifier requiring override: <code>abstract</code>
+Modifier restricting to one instance: <code>static</code>
+Modifier prohibiting value modification: <code>final</code>
+Modifier forcing strict floating point behavior: <code>strictfp</code>
+<b>Annotations</b>
+</p>
+</blockquote>
+
+<p>
+实现这一操作的关键类是： <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/reflect/Modifier.html">java.lang.reflect.Modifier</a>.
+</p>
+
+<p>
+官网教程的一个例子：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">import</span> <span class="org-constant">java</span>.<span class="org-constant">lang</span>.<span class="org-constant">annotation</span>.<span class="org-type">Annotation</span>;
+<span class="org-keyword">import</span> <span class="org-constant">java</span>.<span class="org-constant">lang</span>.<span class="org-constant">reflect</span>.<span class="org-type">Modifier</span>;
+<span class="org-keyword">import</span> <span class="org-constant">java</span>.<span class="org-constant">lang</span>.<span class="org-constant">reflect</span>.<span class="org-type">Type</span>;
+<span class="org-keyword">import</span> <span class="org-constant">java</span>.<span class="org-constant">lang</span>.<span class="org-constant">reflect</span>.<span class="org-type">TypeVariable</span>;
+<span class="org-keyword">import</span> <span class="org-constant">java</span>.<span class="org-constant">util</span>.<span class="org-type">Arrays</span>;
+<span class="org-keyword">import</span> <span class="org-constant">java</span>.<span class="org-constant">util</span>.<span class="org-type">ArrayList</span>;
+<span class="org-keyword">import</span> <span class="org-constant">java</span>.<span class="org-constant">util</span>.<span class="org-type">List</span>;
+
+<span class="org-keyword">public</span> <span class="org-keyword">class</span> <span class="org-type">ClassDeclarationSpy</span> {
+  <span class="org-keyword">public</span> <span class="org-keyword">static</span> <span class="org-type">void</span> <span class="org-function-name">main</span>(<span class="org-type">String</span>... <span class="org-variable-name">args</span>) {
+    <span class="org-keyword">try</span> {
+      <span class="org-type">Class</span>&lt;?&gt; <span class="org-variable-name">c</span> = Class.forName(args[0]);
+      System.out.format(<span class="org-string">"Class:%n  %s%n%n"</span>, c.getCanonicalName());  <span class="org-comment-delimiter">// </span><span class="org-comment">&#33719;&#21462;&#23436;&#25972;&#31867;&#21517;&#65292;&#21253;&#25324;&#21253;&#21517;</span>
+      System.out.format(<span class="org-string">"Modifiers:%n  %s%n%n"</span>,
+                        Modifier.toString(c.getModifiers()));  <span class="org-comment-delimiter">// </span><span class="org-comment">&#33719;&#21462;&#20462;&#39280;&#31526;</span>
+
+      System.out.format(<span class="org-string">"Type Parameters:%n"</span>);
+      <span class="org-type">TypeVariable</span>[] <span class="org-variable-name">tv</span> = c.getTypeParameters();  <span class="org-comment-delimiter">// </span><span class="org-comment">&#33719;&#21462;&#31867;&#22411;&#21442;&#25968;</span>
+      <span class="org-keyword">if</span> (tv.length != 0) {
+        System.out.format(<span class="org-string">"  "</span>);
+        <span class="org-keyword">for</span> (<span class="org-type">TypeVariable</span> <span class="org-variable-name">t</span> : tv)
+          System.out.format(<span class="org-string">"%s "</span>, t.getName());  <span class="org-comment-delimiter">// </span><span class="org-comment">&#33719;&#21462;&#31867;&#22411;&#21442;&#25968;&#30340;&#21517;&#31216;</span>
+        System.out.format(<span class="org-string">"%n%n"</span>);
+      } <span class="org-keyword">else</span> {
+        System.out.format(<span class="org-string">"  -- No Type Parameters --%n%n"</span>);
+      }
+
+      System.out.format(<span class="org-string">"Implemented Interfaces:%n"</span>);
+      <span class="org-type">Type</span>[] <span class="org-variable-name">intfs</span> = c.getGenericInterfaces();  <span class="org-comment-delimiter">// </span><span class="org-comment">&#33719;&#21462;&#23454;&#29616;&#30340;&#25509;&#21475;</span>
+      <span class="org-keyword">if</span> (intfs.length != 0) {
+        <span class="org-keyword">for</span> (<span class="org-type">Type</span> <span class="org-variable-name">intf</span> : intfs)
+          System.out.format(<span class="org-string">"  %s%n"</span>, intf.toString());  <span class="org-comment-delimiter">// </span><span class="org-comment">&#25509;&#21475;&#21517;&#31216;</span>
+        System.out.format(<span class="org-string">"%n"</span>);
+      } <span class="org-keyword">else</span> {
+        System.out.format(<span class="org-string">"  -- No Implemented Interfaces --%n%n"</span>);
+      }
+
+      System.out.format(<span class="org-string">"Inheritance Path:%n"</span>);
+      <span class="org-type">List</span>&lt;<span class="org-type">Class</span>&gt; <span class="org-variable-name">l</span> = <span class="org-keyword">new</span> <span class="org-type">ArrayList</span>&lt;<span class="org-type">Class</span>&gt;();
+      printAncestor(c, l);  <span class="org-comment-delimiter">// </span><span class="org-comment">&#33719;&#21462;&#25152;&#26377;&#29238;&#31867;</span>
+      <span class="org-keyword">if</span> (l.size() != 0) {
+        <span class="org-keyword">for</span> (<span class="org-type">Class</span>&lt;?&gt; <span class="org-variable-name">cl</span> : l)
+          System.out.format(<span class="org-string">"  %s%n"</span>, cl.getCanonicalName());  <span class="org-comment-delimiter">// </span><span class="org-comment">&#29238;&#31867;&#21517;&#31216;</span>
+        System.out.format(<span class="org-string">"%n"</span>);
+      } <span class="org-keyword">else</span> {
+        System.out.format(<span class="org-string">"  -- No Super Classes --%n%n"</span>);
+      }
+
+      System.out.format(<span class="org-string">"Annotations:%n"</span>);
+      <span class="org-type">Annotation</span>[] <span class="org-variable-name">ann</span> = c.getAnnotations();  <span class="org-comment-delimiter">// </span><span class="org-comment">&#33719;&#21462;&#27880;&#35299;&#31867;</span>
+      <span class="org-keyword">if</span> (ann.length != 0) {
+        <span class="org-keyword">for</span> (<span class="org-type">Annotation</span> <span class="org-variable-name">a</span> : ann)
+          System.out.format(<span class="org-string">"  %s%n"</span>, a.toString());
+        System.out.format(<span class="org-string">"%n"</span>);
+      } <span class="org-keyword">else</span> {
+        System.out.format(<span class="org-string">"  -- No Annotations --%n%n"</span>);
+      }
+
+      <span class="org-comment-delimiter">// </span><span class="org-comment">production code should handle this exception more gracefully</span>
+    } <span class="org-keyword">catch</span> (<span class="org-type">ClassNotFoundException</span> <span class="org-variable-name">x</span>) {
+      x.printStackTrace();
+    }
+  }
+
+  <span class="org-keyword">private</span> <span class="org-keyword">static</span> <span class="org-type">void</span> <span class="org-function-name">printAncestor</span>(<span class="org-type">Class</span>&lt;?&gt; <span class="org-variable-name">c</span>, <span class="org-type">List</span>&lt;<span class="org-type">Class</span>&gt; <span class="org-variable-name">l</span>) {
+    <span class="org-type">Class</span>&lt;?&gt; <span class="org-variable-name">ancestor</span> = c.getSuperclass();
+    <span class="org-keyword">if</span> (ancestor != <span class="org-constant">null</span>) {
+      l.add(ancestor);
+      printAncestor(ancestor, l);
+    }
+  }
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1a55fb2" class="outline-3">
+<h3 id="org1a55fb2"><span class="section-number-3">1.3</span> 获取类成员</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+官方教程贴心的列出了表格：
+</p>
+
+<table>
+<caption class="t-above"><span class="table-number">&#34920;1&nbsp;</span> 获取字段</caption>
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Class API</th>
+<th scope="col" class="org-left">成员列表？</th>
+<th scope="col" class="org-left">继承的成员？</th>
+<th scope="col" class="org-left">私有成员？</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">getDeclaredField()</td>
+<td class="org-left">no</td>
+<td class="org-left">no</td>
+<td class="org-left">yes</td>
+</tr>
+
+<tr>
+<td class="org-left">getField()</td>
+<td class="org-left">no</td>
+<td class="org-left">yes</td>
+<td class="org-left">no</td>
+</tr>
+
+<tr>
+<td class="org-left">getDeclaredFields()</td>
+<td class="org-left">yes</td>
+<td class="org-left">no</td>
+<td class="org-left">yes</td>
+</tr>
+
+<tr>
+<td class="org-left">getFields()</td>
+<td class="org-left">yes</td>
+<td class="org-left">yes</td>
+<td class="org-left">no</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<caption class="t-above"><span class="table-number">&#34920;2&nbsp;</span> 获取方法</caption>
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Class API</th>
+<th scope="col" class="org-left">成员列表？</th>
+<th scope="col" class="org-left">继承的成员？</th>
+<th scope="col" class="org-left">私有成员？</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">getDeclaredMethod()</td>
+<td class="org-left">no</td>
+<td class="org-left">no</td>
+<td class="org-left">yes</td>
+</tr>
+
+<tr>
+<td class="org-left">getMethod()</td>
+<td class="org-left">no</td>
+<td class="org-left">yes</td>
+<td class="org-left">no</td>
+</tr>
+
+<tr>
+<td class="org-left">getDeclaredMethods()</td>
+<td class="org-left">yes</td>
+<td class="org-left">no</td>
+<td class="org-left">yes</td>
+</tr>
+
+<tr>
+<td class="org-left">getMethods()</td>
+<td class="org-left">yes</td>
+<td class="org-left">yes</td>
+<td class="org-left">no</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<caption class="t-above"><span class="table-number">&#34920;3&nbsp;</span> 构造函数</caption>
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Class API</th>
+<th scope="col" class="org-left">成员列表？</th>
+<th scope="col" class="org-left">继承的成员？</th>
+<th scope="col" class="org-left">私有成员？</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">getDeclaredConstructor()</td>
+<td class="org-left">no</td>
+<td class="org-left">N/A1</td>
+<td class="org-left">yes</td>
+</tr>
+
+<tr>
+<td class="org-left">getConstructor()</td>
+<td class="org-left">no</td>
+<td class="org-left">N/A1</td>
+<td class="org-left">no</td>
+</tr>
+
+<tr>
+<td class="org-left">getDeclaredConstructors()</td>
+<td class="org-left">yes</td>
+<td class="org-left">N/A1</td>
+<td class="org-left">yes</td>
+</tr>
+
+<tr>
+<td class="org-left">getConstructors()</td>
+<td class="org-left">yes</td>
+<td class="org-left">N/A1</td>
+<td class="org-left">no</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+<b>NOTE:</b> 构造函数不是继承的
+</p>
+
+<p>
+官网的例子：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">import</span> <span class="org-constant">java</span>.<span class="org-constant">lang</span>.<span class="org-constant">reflect</span>.<span class="org-type">Constructor</span>;
+<span class="org-keyword">import</span> <span class="org-constant">java</span>.<span class="org-constant">lang</span>.<span class="org-constant">reflect</span>.<span class="org-type">Field</span>;
+<span class="org-keyword">import</span> <span class="org-constant">java</span>.<span class="org-constant">lang</span>.<span class="org-constant">reflect</span>.<span class="org-type">Method</span>;
+<span class="org-keyword">import</span> <span class="org-constant">java</span>.<span class="org-constant">lang</span>.<span class="org-constant">reflect</span>.<span class="org-type">Member</span>;
+<span class="org-keyword">import</span> <span class="org-keyword">static</span> <span class="org-constant">java</span>.<span class="org-constant">lang</span>.System.<span class="org-type">out</span>;
+
+<span class="org-keyword">enum</span> <span class="org-type">ClassMember</span> { <span class="org-variable-name">CONSTRUCTOR</span>, <span class="org-variable-name">FIELD</span>, <span class="org-variable-name">METHOD</span>, <span class="org-variable-name">CLASS</span>, <span class="org-variable-name">ALL</span> }
+
+<span class="org-keyword">public</span> <span class="org-keyword">class</span> <span class="org-type">ClassSpy</span> {
+  <span class="org-keyword">public</span> <span class="org-keyword">static</span> <span class="org-type">void</span> <span class="org-function-name">main</span>(<span class="org-type">String</span>... <span class="org-variable-name">args</span>) {
+    <span class="org-keyword">try</span> {
+      <span class="org-type">Class</span>&lt;?&gt; <span class="org-variable-name">c</span> = Class.forName(args[0]);
+      out.format(<span class="org-string">"Class:%n  %s%n%n"</span>, c.getCanonicalName());
+
+      <span class="org-type">Package</span> <span class="org-variable-name">p</span> = c.getPackage();  <span class="org-comment-delimiter">// </span><span class="org-comment">&#33719;&#21462;&#25152;&#22312;&#30340;&#21253;</span>
+      out.format(<span class="org-string">"Package:%n  %s%n%n"</span>,
+                 (p != <span class="org-constant">null</span> ? p.getName() : <span class="org-string">"-- No Package --"</span>));
+
+      <span class="org-keyword">for</span> (<span class="org-type">int</span> <span class="org-variable-name">i</span> = 1; i &lt; args.<span class="org-type">length</span>; i++) {
+        <span class="org-keyword">switch</span> (ClassMember.valueOf(args[i])) {
+          <span class="org-keyword">case</span> CONSTRUCTOR:
+            printMembers(c.getConstructors(), <span class="org-string">"Constructor"</span>);
+            <span class="org-keyword">break</span>;
+          <span class="org-keyword">case</span> FIELD:
+            printMembers(c.getFields(), <span class="org-string">"Fields"</span>);
+            <span class="org-keyword">break</span>;
+          <span class="org-keyword">case</span> METHOD:
+            printMembers(c.getMethods(), <span class="org-string">"Methods"</span>);
+            <span class="org-keyword">break</span>;
+          <span class="org-keyword">case</span> CLASS:
+            printClasses(c);
+            <span class="org-keyword">break</span>;
+          <span class="org-keyword">case</span> ALL:
+            printMembers(c.getConstructors(), <span class="org-string">"Constuctors"</span>);
+            printMembers(c.getFields(), <span class="org-string">"Fields"</span>);
+            printMembers(c.getMethods(), <span class="org-string">"Methods"</span>);
+            printClasses(c);
+            <span class="org-keyword">break</span>;
+          <span class="org-keyword">default</span>:
+            assert <span class="org-constant">false</span>;
+        }
+      }
+
+      <span class="org-comment-delimiter">// </span><span class="org-comment">production code should handle these exceptions more gracefully</span>
+    } <span class="org-keyword">catch</span> (<span class="org-type">ClassNotFoundException</span> <span class="org-variable-name">x</span>) {
+      x.printStackTrace();
+    }
+  }
+
+  <span class="org-keyword">private</span> <span class="org-keyword">static</span> <span class="org-type">void</span> <span class="org-function-name">printMembers</span>(<span class="org-type">Member</span>[] <span class="org-variable-name">mbrs</span>, <span class="org-type">String</span> <span class="org-variable-name">s</span>) {
+    out.format(<span class="org-string">"%s:%n"</span>, s);
+    <span class="org-keyword">for</span> (<span class="org-type">Member</span> <span class="org-variable-name">mbr</span> : mbrs) {
+      <span class="org-keyword">if</span> (mbr <span class="org-keyword">instanceof</span> Field)
+        out.format(<span class="org-string">"  %s%n"</span>, ((<span class="org-type">Field</span>)mbr).toGenericString());
+      <span class="org-keyword">else</span> <span class="org-keyword">if</span> (mbr <span class="org-keyword">instanceof</span> Constructor)
+        out.format(<span class="org-string">"  %s%n"</span>, ((<span class="org-type">Constructor</span>)mbr).toGenericString());
+      <span class="org-keyword">else</span> <span class="org-keyword">if</span> (mbr <span class="org-keyword">instanceof</span> Method)
+        out.format(<span class="org-string">"  %s%n"</span>, ((<span class="org-type">Method</span>)mbr).toGenericString());
+    }
+    <span class="org-keyword">if</span> (mbrs.length == 0)
+      out.format(<span class="org-string">"  -- No %s --%n"</span>, s);
+    out.format(<span class="org-string">"%n"</span>);
+  }
+
+  <span class="org-keyword">private</span> <span class="org-keyword">static</span> <span class="org-type">void</span> <span class="org-function-name">printClasses</span>(<span class="org-type">Class</span>&lt;?&gt; <span class="org-variable-name">c</span>) {
+    out.format(<span class="org-string">"Classes:%n"</span>);
+    <span class="org-type">Class</span>&lt;?&gt;[] <span class="org-variable-name">clss</span> = c.getClasses();
+    <span class="org-keyword">for</span> (<span class="org-type">Class</span>&lt;?&gt; <span class="org-variable-name">cls</span> : clss)
+      out.format(<span class="org-string">"  %s%n"</span>, cls.getCanonicalName());
+    <span class="org-keyword">if</span> (clss.length == 0)
+      out.format(<span class="org-string">"  -- No member interfaces, classes, or enums --%n"</span>);
+    out.format(<span class="org-string">"%n"</span>);
+  }
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org202acbd" class="outline-2">
+<h2 id="org202acbd"><span class="section-number-2">2</span> Members</h2>
+<div class="outline-text-2" id="text-2">
+<dl class="org-dl">
+<dt>Fields</dt><dd>字段包含类型和值，类 <code>java.lang.reflect.Field</code> 提供了获取类型信息、设置和获取值的方法。</dd>
+
+<dt>Methods</dt><dd>方法具有返回值和参数，并可能抛出异常，类 <code>java.lang.reflect.Method</code> 提供了获取参数和返回值的类型信息的方法，也可以用于调用给定对象的方法。</dd>
+
+<dt>Constructors</dt><dd>构造函数的反射接口由类 <code>java.lang.reflect.Constructor</code> 提供，和方法类似，但是，构造函数没有返回值，调用构造函数会为给定的类创建一个新实例。</dd>
+</dl>
+
+<p>
+详细教程链接：
+</p>
+<ul class="org-ul">
+<li><a href="https://docs.oracle.com/javase/tutorial/reflect/member/field.html">Fileds</a></li>
+<li><a href="https://docs.oracle.com/javase/tutorial/reflect/member/method.html">Methods</a></li>
+<li><a href="https://docs.oracle.com/javase/tutorial/reflect/member/ctor.html">Constructors</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org8bf162a" class="outline-2">
+<h2 id="org8bf162a"><span class="section-number-2">3</span> Arrays</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+和数组有关的反射接口由类 <code>java.lang.reflect.Array</code> 提供。
+</p>
+
+<p>
+可以通过方法 <code>Class.isArray()</code> 来判断该类是否为 <b>数组类</b>, 需要注意的是，这个不是静态方法。
+</p>
+
+<p>
+可以通过方法 <code>java.lang.reflect.Array.newInstance()</code> 创建一个新的数组，这是一个静态方法。
+</p>
+
+<p>
+详细教程链接： <a href="https://docs.oracle.com/javase/tutorial/reflect/special/array.html">Arrays</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgfaf43e6" class="outline-2">
+<h2 id="orgfaf43e6"><span class="section-number-2">4</span> Enumerated</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+和枚举有关的反射接口：
+</p>
+<div class="org-src-container">
+<pre class="src src-java">Class.isEnum();  <span class="org-comment-delimiter">// </span><span class="org-comment">&#21028;&#26029;&#19968;&#20010;&#31867;&#26159;&#21542;&#20026;&#26522;&#20030;&#31867;</span>
+Class.getEnumConstants();  <span class="org-comment-delimiter">// </span><span class="org-comment">&#25353;&#29031;&#23427;&#20204;&#22768;&#26126;&#30340;&#39034;&#24207;&#26816;&#32034;&#26522;&#20030;&#23450;&#20041;&#30340;&#26522;&#20030;&#24120;&#37327;&#21015;&#34920;</span>
+<span class="org-constant">java</span>.<span class="org-constant">lang</span>.<span class="org-constant">reflect</span>.Field.isEnumConstant();  <span class="org-comment-delimiter">// </span><span class="org-comment">&#21028;&#26029;&#35813;&#23383;&#27573;&#26159;&#21542;&#20026;&#26522;&#20030;&#31867;&#22411;&#30340;&#21464;&#37327;</span>
+</pre>
+</div>
+
+<p>
+详细教程链接： <a href="https://docs.oracle.com/javase/tutorial/reflect/special/enum.html">Enumerated Types</a>
+</p>
+
+<p>
+和枚举有关的操作可以通过类 <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Enum.html">java.lang.Enum</a> 完成。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge082b11" class="outline-2">
+<h2 id="orge082b11"><span class="section-number-2">5</span> 泛型</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+Java 泛型是一个很重要也很常用的一个功能，但是在编写相关的具有解析泛型类的功能的工具时问题就出现了：
+</p>
+<ul class="org-ul">
+<li>由于类型擦除的原因，我们无法直接获取一个泛型对象的类型参数，比如：List&lt;String&gt; 类型的对象我们只能拿到 List 这个类型，而无法获取重要的类型参数 String</li>
+<li>List&lt;String, String&gt;.class 是行不通的，语法都不正确</li>
+<li>直接的 Class 对象只能拿到当前类型参数的名称，比如：T、K、E 什么的，是拿不到实际的类型的</li>
+</ul>
+
+<p>
+为了解决这个问题，只能绕一些远路：
+</p>
+<ul class="org-ul">
+<li>如果目标对象是一个类的字段或者方法的参数或返回值，那么，我们可以通过 Field 和 Method 对象的接口拿到 ParameterizedType 从而拿到泛型类型</li>
+<li>或者创建目标类型的子类，通过 Class.getGenericSuperclass 拿到 ParameterizedType 从而拿到泛型类型</li>
+</ul>
+
+<p>
+比如说，Gson 中的 TypeToken 采用的方式（简化的代码）：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">public</span> <span class="org-keyword">abstract</span> <span class="org-keyword">class</span> <span class="org-type">TypeToken</span>&lt;<span class="org-type">T</span>&gt; {
+  <span class="org-keyword">private</span> <span class="org-keyword">final</span> <span class="org-type">Type</span> <span class="org-variable-name">type</span>;
+
+  <span class="org-doc">/**</span>
+<span class="org-doc">   * Automatically get generic parameters when a subclass instance is created.</span>
+<span class="org-doc">   */</span>
+  <span class="org-keyword">protected</span> <span class="org-function-name">TypeToken</span>() {
+    <span class="org-keyword">this</span>.type = getSuperclassTypeParameter(getClass());
+  }
+
+  <span class="org-doc">/**</span>
+<span class="org-doc">   * Get the type parameter of the generic parent class.</span>
+<span class="org-doc">   */</span>
+  <span class="org-keyword">private</span> <span class="org-keyword">static</span> <span class="org-type">Type</span> <span class="org-function-name">getSuperclassTypeParameter</span>(<span class="org-type">Class</span>&lt;?&gt; <span class="org-variable-name">subclass</span>) {
+    <span class="org-type">Type</span> <span class="org-variable-name">superclass</span> = subclass.getGenericSuperclass();
+    <span class="org-keyword">if</span> (superclass <span class="org-keyword">instanceof</span> Class) {
+      <span class="org-keyword">throw</span> <span class="org-keyword">new</span> <span class="org-type">RuntimeException</span>(<span class="org-string">"Missing type parameter."</span>);
+    }
+    <span class="org-type">ParameterizedType</span> <span class="org-variable-name">parameterized</span> = (<span class="org-type">ParameterizedType</span>) superclass;
+    <span class="org-keyword">return</span> parameterized.getActualTypeArguments()[0];
+  }
+
+  <span class="org-keyword">public</span> <span class="org-type">Type</span> <span class="org-function-name">getType</span>() {
+    <span class="org-keyword">return</span> type;
+  }
+}
+</pre>
+</div>
+
+<p>
+使用的时候：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">new</span> <span class="org-type">TypeToken</span>&lt;<span class="org-type">List</span>&lt;<span class="org-type">String</span>&gt;&gt;() {}.getType();
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org2963278" class="outline-3">
+<h3 id="org2963278"><span class="section-number-3">5.1</span> 获取类型参数</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+Java 反射中的 Type 接口只有一个实现类为 Class，但是它有四个子接口，描述了 Java 泛型的四种形式：
+</p>
+<ul class="org-ul">
+<li>GenericArrayType - 类似于 T[] 的情况</li>
+<li>ParameterizedTyp - 类似于 List&lt;T&gt; 的情况</li>
+<li>TypeVariable&lt;T&gt; - 表示泛型声明的参数类型</li>
+<li>WildcardType - 通配符类型表达式</li>
+</ul>
+
+<p>
+可以在以下情况中得到泛型实际类型参数：
+</p>
+<ol class="org-ol">
+<li><p>
+类成员变量类型的泛型参数：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">public</span> <span class="org-keyword">class</span> <span class="org-type">Test</span> {
+  <span class="org-keyword">private</span> <span class="org-type">Map</span>&lt;<span class="org-type">String</span>, <span class="org-type">Integer</span>&gt; <span class="org-variable-name">map</span> = <span class="org-keyword">new</span> <span class="org-type">HashMap</span>&lt;<span class="org-type">String</span>,<span class="org-type">Integer</span>&gt;();
+}
+</pre>
+</div></li>
+<li><p>
+类成员方法返回值和类成员方法参数的泛型参数：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">public</span> <span class="org-keyword">class</span> <span class="org-type">Test</span> {
+  <span class="org-keyword">public</span> <span class="org-type">List</span>&lt;<span class="org-type">Integer</span>&gt; <span class="org-function-name">test</span>(<span class="org-type">List</span>&lt;<span class="org-type">String</span>&gt; <span class="org-variable-name">list</span>) {
+    <span class="org-keyword">return</span> <span class="org-keyword">new</span> <span class="org-type">ArrayList</span>&lt;<span class="org-type">Integer</span>&gt;();
+  }
+}
+</pre>
+</div></li>
+<li>类构造函数的参数类型的泛型参数</li>
+<li>通过 extends 在子类指定父类中泛型变量具体类型的，可获取父类泛型的具体类型</li>
+</ol>
+
+<p>
+需要注意的是，下面的情况是拿不到实际类型参数的：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">interface</span> <span class="org-type">Super</span>&lt;<span class="org-type">T</span>&gt; {
+  <span class="org-type">T</span> <span class="org-function-name">method</span>();
+}
+
+<span class="org-comment-delimiter">// </span><span class="org-comment">&#25343;&#19981;&#21040;</span>
+<span class="org-keyword">interface</span> <span class="org-type">Child</span> <span class="org-keyword">extends</span> <span class="org-type">Super</span>&lt;<span class="org-type">Integer</span>&gt; {}
+
+<span class="org-comment-delimiter">// </span><span class="org-comment">&#25343;&#19981;&#21040;</span>
+<span class="org-keyword">interface</span> <span class="org-type">Test</span> {
+  &lt;<span class="org-type">T</span>&gt; T method();
+}
+</pre>
+</div>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://blog.csdn.net/qq_30698633/article/details/76671547">Java 通过反射获取泛型实际类型总结 - _qq_30698633 的博客 - CSDN 博客</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org898b61a" class="outline-2">
+<h2 id="org898b61a"><span class="section-number-2">6</span> Hierarchy</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+部分类的继承结构：
+</p>
+<pre class="example">
++ java.lang.Object
+  + java.lang.reflect.AccessibleObject
+    + java.lang.reflect.Executable        # 可执行
+      + java.lang.reflect.Constructor&lt;T&gt;  # 构造方法
+      + java.lang.reflect.Method          # 方法
+    + java.lang.reflect.Field             # 字段
+  + java.lang.reflect.Array               # 数组
+  + java.lang.reflect.Modifier            # 访问修饰符
+  + java.lang.reflect.Parameter           # 参数c
+</pre>
+
+<p>
+部分接口的继承结构：
+</p>
+<pre class="example">
++ java.lang.reflect.AnnotatedElement
+  + java.lang.reflect.AnnotatedType                  # 带注解的类型，当包装的类型没有注解时返回的注解为空
+    + java.lang.reflect.AnnotatedArrayType
+    + java.lang.reflect.AnnotatedParameterizedType
+    + java.lang.reflect.AnnotatedTypeVariable
+    + java.lang.reflect.AnnotatedWildcardType
+  + java.lang.reflect.GenericDeclaration
+  + java.lang.reflect.TypeVariable&lt;D&gt;                # 类型变量，Class&lt;K, V&gt; 中的 K, V 
++ java.lang.reflect.Member
++ java.lang.reflect.Type
+  + java.lang.reflect.GenericArrayType
+  + java.lang.reflect.ParameterizedType
+  + java.lang.reflect.TypeVariable&lt;D&gt;
+  + java.lang.reflect.WildcardType
+</pre>
+
+<p>
+简单来看的话，包 <code>java.lang.reflect</code> 下提供的功能主要就是各种类信息的访问操作和 Proxy 动态代理了。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5b37e6d" class="outline-2">
+<h2 id="org5b37e6d"><span class="section-number-2">7</span> 动态代理</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+Java 动态代理的调用方式为：
+</p>
+<ol class="org-ol">
+<li>通过 <code>Proxy.newPorxyInstance</code> 创建代理对象，该对象是 <code>Proxy</code> 的子类</li>
+<li>子类会为 hashCode、equals、toString 和指定的接口中的方法创建代理</li>
+<li>调用相关方法时，会通过 <code>InvocationHandler</code> 实例的 <code>invoke</code> 方法调用</li>
+</ol>
+
+<p>
+例子：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-comment-delimiter">// </span><span class="org-comment">&#29983;&#25104;&#30340;&#19968;&#20010;&#20195;&#29702;&#31867;&#65292;&#32487;&#25215; Proxy &#24182;&#23454;&#29616;&#35201;&#20195;&#29702;&#30340;&#25509;&#21475;</span>
+<span class="org-keyword">final</span> <span class="org-keyword">class</span> $Proxy0 <span class="org-keyword">extends</span> <span class="org-type">Proxy</span> <span class="org-keyword">implements</span> <span class="org-type">TestInterface</span> {
+  <span class="org-keyword">private</span> <span class="org-keyword">static</span> <span class="org-type">Method</span> <span class="org-variable-name">m1</span>;
+  <span class="org-keyword">private</span> <span class="org-keyword">static</span> <span class="org-type">Method</span> <span class="org-variable-name">m2</span>;
+  <span class="org-keyword">private</span> <span class="org-keyword">static</span> <span class="org-type">Method</span> <span class="org-variable-name">m3</span>;
+  <span class="org-keyword">private</span> <span class="org-keyword">static</span> <span class="org-type">Method</span> <span class="org-variable-name">m0</span>;
+
+  <span class="org-comment-delimiter">// </span><span class="org-comment">&#23454;&#29616;&#30340; InvocationHandler</span>
+  <span class="org-keyword">public</span> $Proxy0(<span class="org-type">InvocationHandler</span> <span class="org-variable-name">var1</span>) <span class="org-keyword">throws</span>  {
+    <span class="org-keyword">super</span>(var1);
+  }
+
+  <span class="org-keyword">public</span> <span class="org-keyword">final</span> <span class="org-type">boolean</span> <span class="org-function-name">equals</span>(<span class="org-type">Object</span> <span class="org-variable-name">var1</span>) <span class="org-keyword">throws</span>  {
+    <span class="org-keyword">try</span> {
+      <span class="org-keyword">return</span> (Boolean)<span class="org-keyword">super</span>.h.invoke(<span class="org-keyword">this</span>, m1, <span class="org-keyword">new</span> <span class="org-type">Object</span>[]{var1});
+    } <span class="org-keyword">catch</span> (RuntimeException | Error var3) {
+      <span class="org-keyword">throw</span> var3;
+    } <span class="org-keyword">catch</span> (<span class="org-type">Throwable</span> <span class="org-variable-name">var4</span>) {
+      <span class="org-keyword">throw</span> <span class="org-keyword">new</span> <span class="org-type">UndeclaredThrowableException</span>(var4);
+    }
+  }
+
+  <span class="org-keyword">public</span> <span class="org-keyword">final</span> <span class="org-type">String</span> <span class="org-function-name">toString</span>() <span class="org-keyword">throws</span>  {
+    <span class="org-keyword">try</span> {
+      <span class="org-keyword">return</span> (String)<span class="org-keyword">super</span>.h.invoke(<span class="org-keyword">this</span>, m2, (Object[])<span class="org-constant">null</span>);
+    } <span class="org-keyword">catch</span> (RuntimeException | Error var2) {
+      <span class="org-keyword">throw</span> var2;
+    } <span class="org-keyword">catch</span> (<span class="org-type">Throwable</span> <span class="org-variable-name">var3</span>) {
+      <span class="org-keyword">throw</span> <span class="org-keyword">new</span> <span class="org-type">UndeclaredThrowableException</span>(var3);
+    }
+  }
+
+  <span class="org-keyword">public</span> <span class="org-keyword">final</span> <span class="org-type">void</span> <span class="org-function-name">testMethod</span>() <span class="org-keyword">throws</span>  {
+    <span class="org-keyword">try</span> {
+      <span class="org-comment-delimiter">// </span><span class="org-comment">&#36890;&#36807; InvocationHandler &#35843;&#29992;&#30446;&#26631;&#26041;&#27861;</span>
+      <span class="org-keyword">super</span>.h.invoke(<span class="org-keyword">this</span>, m3, (Object[])<span class="org-constant">null</span>);
+    } <span class="org-keyword">catch</span> (RuntimeException | Error var2) {
+      <span class="org-keyword">throw</span> var2;
+    } <span class="org-keyword">catch</span> (<span class="org-type">Throwable</span> <span class="org-variable-name">var3</span>) {
+      <span class="org-keyword">throw</span> <span class="org-keyword">new</span> <span class="org-type">UndeclaredThrowableException</span>(var3);
+    }
+  }
+
+  <span class="org-keyword">public</span> <span class="org-keyword">final</span> <span class="org-type">int</span> <span class="org-function-name">hashCode</span>() <span class="org-keyword">throws</span>  {
+    <span class="org-keyword">try</span> {
+      <span class="org-keyword">return</span> (Integer)<span class="org-keyword">super</span>.h.invoke(<span class="org-keyword">this</span>, m0, (Object[])<span class="org-constant">null</span>);
+    } <span class="org-keyword">catch</span> (RuntimeException | Error var2) {
+      <span class="org-keyword">throw</span> var2;
+    } <span class="org-keyword">catch</span> (<span class="org-type">Throwable</span> <span class="org-variable-name">var3</span>) {
+      <span class="org-keyword">throw</span> <span class="org-keyword">new</span> <span class="org-type">UndeclaredThrowableException</span>(var3);
+    }
+  }
+
+  <span class="org-keyword">static</span> {
+    <span class="org-keyword">try</span> {
+      <span class="org-comment-delimiter">// </span><span class="org-comment">&#20026; hashCode&#12289;toString&#12289;equals &#21644; TestInterface &#20013;&#23450;&#20041;&#30340;&#26041;&#27861;&#21019;&#24314;&#20195;&#29702;</span>
+      m1 = Class.forName(<span class="org-string">"java.lang.Object"</span>).getMethod(<span class="org-string">"equals"</span>, Class.forName(<span class="org-string">"java.lang.Object"</span>));
+      m2 = Class.forName(<span class="org-string">"java.lang.Object"</span>).getMethod(<span class="org-string">"toString"</span>);
+      m3 = Class.forName(<span class="org-string">"classload.TestInterface"</span>).getMethod(<span class="org-string">"testMethod"</span>);
+      m0 = Class.forName(<span class="org-string">"java.lang.Object"</span>).getMethod(<span class="org-string">"hashCode"</span>);
+    } <span class="org-keyword">catch</span> (<span class="org-type">NoSuchMethodException</span> <span class="org-variable-name">var2</span>) {
+      <span class="org-keyword">throw</span> <span class="org-keyword">new</span> <span class="org-type">NoSuchMethodError</span>(var2.getMessage());
+    } <span class="org-keyword">catch</span> (<span class="org-type">ClassNotFoundException</span> <span class="org-variable-name">var3</span>) {
+      <span class="org-keyword">throw</span> <span class="org-keyword">new</span> <span class="org-type">NoClassDefFoundError</span>(var3.getMessage());
+    }
+  }
+}
+</pre>
+</div>
+
+<p>
+比较适合于需要为对象的不同方法创建统一的 AOP 逻辑。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.ibm.com/developerworks/cn/java/j-lo-proxy1/index.html">Java 动态代理机制分析及扩展，第 1 部分</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org6aa4486" class="outline-2">
+<h2 id="org6aa4486"><span class="section-number-2">8</span> 相关问题</h2>
+<div class="outline-text-2" id="text-8">
+</div>
+<div id="outline-container-org1fd2b77" class="outline-3">
+<h3 id="org1fd2b77"><span class="section-number-3">8.1</span> 如果通过反射获取一个包下的所有类</h3>
+<div class="outline-text-3" id="text-8-1">
+<p>
+虽然确实存在 <code>Package</code> 这个类型，但是，这个类型时无法拿来获取包下的类的，要获取一个包下的类只有一种办法：遍历读取……
+</p>
+
+<p>
+简单除暴直接的处理方式，比如 Spring，直接用 ASM 读取字节码里面的元数据……
+</p>
+
+<p>
+简直幻灭了……一直以为有反射接口的啊……
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

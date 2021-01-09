@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:44 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>结构化编程</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">结构化编程</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org8b678d1">1. 第 1 章 软件工程概述</a></li>
+<li><a href="#orga553e78">2. 第 2 章 软件过程</a></li>
+<li><a href="#org4eedcdf">3. 第 3 章 软件过程模型</a></li>
+<li><a href="#orgbad2731">4. 第 4 章 敏捷软件开发方法</a></li>
+<li><a href="#org3128856">5. 第 5 章 软件需求分析</a></li>
+<li><a href="#org9901cc0">6. 第 6 章 结构化分析</a></li>
+<li><a href="#org9284665">7. 第 7 章 结构化设计</a></li>
+<li><a href="#orgbbc2150">8. 第 8 章 结构化软件测试</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org8b678d1" class="outline-2">
+<h2 id="org8b678d1"><span class="section-number-2">1</span> 第 1 章 软件工程概述</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li>软件是计算机系统中与硬件对应的另一部分， 是一系列程序， 数据及文档的集合。</li>
+
+<li>程序、 数据和文档为软件的三要素</li>
+
+<li>软件的特征包括： 复杂性、 一致性、 退化性、 易变性、 移植性、 高成本</li>
+</ul>
+
+<table>
+<caption class="t-above"><span class="table-number">&#34920;1&nbsp;</span> 软件特征</caption>
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">特征</th>
+<th scope="col" class="org-left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">复杂性</td>
+<td class="org-left">比硬件更加复杂。是一个庞大的逻辑系统。</td>
+</tr>
+
+<tr>
+<td class="org-left">一致性</td>
+<td class="org-left">软件必须和运行它的硬件保持一致，依赖于硬件。</td>
+</tr>
+
+<tr>
+<td class="org-left">退化性</td>
+<td class="org-left">不存在硬件的磨损和老化问题。</td>
+</tr>
+
+<tr>
+<td class="org-left">易变性</td>
+<td class="org-left">软件在生产过程、投入运行后也可以在改变，硬件不行。</td>
+</tr>
+
+<tr>
+<td class="org-left">移植性</td>
+<td class="org-left">受计算机系统运行，不易移植。</td>
+</tr>
+
+<tr>
+<td class="org-left">高成本</td>
+<td class="org-left">软件开发需要耗费大量的开发成本和管理成本。硬件可以走流水线。</td>
+</tr>
+</tbody>
+</table>
+
+<ul class="org-ul">
+<li>软件危机的主要表现为：
+
+<ul class="org-ul">
+<li>软件供给需差距大</li>
+
+<li>软件开发管理困难</li>
+
+<li>软件开发模式过时</li>
+</ul></li>
+
+<li>方法、 工具和过程为软件工程的三要素</li>
+
+<li>质量、 成本和工期为软件工程管理的三要素</li>
+
+<li>软件工程的基本原理包括： 推迟实现、 逐步求精、 分解与抽象、 信息隐蔽、 质量保证</li>
+
+<li>软件工程的基本原则包括： 分阶段软件开发、 坚持进行阶段评审、 采用先进的程序设计技术、 明确责任、 开发小组的人员应少而精、 不断改进开发过程</li>
+
+<li>软件工程开发的方法有： 结构化开发方法学、 面向对象开发方法学、 形式化开发方法学</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga553e78" class="outline-2">
+<h2 id="orga553e78"><span class="section-number-2">2</span> 第 2 章 软件过程</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li>软件过程的定义是： 软件的诞生及其生命周期</li>
+
+<li>软件过程框架： 沟通、 策划、 建模、 构建和部署</li>
+
+<li>软件生存周期可以划分为： 定义、 开发和运行三个阶段</li>
+
+<li>软件生存周期包括： 问题的定义与可行性分析、 项目计划、 需求分析、 软件设计、 编码与测试、 运行与维护等阶段</li>
+</ul>
+
+<table>
+<caption class="t-above"><span class="table-number">&#34920;2&nbsp;</span> 软件生存周期</caption>
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">阶段</th>
+<th scope="col" class="org-left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">问题的定义与可行性分析</td>
+<td class="org-left">软件开发人员与客户沟通，确定软件的开发目标、范围、规模及项目的可行性。</td>
+</tr>
+
+<tr>
+<td class="org-left">项目计划</td>
+<td class="org-left">根据项目的问题、范围、规模制定初步的开发计划。</td>
+</tr>
+
+<tr>
+<td class="org-left">需求分析</td>
+<td class="org-left">在确定软件开发可行的情况下，对软件需要实现的各个功能进行详细分析。</td>
+</tr>
+
+<tr>
+<td class="org-left">软件设计</td>
+<td class="org-left">根据需求分析的结果，对整个软件系统进行设计。</td>
+</tr>
+
+<tr>
+<td class="org-left">编码与测试</td>
+<td class="org-left">将软件设计的结果转化为计算机可运行的程序代码。并在设计完成后进行严密的测试，以发现整个设计工过程中存在的问题。</td>
+</tr>
+
+<tr>
+<td class="org-left">运行与维护</td>
+<td class="org-left">软件开发完成投入使用，延续软件的使用寿命进行维护。</td>
+</tr>
+</tbody>
+</table>
+
+<ul class="org-ul">
+<li>软件工程活动包括： 沟通活动、 计划活动、 建模活动、 实现活动、 部署活动、 维护活动、 管理活动、 过程改进活动</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4eedcdf" class="outline-2">
+<h2 id="org4eedcdf"><span class="section-number-2">3</span> 第 3 章 软件过程模型</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li>软件过程模型： 把软件生存周期中各项开发活动的流程用一个合理框架 - 开发模型来规范描述</li>
+
+<li>传统的软件过程模型包括： 瀑布模型、 原型模型、 增量模型、 螺旋模型</li>
+
+<li>面向对象模型包括： 构建集成模型、 统一过程模型</li>
+
+<li>瀑布模型将软件生存周期划分为： 软件计划、 需求分析、 软件设计、 软件实现、 软件测试、 运行与维护这 6 个阶段</li>
+
+<li>瀑布模型接受上一项活动的工作结果作为输入， 然后实施该项活动应该完成的工作， 并将该活动的工作结果作为输出传给下一项活动</li>
+
+<li>瀑布模型具有的特点： 顺序性和依赖性、 推迟实现、 质量保证</li>
+
+<li>瀑布模型局限性： 缺乏灵活性，如用户需求一开始很难确定， 到最后阶段才能得到可运行的软件版本</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgbad2731" class="outline-2">
+<h2 id="orgbad2731"><span class="section-number-2">4</span> 第 4 章 敏捷软件开发方法</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+略
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3128856" class="outline-2">
+<h2 id="org3128856"><span class="section-number-2">5</span> 第 5 章 软件需求分析</h2>
+<div class="outline-text-2" id="text-5">
+<ul class="org-ul">
+<li>软件需求包括的四个层次：
+<ol class="org-ol">
+<li>业务需求： 反映了组织机构或客户对系统、产品高层次的目标要求。 从总体上描述了为什么要开发系统（why），组织希望达到什么目标。</li>
+
+<li>用户需求： 描述了用户使用产品必须要完成的任务， 描述了用户能使用系统来做些什么（what）</li>
+
+<li>功能需求：开发人员在产品中实现的软件功能，用户利用这些功能来完成任务，满足业务需求。 功能需求是需求的主体，它描述的是开发人员如何设计具体的解决方案来实现这些需求（how）</li>
+
+<li>非功能需求： 功能需求的补充，描述了系统完成功能实现的补充和约束条件, 可分为： 产品需求、 机构需求、 外部需求</li>
+</ol></li>
+
+<li>软件需求应该满足的基本特征： 完整性、 一致性和准确性</li>
+
+<li>需求分析过程为： 沟通、 导出需求、 精化需求、可行性研究、 与客户和用户协商、 编写需求规格说明书、 验证需求、 管理需求</li>
+
+<li>可行性研究包括： 经济可行性、 技术可行性、 社会法律可行性</li>
+
+<li>需求获取的技术： 会谈技术、 调查技术、 场景分析技术</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org9901cc0" class="outline-2">
+<h2 id="org9901cc0"><span class="section-number-2">6</span> 第 6 章 结构化分析</h2>
+<div class="outline-text-2" id="text-6">
+<ul class="org-ul">
+<li>结构化分析 <code>SA</code> 是 <b>面向数据流</b> 的需求分析方法</li>
+
+<li>结构化的需求分析模型有： 数据字典（DD）、 数据流图（DFD）、  状态状态转换图（STD）、 实体关系图（ERD）</li>
+
+<li>数据流图的符号包括：
+<ul class="org-ul">
+<li>矩形或立方体： 数据源点或终点</li>
+
+<li>圆角矩形或椭圆： 变换数据的处理</li>
+
+<li>开口矩形： 数据存储</li>
+
+<li>箭头： 数据流</li>
+</ul></li>
+</ul>
+
+<table>
+<caption class="t-above"><span class="table-number">&#34920;3&nbsp;</span> 数据字典语法</caption>
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">符号</th>
+<th scope="col" class="org-left">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">x=&#x2026;</td>
+<td class="org-left">x 由 &#x2026; 组成</td>
+</tr>
+
+<tr>
+<td class="org-left">a+b</td>
+<td class="org-left">a 和 b</td>
+</tr>
+
+<tr>
+<td class="org-left">[a, b]</td>
+<td class="org-left">a 或 b</td>
+</tr>
+
+<tr>
+<td class="org-left">[a &vert; b]</td>
+<td class="org-left">a 或 b</td>
+</tr>
+
+<tr>
+<td class="org-left">{a}</td>
+<td class="org-left">重复 a 任意次数</td>
+</tr>
+
+<tr>
+<td class="org-left">m{a}n</td>
+<td class="org-left">重复 a m 到 n 次</td>
+</tr>
+
+<tr>
+<td class="org-left">(a)</td>
+<td class="org-left">重复 a 零到一次</td>
+</tr>
+
+<tr>
+<td class="org-left">"a"</td>
+<td class="org-left">表示 a 是基本数据</td>
+</tr>
+</tbody>
+</table>
+
+<ul class="org-ul">
+<li>数据流建模方法的步骤： 数据流图要素分析、 构建数据流图和建立数据字典</li>
+
+<li>实体关系图的基本对象为： 实体、联系和属性</li>
+
+<li>实体间的关系包括： 一对一关系、 一对多关系、 多对多关系</li>
+
+<li>状态建模方法步骤： 系统状态、行为与事件分析、 构建状态图</li>
+
+<li>状态图符号：
+<ul class="org-ul">
+<li>初态用实心圆表示</li>
+<li>终态用一对同心圆(内圆为实心圆)表示</li>
+<li>中间状态用圆角矩形表示</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org9284665" class="outline-2">
+<h2 id="org9284665"><span class="section-number-2">7</span> 第 7 章 结构化设计</h2>
+<div class="outline-text-2" id="text-7">
+<ul class="org-ul">
+<li>软件设计主要包含两个阶段： 概要设计和详细设计</li>
+
+<li>软件概要设计步骤： 设计供选择的方案、 选取合理的方案、 推荐最佳方案、 功能分解和软件结构设计、 数据库设计、 编制设计文档、 审查和复查</li>
+
+<li>软件详细设计内容包括： 模块或构建描述、 算法描述、 数据描述</li>
+
+<li>模块或构建的处理逻辑可采用流程图、 PDL 语言、 盒图、 判定表等工具</li>
+
+<li>模块是一个独立命名的，拥有明确定义的输入、输出和特性的程序实体</li>
+
+<li>软件模块化设计定义： 把一个大型软件系统的全部功能，按照一定的原则合理地划分为若干个模块，每个模块完成一个特定子功能，所有的这些模块以某种结构形式组成一个整体，这就是 <b>软件的模块化设计</b></li>
+
+<li>软件模块化设计的好处： 可以简化软件的设计和实现，提高软件的可理解性和可测试性，并使软件更容易得到维护</li>
+
+<li>软件模块化设计的指导方法包括： 分解、 抽象、 信息隐蔽、 逐步求精和模块独立性</li>
+
+<li>模块独立性由 <b>模块内聚性</b> 和 <b>模块间的耦合性</b> 衡量</li>
+
+<li>模块内聚性由弱到强的 7 个等级： 偶然性内聚、 逻辑性内聚、 时间性内聚、 过程性内聚、 通信性内聚、 顺序性内聚、 功能性内聚</li>
+</ul>
+
+<table>
+<caption class="t-above"><span class="table-number">&#34920;4&nbsp;</span> 模块内聚性</caption>
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">名称</th>
+<th scope="col" class="org-left">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">偶然内聚</td>
+<td class="org-left">模块内各部分间无联系</td>
+</tr>
+
+<tr>
+<td class="org-left">逻辑内聚</td>
+<td class="org-left">把几种相关功能组合在一模块内，每次调用由传给模块的参数确定执行哪种功能。</td>
+</tr>
+
+<tr>
+<td class="org-left">时间内聚</td>
+<td class="org-left">模块完成的功能必须在同一时间内执行，这些功能只因时间因素关联在一起</td>
+</tr>
+
+<tr>
+<td class="org-left">过程内聚</td>
+<td class="org-left">指一个模块完成多个任务，这些任务必须按指定的过程执行</td>
+</tr>
+
+<tr>
+<td class="org-left">通信内聚</td>
+<td class="org-left">模块内各部分使用相同的输入数据，或产生相同的输出结果</td>
+</tr>
+
+<tr>
+<td class="org-left">顺序内聚</td>
+<td class="org-left">模块内的多个任务顺序执行，上一个任务的输出是下一个任务的输入</td>
+</tr>
+
+<tr>
+<td class="org-left">功能内聚</td>
+<td class="org-left">模块仅包括为完成某个功能所必须的所有成分</td>
+</tr>
+</tbody>
+</table>
+
+<ul class="org-ul">
+<li>模块耦合性由弱到强的 7 个等级： 非直接耦合、 数据耦合、 特征耦合、 控制耦合、 外部耦合、 公共耦合、 内容耦合</li>
+</ul>
+
+<table>
+<caption class="t-above"><span class="table-number">&#34920;5&nbsp;</span> 模块耦合性</caption>
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">名称</th>
+<th scope="col" class="org-left">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">非直接耦合</td>
+<td class="org-left">模块之间没有直接关系</td>
+</tr>
+
+<tr>
+<td class="org-left">数据耦合</td>
+<td class="org-left">模块调用另一模块时，被调用模块的输入、输出都是简单的数据</td>
+</tr>
+
+<tr>
+<td class="org-left">特征耦合</td>
+<td class="org-left">模块通过传递数据结构加以联系，或都与一个数据结构有关系</td>
+</tr>
+
+<tr>
+<td class="org-left">控制耦合</td>
+<td class="org-left">一个模块通过传送开关、标志、名字等控制信息，明显地控制选择另一模块的功能</td>
+</tr>
+
+<tr>
+<td class="org-left">外部耦合</td>
+<td class="org-left">模块间通过软件之外的环境联结</td>
+</tr>
+
+<tr>
+<td class="org-left">公共耦合</td>
+<td class="org-left">一组模块引用同一个公用数据区</td>
+</tr>
+
+<tr>
+<td class="org-left">内容耦合</td>
+<td class="org-left">一模块直接访问另一模块的内部信息</td>
+</tr>
+</tbody>
+</table>
+
+<ul class="org-ul">
+<li>模块内聚性越高， 耦合性越低， 模块独立性越好</li>
+
+<li>软件结构图的基本成分有： 模块、 调用和数据</li>
+
+<li>软件结构图的形态特征：
+<ul class="org-ul">
+<li>深度： 结构图控制的层次， 也是模块的层数</li>
+
+<li>宽度： 一层中最大的模块个数</li>
+
+<li>扇出： 一个模块的直接下属模块个数</li>
+
+<li>扇入： 一个模块直接上属模块的格式</li>
+</ul></li>
+
+<li>如果程序结构图的深度和宽度较大，则说明程序的规模和复杂程度都较大</li>
+
+<li>一个模块的扇出过大通常意味着该模块比较复杂，然而扇出太少，可能导致深度的增加</li>
+
+<li>启发式设计策略：
+<ul class="org-ul">
+<li>降低耦合度，提高内聚度</li>
+
+<li>避免高扇出，并随着深度的增加，力求高扇入</li>
+
+<li>模块的影响范围应限制在该模块的控制范围内</li>
+
+<li>降低模块接口的复杂程度和冗余程度，提高一致性</li>
+
+<li>模块的功能应是可预测的</li>
+
+<li>尽可能设计单入口和单出口的模块</li>
+</ul></li>
+
+<li>结构化概要设计中， 根据信息流的特点可将信息流分为： 交换流和事务流。 两者同时出现为 混合流</li>
+
+<li>详细设计的基本任务： 每个模块的详细算法设计、 模块内数据结构的设计、 数据结构的物理设计即确定数据库的物理结构、根据软件系统类型可能进行的设计（代码设计、 输入/输出 格式设计、 人机对话设计）、 详细设计说明书、 评审</li>
+
+<li>结构化详细设计： 程序的代码块仅仅通过顺序、选择和循环这三种基本控制结构进行连结，并且每个代码块只有一个入口和一个出口</li>
+
+<li>结构化详细设计的工具： 图表工具、 列表工具、 语言工具</li>
+
+<li><b>判定表与判定树</b> - 列表工具</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgbbc2150" class="outline-2">
+<h2 id="orgbbc2150"><span class="section-number-2">8</span> 第 8 章 结构化软件测试</h2>
+<div class="outline-text-2" id="text-8">
+<ul class="org-ul">
+<li>软件测试的目的： 为了发现软件缺陷的执行过程</li>
+
+<li>软件测试技术的核心： 尽早测试、 连续测试、 自动化测试</li>
+
+<li>验证和确认： 验证是指实现的软件产品是按照需求做的， 是符合需求说明书的； 确认是指实现的软件产品在 <b>用户环境</b> 下实现了用户的需要。</li>
+
+<li>软件测试的基本过程： 单元测试、 集成测试、 确认测试和系统测试</li>
+
+<li>测试用例是按一定的顺序执行的与测试目标相关的测试活动的描述</li>
+
+<li>测试技术可以分为：
+<ul class="org-ul">
+<li><b>白盒测试：</b> 测试人员根据程序内部的逻辑结构及有关信息设计测试用例</li>
+
+<li><b>黑盒测试：</b> 测试人员完全不考虑程序内部的逻辑结构和内部特性，只依据程序的需求规格说明书</li>
+</ul></li>
+
+<li>黑盒测试技术： 等价类划分、 边界值分析、 错误推测、 因果图</li>
+
+<li>白盒测试技术： 逻辑覆盖、 路径覆盖、 循环路径测试</li>
+
+<li>逻辑覆盖法测试：
+<ul class="org-ul">
+<li>语句覆盖： 选择足够的测试用例，使得程序中 <b>每个语句</b> 至少都能执行一次</li>
+
+<li>判定覆盖： 执行足够的测试用例， 使得程序中 <b>每个判定语句</b> 至少获得一次 <b>真值</b> 与 <b>假值</b></li>
+
+<li>条件符号： 执行足够的测试用例， 使得程序中 <b>每个判定条件</b> 取得各种可能的结果， <b>判定语句</b> 可包含多个 <b>判定条件</b></li>
+
+<li>判定／条件覆盖： 执行足够的测试用例，同时满足判定覆盖和条件覆盖的要求</li>
+
+<li>条件组合覆盖： 执行足够的测试用例，使得每个判定中条件的各种可能组合都至少执行一次</li>
+</ul></li>
+
+<li>路径测试 - 程序控制流图 映射要点：
+<ul class="org-ul">
+<li>一个或多个顺序语句可映射为程序图的一个节点，用带标识的圆表示</li>
+
+<li>一个处理框序列和一个判别框可映射为程序图的一个节点</li>
+
+<li>程序控制流图用方向箭头表示</li>
+
+<li>右边和节点的限定范围称为 <b>区域</b>, 区域应包括图外部的范围</li>
+</ul></li>
+
+<li>独立路径： 从第一个节点到最后一个节点的路径， 独立路径中每个条件判断只执行一次</li>
+
+<li>确定程序图的环形复杂度：
+<ul class="org-ul">
+<li>V(G) = 程序图 G 的区域数</li>
+
+<li>V(G) = E - N + 2, E 是程序图 G 的边数， N 是节点数</li>
+
+<li>V(G) = P + 1, P 是程序图 G 中判定节点的个数</li>
+</ul></li>
+
+<li>循环路径测试策略： 简单循环测试、 嵌套循环测试、 串接循环测试</li>
+
+<li>简单循环测试：
+<ul class="org-ul">
+<li>零次循环：从循环入口直接跳到循环出口</li>
+<li>一次循环：查找循环初始值方面的错误</li>
+<li>二次循环：检查在多次循环时才能暴露的错误</li>
+<li>m 次循环：此时的 m ＜ n，也是检查在多次循环时才能暴露的错误</li>
+<li>n(最大)次数循环、n+1 (比最大次数多一)次的循环、n-1(比最大次数少一)次的循环</li>
+</ul></li>
+
+<li>嵌套循环测试：
+<ul class="org-ul">
+<li>从最内层循环开始，设置所有其他层的循环为最小值</li>
+<li>对最内层循环做简单循环的全部测试。测试时保持所有外层循环的循环变量为最小值。另外，对越界值和非法值做类似的测试</li>
+<li>逐步外推，对其外面一层循环进行测试。测试时保持所有外层循环的循环变量取最小值，所有其它嵌套内层循环的循环变量取“典型”值</li>
+<li>反复进行，直到所有各层循环测试完毕</li>
+<li>对全部各层循环同时取最小循环次数，或者同时取最大循环次数</li>
+</ul></li>
+
+<li>串接循环测试：
+<ul class="org-ul">
+<li>如果各个循环互相独立，则串接循环可以用与简单循环相同的方法进行测试。</li>
+<li>如果有两个循环处于串接状态，而前一个循环的循环变量的值是后一个循环的初值。则这几个循环不是互相独立的，则需要使用测试嵌套循环的办法来处理</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

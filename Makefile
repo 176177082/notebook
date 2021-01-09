@@ -1,2 +1,7 @@
+note:
+	python3 makepage.py
+	emacs --script export.el
+
 all:
-	python makenote.py
+	python3 makepage.py
+	emacs --script export.el all

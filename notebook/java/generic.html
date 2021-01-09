@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:46 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Java 泛型</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">Java 泛型</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org0da76f0">1. 泛型类型</a></li>
+<li><a href="#org121b5c8">2. 泛型方法</a></li>
+<li><a href="#org50e206f">3. 有界类型参数</a></li>
+<li><a href="#orgc526ff2">4. 泛型类的子类</a></li>
+<li><a href="#org375eef9">5. 类型推断</a></li>
+<li><a href="#org458a92c">6. 通配符</a></li>
+<li><a href="#orgd12a87b">7. 类型擦除</a></li>
+<li><a href="#orgc63c9c6">8. 泛型的限制</a></li>
+<li><a href="#orgc5df7ae">9. 泛型继承</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0da76f0" class="outline-2">
+<h2 id="org0da76f0"><span class="section-number-2">1</span> 泛型类型</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li><p>
+<b>类型参数命名约定</b>
+</p>
+
+<pre class="example">
+E - Element (used extensively by the Java Collections Framework)
+K - Key
+N - Number
+T - Type
+V - Value
+S,U,V etc. - 2nd, 3rd, 4th types
+</pre></li>
+
+<li><p>
+<b>原始类型</b>
+</p>
+
+<p>
+原始类型是没有任何类型参数的泛型类或接口的名称，如果将原始类型分配给参数化类型，或者使用原始类型调用相应泛型类型中定义的泛型方法，会得到警告。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">public</span> <span class="org-keyword">class</span> <span class="org-type">Box</span>&lt;<span class="org-type">T</span>&gt; {
+  <span class="org-keyword">public</span> <span class="org-type">void</span> <span class="org-function-name">set</span>(<span class="org-type">T</span> <span class="org-variable-name">t</span>) { <span class="org-comment-delimiter">/* </span><span class="org-comment">...</span><span class="org-comment-delimiter"> */</span> }
+  <span class="org-comment-delimiter">// </span><span class="org-comment">...</span>
+}
+
+<span class="org-type">Box</span>&lt;<span class="org-type">String</span>&gt; <span class="org-variable-name">stringBox</span> = <span class="org-keyword">new</span> <span class="org-type">Box</span>&lt;&gt;();
+<span class="org-type">Box</span> <span class="org-variable-name">rawBox</span> = stringBox;               <span class="org-comment-delimiter">// </span><span class="org-comment">OK</span>
+
+<span class="org-type">Box</span> <span class="org-variable-name">rawBox</span> = <span class="org-keyword">new</span> <span class="org-type">Box</span>();           <span class="org-comment-delimiter">// </span><span class="org-comment">rawBox is a raw type of Box&lt;T&gt;</span>
+<span class="org-type">Box</span>&lt;<span class="org-type">Integer</span>&gt; <span class="org-variable-name">intBox</span> = rawBox;     <span class="org-comment-delimiter">// </span><span class="org-comment">warning: unchecked conversion</span>
+
+<span class="org-type">Box</span>&lt;<span class="org-type">String</span>&gt; <span class="org-variable-name">stringBox</span> = <span class="org-keyword">new</span> <span class="org-type">Box</span>&lt;&gt;();
+<span class="org-type">Box</span> <span class="org-variable-name">rawBox</span> = stringBox;
+rawBox.set(8);  <span class="org-comment-delimiter">// </span><span class="org-comment">warning: unchecked invocation to set(T)</span>
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org121b5c8" class="outline-2">
+<h2 id="org121b5c8"><span class="section-number-2">2</span> 泛型方法</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+单独的泛型方法声明需要声明 <b>类型参数列表</b>, 这个列表位于返回值之前。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">public</span> <span class="org-keyword">class</span> <span class="org-type">Util</span> {
+  <span class="org-keyword">public</span> <span class="org-keyword">static</span> &lt;<span class="org-type">K</span>, <span class="org-type">V</span>&gt; <span class="org-type">boolean</span> <span class="org-function-name">compare</span>(<span class="org-type">Pair</span>&lt;<span class="org-type">K</span>, <span class="org-type">V</span>&gt; <span class="org-variable-name">p1</span>, <span class="org-type">Pair</span>&lt;<span class="org-type">K</span>, <span class="org-type">V</span>&gt; <span class="org-variable-name">p2</span>) {
+    <span class="org-keyword">return</span> p1.getKey().equals(p2.getKey()) &amp;&amp;
+      p1.getValue().equals(p2.getValue());
+  }
+}
+</pre>
+</div>
+
+<p>
+当类型推断无法完成的时候，调用泛型方法需要指定类型：
+</p>
+<div class="org-src-container">
+<pre class="src src-java">Util.&lt;<span class="org-type">String</span>, <span class="org-type">Integer</span>&gt;compare();
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org50e206f" class="outline-2">
+<h2 id="org50e206f"><span class="section-number-2">3</span> 有界类型参数</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+声明类型参数可以使用关键字 <code>extends</code> 指定上限。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">public</span> &lt;<span class="org-type">T</span> <span class="org-keyword">extends</span> <span class="org-type">Number</span>&gt; <span class="org-type">void</span> <span class="org-function-name">inspect</span>(<span class="org-type">T</span> <span class="org-variable-name">t</span>){
+  System.out.println(<span class="org-string">"T: "</span> + t.getClass().getName());
+}
+</pre>
+</div>
+
+<p>
+有界类型参数还允许调用边界中定义的方法：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">public</span> <span class="org-keyword">class</span> <span class="org-type">NaturalNumber</span>&lt;<span class="org-type">T</span> <span class="org-keyword">extends</span> <span class="org-type">Integer</span>&gt; {
+
+  <span class="org-keyword">private</span> <span class="org-type">T</span> <span class="org-variable-name">n</span>;
+
+  <span class="org-keyword">public</span> <span class="org-function-name">NaturalNumber</span>(<span class="org-type">T</span> <span class="org-variable-name">n</span>)  { <span class="org-keyword">this</span>.n = n; }
+
+  <span class="org-keyword">public</span> <span class="org-type">boolean</span> <span class="org-function-name">isEven</span>() {
+    <span class="org-keyword">return</span> n.intValue() % 2 == 0;
+  }
+
+  <span class="org-comment-delimiter">// </span><span class="org-comment">...</span>
+}
+</pre>
+</div>
+
+<p>
+可以同时指定多个边界：
+</p>
+<div class="org-src-container">
+<pre class="src src-java">&lt;T <span class="org-keyword">extends</span> <span class="org-type">B1</span> &amp; B2 &amp; B3&gt;
+</pre>
+</div>
+
+<p>
+类似的，可以通过关键字 <code>super</code> 指定下限。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc526ff2" class="outline-2">
+<h2 id="orgc526ff2"><span class="section-number-2">4</span> 泛型类的子类</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+<code>Box&lt;Integer&gt;</code> 不是 <code>Box&lt;Number&gt;</code> 的子类型，即使 <code>Integer</code> 是 <code>Number</code> 的子类型
+</p>
+
+<img src="https://docs.oracle.com/javase/tutorial/figures/java/generics-subtypeRelationship.gif">
+
+<p>
+继承泛型类的杀死后可以添加类型参数：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">interface</span> <span class="org-type">PayloadList</span>&lt;<span class="org-type">E</span>,<span class="org-type">P</span>&gt; <span class="org-keyword">extends</span> <span class="org-type">List</span>&lt;<span class="org-type">E</span>&gt; {
+  <span class="org-type">void</span> <span class="org-function-name">setPayload</span>(<span class="org-type">int</span> <span class="org-variable-name">index</span>, <span class="org-type">P</span> <span class="org-variable-name">val</span>);
+  ...
+}
+</pre>
+</div>
+
+<img src="https://docs.oracle.com/javase/tutorial/figures/java/generics-payloadListHierarchy.gif">
+
+<p>
+但是：Pair&lt;Child&gt; 是 Pair&lt;? extends Super&gt; 的子类
+</p>
+</div>
+</div>
+
+<div id="outline-container-org375eef9" class="outline-2">
+<h2 id="org375eef9"><span class="section-number-2">5</span> 类型推断</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+Java 编译器利用 <b>目标类型</b> 来推断泛型方法调用的类型参数，比如：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-comment-delimiter">// </span><span class="org-comment">static &lt;T&gt; List&lt;T&gt; emptyList();</span>
+<span class="org-type">List</span>&lt;<span class="org-type">String</span>&gt; <span class="org-variable-name">listOne</span> = Collections.emptyList();
+</pre>
+</div>
+
+<p>
+目标类型为 <code>List&lt;String&gt;</code>, 因此可以推断出类型 <code>T</code> 为 <code>String</code>.
+</p>
+
+<p>
+<b>NOTE:</b> JDK 8 开始支持这一特性
+</p>
+</div>
+</div>
+
+<div id="outline-container-org458a92c" class="outline-2">
+<h2 id="org458a92c"><span class="section-number-2">6</span> 通配符</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+通配符 <code>?</code> 的使用场景：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-comment-delimiter">// </span><span class="org-comment">&#22768;&#26126;&#27867;&#22411;&#31867;</span>
+<span class="org-keyword">public</span> <span class="org-keyword">class</span> <span class="org-type">Box</span>&lt;<span class="org-type">T</span>&gt; {}  <span class="org-comment-delimiter">// </span><span class="org-comment">OK</span>
+<span class="org-keyword">public</span> <span class="org-keyword">class</span> <span class="org-type">Box</span>&lt;?&gt; {}  <span class="org-comment-delimiter">// </span><span class="org-comment">ERROR</span>
+
+<span class="org-comment-delimiter">// </span><span class="org-comment">&#22768;&#26126;&#27867;&#22411;&#26041;&#27861;</span>
+<span class="org-keyword">public</span> <span class="org-keyword">class</span> <span class="org-type">Box</span> {
+  <span class="org-keyword">public</span> &lt;<span class="org-type">T</span>&gt; <span class="org-type">void</span> <span class="org-function-name">method</span>(<span class="org-type">T</span> <span class="org-variable-name">val</span>);  <span class="org-comment-delimiter">// </span><span class="org-comment">OK</span>
+  <span class="org-keyword">public</span> &lt;?&gt; <span class="org-type">void</span> <span class="org-function-name">method</span>(? val);  <span class="org-comment-delimiter">// </span><span class="org-comment">ERROR</span>
+}
+
+<span class="org-comment-delimiter">// </span><span class="org-comment">&#27867;&#22411;&#31867;&#30340;&#31867;&#22411;&#21442;&#25968;</span>
+<span class="org-keyword">public</span> <span class="org-type">List</span>&lt;?&gt; <span class="org-variable-name">list</span>;  <span class="org-comment-delimiter">// </span><span class="org-comment">&#20316;&#20026;&#27867;&#22411;&#31867;&#24341;&#29992;&#30340;&#31867;&#22411;&#21442;&#25968; - OK</span>
+<span class="org-keyword">public</span> <span class="org-type">List</span>&lt;?&gt; <span class="org-variable-name">list</span> = <span class="org-keyword">new</span> <span class="org-type">ArrayList</span>&lt;?&gt;();  <span class="org-comment-delimiter">// </span><span class="org-comment">&#23454;&#20363;&#21270;&#27867;&#22411;&#31867; - ERROR</span>
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><p>
+<b>指定上下限</b>
+</p>
+
+<p>
+指定上下限的方式依然是使用关键字 <code>extends</code> 和 <code>super</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">public</span> <span class="org-keyword">static</span> <span class="org-type">double</span> <span class="org-function-name">sumOfList</span>(<span class="org-type">List</span>&lt;? <span class="org-keyword">extends</span> <span class="org-type">Number</span>&gt; <span class="org-variable-name">list</span>) {
+  <span class="org-type">double</span> <span class="org-variable-name">s</span> = 0.0;
+  <span class="org-keyword">for</span> (<span class="org-type">Number</span> <span class="org-variable-name">n</span> : list)
+    s += n.doubleValue();
+  <span class="org-keyword">return</span> s;
+}
+
+<span class="org-keyword">public</span> <span class="org-keyword">static</span> <span class="org-type">void</span> <span class="org-function-name">addNumbers</span>(<span class="org-type">List</span>&lt;? <span class="org-keyword">super</span> <span class="org-type">Integer</span>&gt; <span class="org-variable-name">list</span>) {
+  <span class="org-keyword">for</span> (<span class="org-type">int</span> <span class="org-variable-name">i</span> = 1; i &lt;= 10; i++) {
+    list.add(i);
+  }
+}
+</pre>
+</div></li>
+
+<li><p>
+<b>无边界通配符</b>
+</p>
+
+<p>
+无边界通配符的适用场景：
+</p>
+<ol class="org-ol">
+<li>编写通过 Object 类提供的方法就可以完成所有工作的方法</li>
+<li>只使用泛型类中不依赖于类型参数的方法时。比如，经常使用的 <code>Class&lt;?&gt;</code>,
+因为 <code>Class&lt;T&gt;</code> 中的大多数方法都不依赖于类型参数 <code>T</code>.</li>
+</ol></li>
+
+<li><p>
+<b>通配符和子类型</b>
+</p>
+
+<p>
+<code>Class&lt;?&gt;</code> 是其他 <code>Class&lt;T&gt;</code> 的公共父类，即：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-type">List</span>&lt;?&gt; <span class="org-variable-name">list</span> = <span class="org-keyword">new</span> <span class="org-type">ArrayList</span>&lt;<span class="org-type">Integer</span>&gt;();  <span class="org-comment-delimiter">// </span><span class="org-comment">OK</span>
+<span class="org-type">List</span>&lt;<span class="org-type">Number</span>&gt; <span class="org-variable-name">list</span> = <span class="org-keyword">new</span> <span class="org-type">ArrayList</span>&lt;<span class="org-type">Integer</span>&gt;();  <span class="org-comment-delimiter">// </span><span class="org-comment">ERROR</span>
+</pre>
+</div>
+
+<img src="https://docs.oracle.com/javase/tutorial/figures/java/generics-wildcardSubtyping.gif"></li>
+
+<li><p>
+<b>通配符捕获</b>
+</p>
+
+<p>
+在某些情况下，编译器会推断出通配符的类型：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">public</span> <span class="org-keyword">class</span> <span class="org-type">WildcardError</span> {
+  <span class="org-type">void</span> <span class="org-function-name">foo</span>(<span class="org-type">List</span>&lt;?&gt; <span class="org-variable-name">i</span>) {
+    i.set(0, i.get(0));  <span class="org-comment-delimiter">// </span><span class="org-comment">ERROR</span>
+  }
+}
+
+<span class="org-comment-delimiter">// </span><span class="org-comment">&#36816;&#29992;&#36890;&#37197;&#31526;&#25429;&#33719;</span>
+<span class="org-keyword">public</span> <span class="org-keyword">class</span> <span class="org-type">WildcardFixed</span> {
+  <span class="org-type">void</span> <span class="org-function-name">foo</span>(<span class="org-type">List</span>&lt;?&gt; <span class="org-variable-name">i</span>) {
+    fooHelper(i);
+  }
+
+  <span class="org-comment-delimiter">// </span><span class="org-comment">Helper method created so that the wildcard can be captured</span>
+  <span class="org-comment-delimiter">// </span><span class="org-comment">through type inference.</span>
+  <span class="org-keyword">private</span> &lt;<span class="org-type">T</span>&gt; <span class="org-type">void</span> <span class="org-function-name">fooHelper</span>(<span class="org-type">List</span>&lt;<span class="org-type">T</span>&gt; <span class="org-variable-name">l</span>) {
+    l.set(0, l.get(0));
+  }
+}
+</pre>
+</div></li>
+
+<li><b>使用指南</b>
+
+<ol class="org-ol">
+<li>使用 <code>extends</code> 关键字定义带有上限通配符的 <code>in</code> 变量</li>
+<li>使用 <code>super</code> 关键字定义带有下限通配符的 <code>out</code> 变量</li>
+<li>在可以使用 <code>Object</code> 类中定义的方法访问 <code>in</code> 变量的情况下，使用无界通配符</li>
+<li>在变量即作为 <code>in</code> 变量也作为 <code>out</code> 变量的情况下，不使用通配符</li>
+</ol></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd12a87b" class="outline-2">
+<h2 id="orgd12a87b"><span class="section-number-2">7</span> 类型擦除</h2>
+<div class="outline-text-2" id="text-7">
+<ul class="org-ul">
+<li><a href="https://www.cnblogs.com/wuqinglong/p/9456193.html">Java 泛型类型擦除以及类型擦除带来的问题 - 蜗牛大师 - 博客园</a></li>
+</ul>
+
+<p>
+问：既然存在类型擦除，那么泛型的类型检查是怎样完成的呢？答：泛型的类型检查在 <b>编译前</b> 完成
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc63c9c6" class="outline-2">
+<h2 id="orgc63c9c6"><span class="section-number-2">8</span> 泛型的限制</h2>
+<div class="outline-text-2" id="text-8">
+<ol class="org-ol">
+<li><p>
+原始数据类型不能作为泛型的类型参数
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-type">List</span>&lt;<span class="org-type">int</span>&gt; <span class="org-variable-name">list</span>;  <span class="org-comment-delimiter">// </span><span class="org-comment">ERROR</span>
+</pre>
+</div></li>
+
+<li><p>
+无法创建类型参数的实例
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">public</span> <span class="org-keyword">static</span> &lt;<span class="org-type">E</span>&gt; <span class="org-type">void</span> <span class="org-function-name">append</span>(<span class="org-type">List</span>&lt;<span class="org-type">E</span>&gt; <span class="org-variable-name">list</span>) {
+  <span class="org-type">E</span> <span class="org-variable-name">elem</span> = <span class="org-keyword">new</span> <span class="org-type">E</span>();  <span class="org-comment-delimiter">// </span><span class="org-comment">compile-time error</span>
+  list.add(elem);
+}
+</pre>
+</div>
+
+<p>
+但是可以利用反射创建实例：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">public</span> <span class="org-keyword">static</span> &lt;<span class="org-type">E</span>&gt; <span class="org-type">void</span> <span class="org-function-name">append</span>(<span class="org-type">List</span>&lt;<span class="org-type">E</span>&gt; <span class="org-variable-name">list</span>, <span class="org-type">Class</span>&lt;<span class="org-type">E</span>&gt; <span class="org-variable-name">cls</span>) <span class="org-keyword">throws</span> <span class="org-type">Exception</span> {
+  <span class="org-type">E</span> <span class="org-variable-name">elem</span> = cls.newInstance();   <span class="org-comment-delimiter">// </span><span class="org-comment">OK</span>
+  list.add(elem);
+}
+</pre>
+</div></li>
+
+<li><p>
+无法声明类型为类型参数的静态字段
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">public</span> <span class="org-keyword">class</span> <span class="org-type">MobileDevice</span>&lt;<span class="org-type">T</span>&gt; {
+  <span class="org-keyword">private</span> <span class="org-keyword">static</span> <span class="org-type">T</span> <span class="org-variable-name">os</span>;  <span class="org-comment-delimiter">// </span><span class="org-comment">ERROR</span>
+}
+</pre>
+</div></li>
+
+<li><p>
+无法使用类型参数进行强制类型转换或用于关键字 <code>instanceof</code>
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">public</span> <span class="org-keyword">static</span> &lt;<span class="org-type">E</span>&gt; <span class="org-type">void</span> <span class="org-function-name">rtti</span>(<span class="org-type">List</span>&lt;<span class="org-type">E</span>&gt; <span class="org-variable-name">list</span>) {
+  <span class="org-keyword">if</span> (list <span class="org-keyword">instanceof</span> <span class="org-type">ArrayList</span>&lt;<span class="org-type">Integer</span>&gt;) {  <span class="org-comment-delimiter">// </span><span class="org-comment">compile-time error</span>
+    <span class="org-comment-delimiter">// </span><span class="org-comment">...</span>
+  }
+}
+</pre>
+</div>
+
+<p>
+无界通配符可以用在这里判断是否为 List：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">public</span> <span class="org-keyword">static</span> <span class="org-type">void</span> <span class="org-function-name">rtti</span>(<span class="org-type">List</span>&lt;?&gt; <span class="org-variable-name">list</span>) {
+  <span class="org-keyword">if</span> (list <span class="org-keyword">instanceof</span> <span class="org-type">ArrayList</span>&lt;?&gt;) {  <span class="org-comment-delimiter">// </span><span class="org-comment">OK; instanceof requires a reifiable type</span>
+    <span class="org-comment-delimiter">// </span><span class="org-comment">...</span>
+  }
+}
+</pre>
+</div></li>
+
+<li><p>
+无法创建、捕获或抛出类型参数的对象
+</p>
+
+<p>
+泛型类不能直接或间接扩展 Throwable 类：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-comment-delimiter">// </span><span class="org-comment">Extends Throwable indirectly</span>
+<span class="org-keyword">class</span> <span class="org-type">MathException</span>&lt;<span class="org-type">T</span>&gt; <span class="org-keyword">extends</span> <span class="org-type">Exception</span> { <span class="org-comment-delimiter">/* </span><span class="org-comment">...</span><span class="org-comment-delimiter"> */</span> }    <span class="org-comment-delimiter">// </span><span class="org-comment">compile-time error</span>
+
+<span class="org-comment-delimiter">// </span><span class="org-comment">Extends Throwable directly</span>
+<span class="org-keyword">class</span> <span class="org-type">QueueFullException</span>&lt;<span class="org-type">T</span>&gt; <span class="org-keyword">extends</span> <span class="org-type">Throwable</span> { <span class="org-comment-delimiter">/* </span><span class="org-comment">...</span><span class="org-comment-delimiter"> */</span> <span class="org-comment-delimiter">// </span><span class="org-comment">compile-time error</span>
+</pre>
+</div>
+
+<p>
+无法捕获类型参数的实例：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">public</span> <span class="org-keyword">static</span> &lt;<span class="org-type">T</span> <span class="org-keyword">extends</span> <span class="org-type">Exception</span>, <span class="org-type">J</span>&gt; <span class="org-type">void</span> <span class="org-function-name">execute</span>(<span class="org-type">List</span>&lt;<span class="org-type">J</span>&gt; <span class="org-variable-name">jobs</span>) {
+  <span class="org-keyword">try</span> {
+    <span class="org-keyword">for</span> (<span class="org-type">J</span> <span class="org-variable-name">job</span> : jobs)
+      <span class="org-comment-delimiter">// </span><span class="org-comment">...</span>
+      } <span class="org-keyword">catch</span> (<span class="org-type">T</span> <span class="org-variable-name">e</span>) {   <span class="org-comment-delimiter">// </span><span class="org-comment">compile-time error</span>
+    <span class="org-comment-delimiter">// </span><span class="org-comment">...</span>
+  }
+}
+</pre>
+</div>
+
+<p>
+但是，可以在 throws 子句中使用类型参数：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">class</span> <span class="org-type">Parser</span>&lt;<span class="org-type">T</span> <span class="org-keyword">extends</span> <span class="org-type">Exception</span>&gt; {
+  <span class="org-keyword">public</span> <span class="org-type">void</span> <span class="org-function-name">parse</span>(<span class="org-type">File</span> <span class="org-variable-name">file</span>) <span class="org-keyword">throws</span> <span class="org-type">T</span> {     <span class="org-comment-delimiter">// </span><span class="org-comment">OK</span>
+    <span class="org-comment-delimiter">// </span><span class="org-comment">...</span>
+  }
+}
+</pre>
+</div></li>
+
+<li><p>
+无法重载每个重载的形式参数类型擦除到相同原始类型的方法
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">public</span> <span class="org-keyword">class</span> <span class="org-type">Example</span> {
+  <span class="org-keyword">public</span> <span class="org-type">void</span> <span class="org-function-name">print</span>(<span class="org-type">Set</span>&lt;<span class="org-type">String</span>&gt; <span class="org-variable-name">strSet</span>) { }
+  <span class="org-keyword">public</span> <span class="org-type">void</span> <span class="org-function-name">print</span>(<span class="org-type">Set</span>&lt;<span class="org-type">Integer</span>&gt; <span class="org-variable-name">intSet</span>) { }
+}
+</pre>
+</div>
+
+<p>
+上面两个方法在类型擦除后具有相同的签名，因此会造成编译出错。
+</p></li>
+
+<li><p>
+无法创建类型参数的数组
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-type">List</span>&lt;<span class="org-type">Integer</span>&gt;[] <span class="org-variable-name">arrayOfLists</span> = <span class="org-keyword">new</span> <span class="org-type">List</span>&lt;<span class="org-type">Integer</span>&gt;[2];  <span class="org-comment-delimiter">// </span><span class="org-comment">compile-time error</span>
+</pre>
+</div>
+
+<p>
+可以参考 <a href="https://github.com/exsourcode/jdk8u-jdk/blob/master/src/share/classes/java/util/ArrayList.java">jdk8u-jdk/ArrayList.java at master · exsourcode/jdk8u-jdk</a>
+</p></li>
+
+<li><p>
+不能实例化参数化类型的数组：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-type">Pair</span>&lt;<span class="org-type">String</span>&gt;[] <span class="org-variable-name">table</span> = <span class="org-keyword">new</span> <span class="org-type">Pair</span>&lt;&gt;[10]; <span class="org-comment-delimiter">// </span><span class="org-comment">error</span>
+</pre>
+</div></li>
+
+<li>运行时类型查询（反射）只能获取原始类型（类型擦除之后）</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgc5df7ae" class="outline-2">
+<h2 id="orgc5df7ae"><span class="section-number-2">9</span> 泛型继承</h2>
+<div class="outline-text-2" id="text-9">
+<p>
+在下面的代码中，Child 必然是 <code>Super&lt;Integer&gt;</code> 类型的：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">interface</span> <span class="org-type">Super</span>&lt;<span class="org-type">T</span>&gt; {}
+
+<span class="org-keyword">interface</span> <span class="org-type">Child</span>&lt;<span class="org-type">T</span>&gt; <span class="org-keyword">extends</span> <span class="org-type">Super</span>&lt;<span class="org-type">Integer</span>&gt; {}
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

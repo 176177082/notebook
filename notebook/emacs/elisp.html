@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:47 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Emacs Lisp</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">Emacs Lisp</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org0aa6127">1. Variables</a></li>
+<li><a href="#org9705ab6">2. Lisp Data Types</a>
+<ul>
+<li><a href="#org0075c1f">2.1. alist &amp; plist</a></li>
+<li><a href="#orgfe0da01">2.2. Quote &amp; Backquote</a></li>
+<li><a href="#org50a3a2c">2.3. cons</a></li>
+<li><a href="#org4a0809b">2.4. Type Predicates</a></li>
+</ul>
+</li>
+<li><a href="#org8f6915d">3. Loading</a>
+<ul>
+<li><a href="#orgeeb2c6f">3.1. autoload</a></li>
+</ul>
+</li>
+<li><a href="#orgcb47db2">4. Major and Minor Modes</a>
+<ul>
+<li><a href="#org945adbe">4.1. minor-mode</a></li>
+</ul>
+</li>
+<li><a href="#orgf347af1">5. Symbols</a></li>
+<li><a href="#org436377f">6. Macros</a></li>
+<li><a href="#orgb8923a8">7. Operating System Interface</a>
+<ul>
+<li><a href="#orga321785">7.1. Timer</a></li>
+</ul>
+</li>
+<li><a href="#orgd29e978">8. Functions</a>
+<ul>
+<li><a href="#org3b05cc6">8.1. 关键字参数</a></li>
+<li><a href="#org66d3ce4">8.2. interactive</a></li>
+<li><a href="#org37856b8">8.3. 有用的函数</a></li>
+</ul>
+</li>
+<li><a href="#orgb8288b7">9. 风格规范</a>
+<ul>
+<li><a href="#orge75f9ec">9.1. Package</a></li>
+<li><a href="#org578a877">9.2. 命名风格</a></li>
+</ul>
+</li>
+<li><a href="#org2310995">10. 问题集</a>
+<ul>
+<li><a href="#org6d0cd31">10.1. setq 和 setq-defautl 的区别</a></li>
+<li><a href="#org6642115">10.2. let 和 let* 的区别</a></li>
+<li><a href="#org20ede1b">10.3. 以 : 开头的参数是怎么一回事</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0aa6127" class="outline-2">
+<h2 id="org0aa6127"><span class="section-number-2">1</span> Variables</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Elisp 中变量的值是什么受到作用域规则的影响，Elisp 同时支持词法作用域和动态作用域，其中，通过 defvar 和 defconst 定义的变量为动态作用域。
+</p>
+
+<p>
+在 Elisp 中，变量值存储在 Symbol 的 Value Cell 中，当局部变量和全局变量同名时，访问变量会得到一个 local binding 的值，而 global binding 此时会作为 shadowed 存在，在退出局部作用域时会恢复 shadowed 值。
+</p>
+
+<p>
+函数 setq 设置的值是 current binding 的值，也就是说，可能不会改变 global binding 值，如果需要，可以通过 setq-default 改变默认值。
+</p>
+
+<p>
+参考：<a href="../compile/question.html#MissingReference">动态作用域 &amp; 词法作用域</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9705ab6" class="outline-2">
+<h2 id="org9705ab6"><span class="section-number-2">2</span> Lisp Data Types</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org0075c1f" class="outline-3">
+<h3 id="org0075c1f"><span class="section-number-3">2.1</span> alist &amp; plist</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+alist 的常见的两种形式：
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp">'((a . 1) (<span class="org-string">"b"</span> 2 3))
+'((rose red) (lily white) (buttercup yellow))
+</pre>
+</div>
+
+<p>
+plist 常见的形式：
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp">(plist-get '(foo 4) 'foo)     <span class="org-comment-delimiter">;; </span><span class="org-comment">&#8658; 4</span>
+(plist-get '(foo 4 bad) 'foo) <span class="org-comment-delimiter">;; </span><span class="org-comment">&#8658; 4</span>
+(plist-get '(foo 4 bad) 'bad) <span class="org-comment-delimiter">;; </span><span class="org-comment">&#8658; nil</span>
+(plist-get '(foo 4 bad) 'bar) <span class="org-comment-delimiter">;; </span><span class="org-comment">&#8658; nil</span>
+</pre>
+</div>
+
+<p>
+可见两者的本质是相同的：
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp">ELISP&gt; (type-of '(foo 4))
+cons
+ELISP&gt; (type-of '((foo 4)))
+cons
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><a href="https://www.gnu.org/software/emacs/manual/html_node/elisp/Association-Lists.html">Association Lists - GNU Emacs Lisp Reference Manual</a></li>
+<li><a href="https://www.gnu.org/software/emacs/manual/html_node/elisp/Plist-Access.html#Plist-Access">Plist Access - GNU Emacs Lisp Reference Manual</a></li>
+<li><a href="https://www.gnu.org/software/emacs/manual/html_node/elisp/Dotted-Pair-Notation.html">Dotted Pair Notation - GNU Emacs Lisp Reference Manual</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgfe0da01" class="outline-3">
+<h3 id="orgfe0da01"><span class="section-number-3">2.2</span> Quote &amp; Backquote</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+通过 quote 包裹的对象将不会执行，而是直接返回：
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp">'( a b c)  <span class="org-comment-delimiter">; </span><span class="org-comment">=&gt; (a b c)</span>
+</pre>
+</div>
+
+<p>
+反引号内部可以通过 <code>,</code> 和 <code>,@</code> 进行计算：
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp">`(1 2 ,(+ 3 4))  <span class="org-comment-delimiter">; </span><span class="org-comment">=&gt; (1 2 7)</span>
+`(1 2 ,@(+ 3 4)) <span class="org-comment-delimiter">; </span><span class="org-comment">=&gt; (1 2 . 7)</span>
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><a href="https://www.gnu.org/software/emacs/manual/html_node/elisp/Quoting.html">Quoting - GNU Emacs Lisp Reference Manual</a></li>
+<li><a href="https://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html#Backquote">Backquote - GNU Emacs Lisp Reference Manual</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org50a3a2c" class="outline-3">
+<h3 id="org50a3a2c"><span class="section-number-3">2.3</span> cons</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+任何非空的列表，都可以被视为一对由列表第一个元素及列表其余元素所组成的列表。
+</p>
+
+<p>
+Lisp 的惯例是使用 car 代表列表的第一个元素，而用 cdr 代表列表的其余的元素。
+</p>
+
+<ul class="org-ul">
+<li><a href="https://acl.readthedocs.io/en/latest/zhCN/ch3-cn.html#conses">第三章：列表 — ANSI Common Lisp 中文版</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4a0809b" class="outline-3">
+<h3 id="org4a0809b"><span class="section-number-3">2.4</span> Type Predicates</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+通过函数 <code>type-of</code> 判断一个对象的类型：
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp">(type-of '(1 2 3))  <span class="org-comment-delimiter">; </span><span class="org-comment">=&gt; cons</span>
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><a href="https://www.gnu.org/software/emacs/manual/html_node/elisp/Type-Predicates.html">Type Predicates - GNU Emacs Lisp Reference Manual</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8f6915d" class="outline-2">
+<h2 id="org8f6915d"><span class="section-number-2">3</span> Loading</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-orgeeb2c6f" class="outline-3">
+<h3 id="orgeeb2c6f"><span class="section-number-3">3.1</span> autoload</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+通过如下格式的注释声明某个函数为自动加载的：
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp"><span class="org-comment-delimiter">;;;</span><span class="org-comment">###</span><span class="org-comment"><span class="org-warning">autoload</span></span>
+(<span class="org-keyword">defun</span> <span class="org-function-name">doctor</span> ()
+  <span class="org-doc">"Switch to *doctor* buffer and start giving psychotherapy."</span>
+  (<span class="org-keyword">interactive</span>)
+  (switch-to-buffer <span class="org-string">"*doctor*"</span>)
+  (doctor-mode))
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcb47db2" class="outline-2">
+<h2 id="orgcb47db2"><span class="section-number-2">4</span> Major and Minor Modes</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org945adbe" class="outline-3">
+<h3 id="org945adbe"><span class="section-number-3">4.1</span> minor-mode</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+<b>概念：</b> <code>Non-nil</code> 指的是所有非 <code>nil</code> 的值，包括 <code>0</code> 和负数。
+</p>
+
+<p>
+<b>Minor Modes</b>:
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp">(minor-mode <span class="org-type">&amp;optional</span> ARG)
+</pre>
+</div>
+
+<p>
+如果参数 <code>ARG</code> 存在，那么：
+</p>
+<ul class="org-ul">
+<li>如果 <code>ARG</code> 为正，就启用 <code>minor-mode</code></li>
+<li>其他情况就禁用 <code>minor-mode</code></li>
+</ul>
+
+<p>
+如果参数 <code>ARG</code> 不存在为 <code>ARG</code> 为 <code>nil</code>, 也启动 <code>minor-mode</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-elisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">enable</span>
+(blink-cursor-mode)           <span class="org-comment-delimiter">; </span><span class="org-comment">Omitted argument</span>
+(blink-cursor-mode 1)         <span class="org-comment-delimiter">; </span><span class="org-comment">Positive argument</span>
+(blink-cursor-mode t)         <span class="org-comment-delimiter">; </span><span class="org-comment">True argument</span>
+(blink-cursor-mode nil)       <span class="org-comment-delimiter">; </span><span class="org-comment">nil argument (don't use this)</span>
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">disable</span>
+(blink-cursor-mode 0)         <span class="org-comment-delimiter">; </span><span class="org-comment">Non-positive argument</span>
+(blink-cursor-mode -1)        <span class="org-comment-delimiter">; </span><span class="org-comment">Negative argument</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf347af1" class="outline-2">
+<h2 id="orgf347af1"><span class="section-number-2">5</span> Symbols</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+每个 symbol 都包含四个组件（cells），分别为：
+</p>
+<blockquote>
+<p>
+Print name
+   The symbol’s name.
+</p>
+
+<p>
+Value
+     The symbol’s current value as a variable.
+</p>
+
+<p>
+Function
+     The symbol’s function definition.  It can also hold a symbol, a
+     keymap, or a keyboard macro.
+</p>
+
+<p>
+Property list
+     The symbol’s property list.
+</p>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-org436377f" class="outline-2">
+<h2 id="org436377f"><span class="section-number-2">6</span> Macros</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+宏是一种可以生成代码的代码。类比与 C 语言中的宏以及 C++中的模板：
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp">(<span class="org-keyword">defmacro</span> <span class="org-function-name">inc</span> (var)
+  (list 'setq var (list '1+ var)))
+
+(<span class="org-keyword">setq</span> my-var 1)
+(<span class="org-keyword">setq</span> my-var (+ 1 my-var))
+
+(macroexpand '(inc my-var))
+</pre>
+</div>
+
+<p>
+可以使用 macroexpand 获得宏展开的结果，以上代码结果为：
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp">(<span class="org-keyword">setq</span> my-var (1+ my-var))
+</pre>
+</div>
+
+<p>
+宏和函数的区别：
+</p>
+<ul class="org-ul">
+<li>宏的参数并不会被马上求值，解释器会先展开宏，宏展开之后解释器才会执行宏展开的结果</li>
+<li>宏的执行结果是一个表达式，该表达式会立即被解释器执行</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb8923a8" class="outline-2">
+<h2 id="orgb8923a8"><span class="section-number-2">7</span> Operating System Interface</h2>
+<div class="outline-text-2" id="text-7">
+</div>
+<div id="outline-container-orga321785" class="outline-3">
+<h3 id="orga321785"><span class="section-number-3">7.1</span> Timer</h3>
+<div class="outline-text-3" id="text-7-1">
+<p>
+可以通过函数 run-with-timer 创建定时任务：
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp">(run-with-timer SECS REPEAT FUNCTION <span class="org-type">&amp;rest</span> ARGS)
+</pre>
+</div>
+
+<p>
+参数含义：
+</p>
+<ul class="org-ul">
+<li>SECS: 间隔多少秒执行 FUNCTION</li>
+<li>REPEAT: 非空便重复执行</li>
+</ul>
+
+<p>
+可以通过函数 cancel-timer 取消一个 Timer:
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp">(cancel-timer TIMER)
+</pre>
+</div>
+
+<p>
+TIMER 是由函数 run-with-timer 创建的。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd29e978" class="outline-2">
+<h2 id="orgd29e978"><span class="section-number-2">8</span> Functions</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+两种形式的函数引用及展开后的形式：
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp">#'foo  <span class="org-comment-delimiter">; </span><span class="org-comment">=&gt; (function foo)</span>
+'foo   <span class="org-comment-delimiter">; </span><span class="org-comment">=&gt; (quote foo)</span>
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/18390586/why-use-before-function-arguments-in-emacs-lisp?rq=1">Why use #' before function arguments in emacs-lisp? - Stack Overflow</a></li>
+</ul>
+</div>
+
+<div id="outline-container-org3b05cc6" class="outline-3">
+<h3 id="org3b05cc6"><span class="section-number-3">8.1</span> 关键字参数</h3>
+<div class="outline-text-3" id="text-8-1">
+<p>
+使用 cl-defun 可以更方便的定义带关键字参数的函数：
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp">(<span class="org-keyword">cl-defun</span> <span class="org-function-name">func</span> (<span class="org-type">&amp;key</span> foo bar))
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><a href="https://www.emacswiki.org/emacs/KeywordArguments">EmacsWiki: Keyword Arguments</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org66d3ce4" class="outline-3">
+<h3 id="org66d3ce4"><span class="section-number-3">8.2</span> interactive</h3>
+<div class="outline-text-3" id="text-8-2">
+<p>
+<code>Emacs</code> 中存在 <b>两种函数</b>:
+</p>
+<ol class="org-ol">
+<li>可以作为命令执行的函数</li>
+<li>不能作为命令执行的普通函数</li>
+</ol>
+
+<p>
+如果要让定义的函数可以作为命令执行， 需要在函数中添加 <code>interactive</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span class="org-keyword">defun</span> <span class="org-function-name">hello-world</span> ()
+  (<span class="org-keyword">interactive</span>)
+  (insert <span class="org-string">"hello, world"</span>))
+</pre>
+</div>
+
+<p>
+同时可以在 <code>interactive</code> 中获取函数调用时需要的参数：
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span class="org-keyword">defun</span> <span class="org-function-name">c-malloc</span> (name value)
+  (<span class="org-keyword">interactive</span>
+   (list (read-string <span class="org-string">"name"</span>)
+         (read-string <span class="org-string">"value"</span>))
+   (insert (format <span class="org-string">"%s = %s"</span> name value)))
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org37856b8" class="outline-3">
+<h3 id="org37856b8"><span class="section-number-3">8.3</span> 有用的函数</h3>
+<div class="outline-text-3" id="text-8-3">
+<ul class="org-ul">
+<li><p>
+获取 Emacs 已启动时间长度：
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp">(emacs-uptime)
+</pre>
+</div></li>
+
+<li><p>
+消息摘要算法的支持
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp">(md5 <span class="org-string">"str"</span>)
+(secure-hash 'sha256 <span class="org-string">"123"</span>)
+</pre>
+</div>
+
+<p>
+参考：<a href="https://www.gnu.org/software/emacs/manual/html_node/elisp/Checksum_002fHash.html">Checksum/Hash - GNU Emacs Lisp Reference Manual</a>
+</p></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb8288b7" class="outline-2">
+<h2 id="orgb8288b7"><span class="section-number-2">9</span> 风格规范</h2>
+<div class="outline-text-2" id="text-9">
+</div>
+<div id="outline-container-orge75f9ec" class="outline-3">
+<h3 id="orge75f9ec"><span class="section-number-3">9.1</span> Package</h3>
+<div class="outline-text-3" id="text-9-1">
+<div class="org-src-container">
+<pre class="src src-elisp"><span class="org-comment-delimiter">;;; </span><span class="org-comment">superfrobnicator.el --- Frobnicate and bifurcate flanges</span>
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Copyright (C) 2011 Free Software Foundation, Inc.</span>
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Author: J. R. Hacker <a href="mailto:jrh%40example.com">&lt;jrh@example.com&gt;</a></span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Version: 1.3</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Package-Requires: ((flange "1.0"))</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Keywords: multimedia, frobnicate</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">URL: http://example.com/jrhacker/superfrobnicate</span>
+
+...
+
+     <span class="org-comment-delimiter">;;; </span><span class="org-comment">Commentary:</span>
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">This package provides a minor mode to frobnicate and/or</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">bifurcate any flanges you desire.  To activate it, just type</span>
+...
+
+     <span class="org-comment-delimiter">;;;</span><span class="org-comment">###autoload</span>
+(<span class="org-keyword">define-minor-mode</span> <span class="org-function-name">superfrobnicator-mode</span>
+  ...
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><a href="https://www.gnu.org/software/emacs/manual/html_node/elisp/Simple-Packages.html">Simple Packages - GNU Emacs Lisp Reference Manual</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org578a877" class="outline-3">
+<h3 id="org578a877"><span class="section-number-3">9.2</span> 命名风格</h3>
+<div class="outline-text-3" id="text-9-2">
+<div class="org-src-container">
+<pre class="src src-elisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">define custom variable</span>
+(<span class="org-keyword">setq</span> rgb-24bit/variable-name)
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">define mode</span>
+(<span class="org-keyword">define-minor-mode</span> <span class="org-function-name">name-mode</span>)
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">define mode variable</span>
+(<span class="org-keyword">setq</span> name-mode-variable-name)
+</pre>
+</div>
+
+<p>
+可以参考：<a href="https://github.com/bbatsov/emacs-lisp-style-guide">A community-driven Emacs Lisp style guide</a>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2310995" class="outline-2">
+<h2 id="org2310995"><span class="section-number-2">10</span> 问题集</h2>
+<div class="outline-text-2" id="text-10">
+</div>
+<div id="outline-container-org6d0cd31" class="outline-3">
+<h3 id="org6d0cd31"><span class="section-number-3">10.1</span> setq 和 setq-defautl 的区别</h3>
+<div class="outline-text-3" id="text-10-1">
+<p>
+Emacs 中有些变量是 buffer-local 的，通过 setq 设置 buffer-local 变量时，只会影响该缓冲区，而 setq-default 会设置全局的默认值。
+</p>
+
+<p>
+也就是说，当设置的变量为 buffer-local 变量时：
+</p>
+<ul class="org-ul">
+<li><code>setq</code> 设置的是该缓冲区的值，不会修改全局的默认值</li>
+<li><code>setq-default</code> 设置的是全局的默认值，但缓冲区中的值不一定和全局默认值相同</li>
+</ul>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/18172728/the-difference-between-setq-and-setq-default-in-emacs-lisp">elisp - The difference between setq and setq-default in Emacs Lisp - Stack Overflow</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org6642115" class="outline-3">
+<h3 id="org6642115"><span class="section-number-3">10.2</span> let 和 let* 的区别</h3>
+<div class="outline-text-3" id="text-10-2">
+<p>
+<code>let</code> 的参数列表中，后序的参数不能使用前面定义的参数，而 <code>let*</code> 可以：
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp">ELISP&gt; (<span class="org-keyword">let</span> ((num 10) (n num)))
+*** Eval error ***  Symbol<span class="org-warning">&#8217;</span>s value as variable is void: num
+ELISP&gt; (<span class="org-keyword">let*</span> ((num 10) (n num)))
+nil
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org20ede1b" class="outline-3">
+<h3 id="org20ede1b"><span class="section-number-3">10.3</span> 以 : 开头的参数是怎么一回事</h3>
+<div class="outline-text-3" id="text-10-3">
+<p>
+Elisp 中以符号 <b>:</b> 开头的符号属于 <b>关键字</b>, 声明一个 <b>:xxx</b> 形式的变量会自动变为关键字：
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp">ELISP&gt; (intern-soft <span class="org-string">":key-1"</span>)
+nil
+ELISP&gt; <span class="org-builtin">:key-1</span>
+<span class="org-builtin">:key-1</span>
+ELISP&gt; (intern-soft <span class="org-string">":key-1"</span>)
+<span class="org-builtin">:key-1</span>
+</pre>
+</div>
+
+<p>
+可以通过 <code>keywordp</code> 判断一个符号是否是关键字：
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp">(keywordp <span class="org-builtin">:key-1</span>)  <span class="org-comment-delimiter">; </span><span class="org-comment">=&gt; t</span>
+</pre>
+</div>
+
+<p>
+当然，常用的方式是将它们作为关键字参数使用，可以使用 cl-lib 来实现，但也可以使用 plist 来实现：
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp">(<span class="org-keyword">defun</span> <span class="org-function-name">print-name</span> (<span class="org-type">&amp;rest</span> args)
+  (<span class="org-keyword">let</span> ((first (plist-get args <span class="org-builtin">:first</span>))
+        (last (<span class="org-keyword">or</span> (plist-get args <span class="org-builtin">:last</span>) <span class="org-string">"?"</span>)))
+    (princ last)
+    (<span class="org-keyword">when</span> first
+      (princ <span class="org-string">", "</span>)
+      (princ first))))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">&gt; (print-name)</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">?</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">&gt; (print-name :first "John")</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">?, John</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">&gt; (print-name :last "Doe")</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Doe</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">&gt; (print-name :first "John" :last "Doe")</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">Doe, John</span>
+</pre>
+</div>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/26102889/how-do-i-make-named-arguments-in-elisp">emacs - How do I make named arguments in ELisp? - Stack Overflow</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

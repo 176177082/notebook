@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:45 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spring Boot</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">Spring Boot</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org08902da">1. 自动配置原理</a></li>
+<li><a href="#orge06ae95">2. @SpringBootApplication</a></li>
+<li><a href="#orgd35e9b4">3. spring-boot-starter</a></li>
+<li><a href="#org49cc94c">4. WebApplicationType</a></li>
+<li><a href="#org609254b">5. 配置文件与属性来源</a></li>
+<li><a href="#orgc646339">6. 数据库版本控制</a></li>
+<li><a href="#org4084538">7. 事件机制</a></li>
+<li><a href="#orgfaabc3f">8. 日志操作</a></li>
+<li><a href="#org00a8063">9. 相关问题</a>
+<ul>
+<li><a href="#org9226cc1">9.1. 在配置文件中使用环境变量</a></li>
+<li><a href="#orge926555">9.2. Spring Boot MVC 中静态资源的默认路径</a></li>
+<li><a href="#org7f436c0">9.3. 配置 Favicon</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org08902da" class="outline-2">
+<h2 id="org08902da"><span class="section-number-2">1</span> 自动配置原理</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+<code>@SpringBootApplication</code> 注解集成了 <code>@EnableAutoConfiguration</code> 注解，该注解会导入 <code>AutoConfigurationImportSelector</code> 进行自动配置：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-c-annotation">@Import</span>(AutoConfigurationImportSelector.<span class="org-keyword">class</span>)
+<span class="org-keyword">public</span> <span class="org-keyword">@interface</span> <span class="org-type">EnableAutoConfiguration</span> {}
+</pre>
+</div>
+
+<p>
+<code>AutoConfigurationImportSelector</code> 会通过 <code>SpringFactoriesLoader</code> 寻找类路径下的 <code>META-INF/spring.factories</code> 文件中的自动配置类：
+</p>
+<ul class="org-ul">
+<li><a href="https://github.com/spring-projects/spring-framework/blob/master/spring-core/src/main/java/org/springframework/core/io/support/SpringFactoriesLoader.java">spring-framework/SpringFactoriesLoader.java at master · spring-projects/spring-framework</a></li>
+</ul>
+
+<p>
+寻找 <code>META-INF/spring.factories</code> 文件是通过 Java 内置的接口完成的：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">import</span> <span class="org-constant">java</span>.<span class="org-constant">net</span>.<span class="org-type">URL</span>;
+<span class="org-keyword">import</span> <span class="org-constant">java</span>.<span class="org-constant">util</span>.<span class="org-type">Enumeration</span>;
+
+<span class="org-keyword">public</span> <span class="org-keyword">class</span> <span class="org-type">Test</span> {
+  <span class="org-keyword">public</span> <span class="org-keyword">static</span> <span class="org-type">void</span> <span class="org-function-name">main</span>(<span class="org-type">String</span>[] <span class="org-variable-name">args</span>) <span class="org-keyword">throws</span> <span class="org-type">Exception</span> {
+    <span class="org-type">Enumeration</span>&lt;<span class="org-type">URL</span>&gt; <span class="org-variable-name">urls</span> = Test.<span class="org-keyword">class</span>.getClassLoader().getResources(<span class="org-string">"META-INF/spring.factories"</span>);
+    <span class="org-keyword">while</span> (urls.hasMoreElements()) {
+      System.out.println(urls.nextElement());
+    }
+  }
+}
+</pre>
+</div>
+
+<p>
+而 <code>spring-boot-autoconfigure</code> 的 <a href="https://github.com/spring-projects/spring-boot/blob/master/spring-boot-project/spring-boot-autoconfigure/src/main/resources/META-INF/spring.factories">spring.factories</a> 文件包含了相关的配置类，这些配置类帮助我们完成了配置。
+</p>
+
+<p>
+这些配置类的配置广泛应用了的条件配置：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.baeldung.com/spring-boot-custom-auto-configuration">A Custom Auto-Configuration with Spring Boot | Baeldung</a></li>
+</ul>
+
+<p>
+参考：<a href="http://tengj.top/2017/03/09/springboot3/#%E6%B7%B1%E5%85%A5%E6%8E%A2%E7%B4%A2SpringApplication%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B">Spring Boot干货系列：（三）启动原理解析 | 嘟嘟独立博客</a>
+</p>
+
+<p>
+也就是说，自动配置其实就是使用其他人预定义好的配置，这意味着自动配置就如同一个黑箱，其中的具体内容有什么我们并不清楚。因此，使用自动配置时可以翻阅相关文档查阅具体的配置项。
+</p>
+
+<p>
+这也意味着，一旦使用自动配置，那么应用程序启动时就会执行数百次判断，判断类和 Bean 是否存在。
+</p>
+
+<p>
+当然了，我们自己的配置是可以覆盖默认的配置的，这通过了 <code>@ConditionOnMissBean</code> 实现。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge06ae95" class="outline-2">
+<h2 id="orge06ae95"><span class="section-number-2">2</span> @SpringBootApplication</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+通过注解 <code>@SpringBootApplication</code> 可以启用组件扫描，允许自动配置，允许注册额外的 Bean 和加载更多的配置。
+</p>
+
+<p>
+它包含了 <code>@ComponentScan</code> 注解，无参的 <code>@ComponentScan</code> 注解会自动扫描所有子包中的 Bean，并自动加载遇到的 <code>@Configuration</code> 配置。
+</p>
+
+<p>
+这也就是为什么一般将 <code>SpringApplication.java</code> 放在所有子包外面的原因，这样一来就可以很方便的扫描组件加载配置了。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://docs.spring.io/spring-boot/docs/current/reference/html/using-boot-using-springbootapplication-annotation.html">18. Using the @SpringBootApplication Annotation</a></li>
+<li><a href="https://docs.spring.io/spring-boot/docs/current/reference/html/using-boot-configuration-classes.html">15. Configuration Classes</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd35e9b4" class="outline-2">
+<h2 id="orgd35e9b4"><span class="section-number-2">3</span> spring-boot-starter</h2>
+<div class="outline-text-2" id="text-3">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">starter</th>
+<th scope="col" class="org-left">作用</th>
+<th scope="col" class="org-left">相关</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">spring-boot-starter-thymeleaf</td>
+<td class="org-left">使得 Spring-Boot 可以返回 HTML 视图</td>
+<td class="org-left">如果只有 Spring Web 的话，返回的视图名会直接当做 URL 路径</td>
+</tr>
+
+<tr>
+<td class="org-left">spring-boot-starter-tomcat</td>
+<td class="org-left">使得 Spring-Boot 启动内嵌的 Tomcat</td>
+<td class="org-left">Spring-Boot 会判断是否存在 <code>javax.servlet.Servlet</code> 来决定是否启动 Tomcat</td>
+</tr>
+</tbody>
+</table>
+
+<ul class="org-ul">
+<li><a href="https://www.baeldung.com/spring-boot-custom-starter">Creating a Custom Starter with Spring Boot | Baeldung</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org49cc94c" class="outline-2">
+<h2 id="org49cc94c"><span class="section-number-2">4</span> WebApplicationType</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+SpringApplication 启动时会根据 <code>WebApplicationType.deduceFromClasspath</code> 方法判断当前应用所处的应用环境：
+</p>
+<ul class="org-ul">
+<li><a href="https://github.com/spring-projects/spring-boot/blob/1de6f6823850845f0fa6da0cf44c14d1aca31ea2/spring-boot-project/spring-boot/src/main/java/org/springframework/boot/WebApplicationType.java#L63">spring-boot/WebApplicationType.java at 1de6f6823850845f0fa6da0cf44c14d1aca31ea2 · spring-projects/spring-boot</a></li>
+</ul>
+
+<p>
+当应用程序需要部署到 Tomcat 容器时，可以将主类写成如下模式：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-c-annotation">@SpringBootApplication</span>
+<span class="org-keyword">public</span> <span class="org-keyword">class</span> <span class="org-type">Application</span> <span class="org-keyword">extends</span> <span class="org-type">SpringBootServletInitializer</span> {
+  <span class="org-keyword">public</span> <span class="org-keyword">static</span> <span class="org-type">void</span> <span class="org-function-name">main</span>(<span class="org-type">String</span>[] <span class="org-variable-name">args</span>) {
+    SpringApplication.run(Application.<span class="org-keyword">class</span>, args);
+  }
+
+  <span class="org-c-annotation">@Override</span>
+  <span class="org-keyword">protected</span> <span class="org-type">SpringApplicationBuilder</span> <span class="org-function-name">configure</span>(<span class="org-type">SpringApplicationBuilder</span> <span class="org-variable-name">application</span>) {
+    <span class="org-keyword">return</span> application.sources(Application.<span class="org-keyword">class</span>);
+  }
+}
+</pre>
+</div>
+
+<p>
+添加 <code>spring-boot-starter-tomcat</code> 会引入 <code>Tomcat</code> 依赖，使得类路径下存在 <code>javax.servlet.Servlet</code>, 判断当前环境为 Servlet 环境。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/32758996/intellij-process-finished-with-exit-code-0-when-spring-boot-run">java - IntelliJ Process finished with exit code 0 when spring-boot run - Stack Overflow</a></li>
+<li><a href="https://www.baeldung.com/spring-boot-configure-tomcat">How to Configure Spring Boot Tomcat | Baeldung</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org609254b" class="outline-2">
+<h2 id="org609254b"><span class="section-number-2">5</span> 配置文件与属性来源</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+Spring Boot 能从多种属性源获得属性，包括：
+</p>
+<ul class="org-ul">
+<li>命令行参数</li>
+<li>java:comp/env 里的 JNDI 属性</li>
+<li>JVM 系统属性</li>
+<li>操作系统环境变量</li>
+<li>随机生成的带 random.* 前缀的属性（在设置其他属性时，可以引用它们，比如 ${random.long}）</li>
+<li>应用程序以外的 application.properties 或者 appliaction.yml 文件</li>
+<li>打包在应用程序内的 application.properties 或者 appliaction.yml 文件</li>
+<li>通过 @PropertySource 标注的属性源</li>
+<li>默认属性</li>
+</ul>
+
+<p>
+这个列表按照优先级排序，也就是说，任何在高优先级属性源里设置的属性都会覆盖低优先级的相同属性。
+</p>
+
+<p>
+同时，application.properties 和 application.yml 文件能放在以下四个位置：
+</p>
+<ul class="org-ul">
+<li>外置，在相对于应用程序运行目录的 /config 子目录里</li>
+<li>外置，在应用程序运行的目录里</li>
+<li>内置，在 config 包内</li>
+<li>内置，在 classpath 根目录</li>
+</ul>
+
+<p>
+同样，这个列表也按照优先级排序，高优先级配置文件里设置的属性都会覆盖低优先级的相同属性。
+</p>
+
+<p>
+如果在同一优先级位置同时有 application.properties 和 application.yml，那么 application.yml 里的属性会覆盖 application.properties 里的属性。
+</p>
+
+<p>
+而遵循 application-{profile}.properties 这种命名格式，这能提供特定于 Profile 的属性。
+</p>
+
+<p>
+命令行指定参数的方式：
+</p>
+<pre class="example">
+java -jar xxx.jar --server.port=8888
+java -jar xxx.jar -Dserver.port 8888
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgc646339" class="outline-2">
+<h2 id="orgc646339"><span class="section-number-2">6</span> 数据库版本控制</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Spring Boot 集成了高级的数据库版本控制工具，因此可以通过 Flyway 来进行数据库的版本控制：
+</p>
+<ul class="org-ul">
+<li><a href="https://docs.spring.io/spring-boot/docs/current/reference/html/howto-database-initialization.html">85. Database Initialization</a></li>
+</ul>
+
+<p>
+简单的使用的话其实就只需要添加 <code>flyway-core</code> 的依赖，并在 <code>resources/db/migration</code> 目录中创建 SQL 脚本就可以了。
+</p>
+
+<p>
+但也可以通过 <code>spring.flyway.locations</code> 属性配置脚本目录位置：
+</p>
+<div class="org-src-container">
+<pre class="src src-conf"><span class="org-variable-name">spring.flyway.locations</span>=classpath:/db/migration
+</pre>
+</div>
+
+<p>
+Maven 的依赖添加：
+</p>
+<div class="org-src-container">
+<pre class="src src-xml"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">dependency</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">groupId</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">org.flywaydb</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">groupId</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">artifactId</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">flyway-core</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">artifactId</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">version</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">5.2.4</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">version</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">dependency</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4084538" class="outline-2">
+<h2 id="org4084538"><span class="section-number-2">7</span> 事件机制</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+Spring Boot 中的事件机制是极为重要的一环，按照 <a href="https://github.com/rgb-24bit/read-source-code/blob/master/spring/spring-application-refresh-context.org#%E4%BA%8B%E4%BB%B6%E6%9C%BA%E5%88%B6">事件机制</a> 笔记可以了解到，通过 Bean 方式定义的事件监听器只能接收到：
+</p>
+<ul class="org-ul">
+<li>ContextRefreshedEvent - 上下文刷新事件</li>
+<li>ContextStartedEvent - 上下文启动事件</li>
+<li>ContextStoppedEvent - 上下文停止事件</li>
+<li>ContextClosedEvent - 上下文关闭事件</li>
+</ul>
+
+<p>
+如果想要接受更多的事件，就需要将相应的类注册到 <code>spring.factories</code> 文件中才行。
+</p>
+
+<p>
+当然，我们也可以自定义事件和监听器进行消费，这个对于不同逻辑之间的解耦时很有帮助的。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="http://www.iocoder.cn/Spring/ApplicationContextEvent/">Spring 5 源码解析 —— Spring 框架中的事件和监听器 | 芋道源码 —— 纯源码解析博客</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgfaabc3f" class="outline-2">
+<h2 id="orgfaabc3f"><span class="section-number-2">8</span> 日志操作</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+简单的日志操作直接调用相关的类就可以了：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-c-annotation">@RestController</span>
+<span class="org-keyword">public</span> <span class="org-keyword">class</span> <span class="org-type">LoggingController</span> {
+
+  <span class="org-type">Logger</span> <span class="org-variable-name">logger</span> = LoggerFactory.getLogger(LoggingController.<span class="org-keyword">class</span>);
+
+  <span class="org-c-annotation">@RequestMapping</span>(<span class="org-string">"/"</span>)
+  <span class="org-keyword">public</span> <span class="org-type">String</span> <span class="org-function-name">index</span>() {
+    logger.trace(<span class="org-string">"A TRACE Message"</span>);
+    logger.debug(<span class="org-string">"A DEBUG Message"</span>);
+    logger.info(<span class="org-string">"An INFO Message"</span>);
+    logger.warn(<span class="org-string">"A WARN Message"</span>);
+    logger.error(<span class="org-string">"An ERROR Message"</span>);
+
+    <span class="org-keyword">return</span> <span class="org-string">"Howdy! Check out the Logs to see the output..."</span>;
+  }
+}
+</pre>
+</div>
+
+<p>
+可以参考：<a href="https://www.baeldung.com/spring-boot-logging">Logging in Spring Boot | Baeldung</a>
+</p>
+
+<p>
+另外，在 IDEA 中可以使用 Live Templates 代码模板快速创建 logger，常用模板：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">private</span> <span class="org-keyword">static</span> <span class="org-keyword">final</span> <span class="org-type">Logger</span> <span class="org-variable-name">logger</span> = LoggerFactory.getLogger($CLASS_NAME$.<span class="org-keyword">class</span>);
+<span class="org-keyword">private</span> <span class="org-keyword">final</span> <span class="org-type">Logger</span> <span class="org-variable-name">logger</span> = LoggerFactory.getLogger(<span class="org-keyword">this</span>.getClass());
+</pre>
+</div>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.cnblogs.com/waterystone/p/6738154.html">Idea Live Templates 代码模板 - waterystone - 博客园</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org00a8063" class="outline-2">
+<h2 id="org00a8063"><span class="section-number-2">9</span> 相关问题</h2>
+<div class="outline-text-2" id="text-9">
+</div>
+<div id="outline-container-org9226cc1" class="outline-3">
+<h3 id="org9226cc1"><span class="section-number-3">9.1</span> 在配置文件中使用环境变量</h3>
+<div class="outline-text-3" id="text-9-1">
+<p>
+SpringBoot 的配置文件中可以直接使用系统环境变量：
+</p>
+<div class="org-src-container">
+<pre class="src src-conf"><span class="org-variable-name">spring.datasource.url</span> = ${OPENSHIFT_MYSQL_DB_HOST}:${OPENSHIFT_MYSQL_DB_PORT}/<span class="org-string">"nameofDB"</span>
+<span class="org-variable-name">spring.datasource.username</span> = ${OPENSHIFT_MYSQL_DB_USERNAME}
+<span class="org-variable-name">spring.datasource.password</span> = ${OPENSHIFT_MYSQL_DB_PASSWORD}
+</pre>
+</div>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/35531661/using-env-variable-in-spring-boots-application-properties">java - Using env variable in Spring Boot's application.properties - Stack Overflow</a></li>
+<li><a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html">24. Externalized Configuration</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orge926555" class="outline-3">
+<h3 id="orge926555"><span class="section-number-3">9.2</span> Spring Boot MVC 中静态资源的默认路径</h3>
+<div class="outline-text-3" id="text-9-2">
+<pre class="example">
+classpath:/META-INF/resources/
+classpath:/resources/
+classpath:/static/
+classpath:/public/
+</pre>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://spring.io/blog/2013/12/19/serving-static-web-content-with-spring-boot">Serving Static Web Content with Spring Boot</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7f436c0" class="outline-3">
+<h3 id="org7f436c0"><span class="section-number-3">9.3</span> 配置 Favicon</h3>
+<div class="outline-text-3" id="text-9-3">
+<p>
+可以将 <code>favicon.ico</code> 放在如下目录：
+</p>
+<pre class="example">
+src/main/resources/favicon.ico
+src/main/resources/static/favicon.ico
+</pre>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.baeldung.com/spring-boot-favicon">Guide to the Favicon in Spring Boot | Baeldung</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

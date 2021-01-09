@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:47 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Standard SQL</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">Standard SQL</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org7fdefc6">1. SQL 注意事项</a></li>
+<li><a href="#orgfa56b08">2. SQL 样式指南</a></li>
+<li><a href="#org38c19eb">3. SQL 使用技巧</a>
+<ul>
+<li><a href="#org2d5115b">3.1. 通过 SELECT 语句进行简单的测试</a></li>
+<li><a href="#orgde1a7a7">3.2. 通过 TRUNCATE 语句来删除表中的所有行</a></li>
+<li><a href="#orgaf96d4a">3.3. 通过 INSERT SELECT 语句快速插入数据</a></li>
+<li><a href="#org5c5cd43">3.4. 通过 UPDATE CASE 语句进行批量更新</a></li>
+</ul>
+</li>
+<li><a href="#org38ae401">4. SQL 问题集</a>
+<ul>
+<li><a href="#orgceb88bf">4.1. SQL 查询语句的子句顺序</a></li>
+<li><a href="#org6b5c40b">4.2. 等值连接和内连接之间的关系</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7fdefc6" class="outline-2">
+<h2 id="org7fdefc6"><span class="section-number-2">1</span> SQL 注意事项</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li>在使用 <code>ORDER BY</code> 子句进行排序时需要注意：
+<ol class="org-ol">
+<li><code>ORDER BY</code> 一定是 <code>SELECT</code> 语句的最后一个子句</li>
+<li>降序排列时 <code>DESC</code> 关键字值作用于单个列</li>
+</ol></li>
+
+<li>在使用 <b>子查询</b> 时需要注意：作为子查询的 SELECT 语句只能查询 <b>单个列</b></li>
+
+<li>在使用 <code>GROUP BY</code> 进行分组时需要注意：
+<ol class="org-ol">
+<li>除聚集计算语句外，SELECT 语句中的每一列都必须在 GROUP BY 子句中给出</li>
+<li>如果分组列中包含具有 NULL 值的行，则 NULL 将作为一个分组返回</li>
+<li>WHERE 在数据分组前进行过滤，HAVING 在数据分组后进行过滤</li>
+<li>HAVING 支持所有 WHERE 操作符</li>
+<li>GROUP BY 子句必须出现在 WHERE 子句之后，ORDER BY 子句之前</li>
+</ol></li>
+
+<li>在使用 SQL <b>函数</b> 的时候需要注意：
+<ol class="org-ol">
+<li>使用函数可能会不利于数据库的迁移</li>
+<li>数值函数在各个数据库中的实现相对统一：ABS、COS、EXP、PI、SIN、SQRT、TAN</li>
+<li>聚集函数在各个数据库中的实现相对统一：AVG、COUNT、MAX、MIN、SUM</li>
+<li>AVG、MIN、MAX、SUM 忽略 NULL 值</li>
+<li>COUNT(*) 不忽略 NULL 值，COUNT(column) 忽略</li>
+<li>在指定别名以包含某个聚集函数的结果时，不应该使用表中实际的列名</li>
+<li>指定 DISTINCT 的方式：COUNT(DISTINCT column)</li>
+</ol></li>
+
+<li>在使用 <b>视图</b> 时需要注意：
+<ol class="org-ol">
+<li>通常 DMBS 都禁止早视图中添加 ORDER BY 语句</li>
+<li>不要把视图当做表使用，因为它的效率很低</li>
+</ol></li>
+
+<li>在使用 <b>索引</b> 时需要注意：
+<ol class="org-ol">
+<li>主键数据总是排序的，因此，按主键检索特定行总是一种快速有效的操作</li>
+<li>可以在一个或多个列上定义索引，使 DBMS 保存其内容的一个排过序的列表</li>
+<li>索引改善检索操作的性能，但降低了数据插入、修改和删除的性能</li>
+<li>索引数据可能要占用大量的存储空间</li>
+</ol></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgfa56b08" class="outline-2">
+<h2 id="orgfa56b08"><span class="section-number-2">2</span> SQL 样式指南</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li>SQL 关键字使用大写，而对列名和表名使用小写，这样做使代码更易于阅读和调试</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-sql">(<span class="org-keyword">SELECT</span> f.species_name,
+        <span class="org-builtin">AVG</span>(f.height) <span class="org-keyword">AS</span> average_height, <span class="org-builtin">AVG</span>(f.diameter) <span class="org-keyword">AS</span> average_diameter
+   <span class="org-keyword">FROM</span> flora <span class="org-keyword">AS</span> f
+  <span class="org-keyword">WHERE</span> f.species_name = <span class="org-string">'Banksia'</span>
+     <span class="org-keyword">OR</span> f.species_name = <span class="org-string">'Sheoak'</span>
+     <span class="org-keyword">OR</span> f.species_name = <span class="org-string">'Wattle'</span>
+  <span class="org-keyword">GROUP</span> <span class="org-keyword">BY</span> f.species_name, f.observation_date)
+
+  <span class="org-keyword">UNION</span> <span class="org-keyword">ALL</span>
+
+(<span class="org-keyword">SELECT</span> b.species_name,
+        <span class="org-builtin">AVG</span>(b.height) <span class="org-keyword">AS</span> average_height, <span class="org-builtin">AVG</span>(b.diameter) <span class="org-keyword">AS</span> average_diameter
+   <span class="org-keyword">FROM</span> botanic_garden_flora <span class="org-keyword">AS</span> b
+  <span class="org-keyword">WHERE</span> b.species_name = <span class="org-string">'Banksia'</span>
+     <span class="org-keyword">OR</span> b.species_name = <span class="org-string">'Sheoak'</span>
+     <span class="org-keyword">OR</span> b.species_name = <span class="org-string">'Wattle'</span>
+  <span class="org-keyword">GROUP</span> <span class="org-keyword">BY</span> b.species_name, b.observation_date)
+</pre>
+</div>
+
+<p>
+完整文档: <a href="http://www.sqlstyle.guide/zh/">SQL 样式指南 · SQL Style Guide</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org38c19eb" class="outline-2">
+<h2 id="org38c19eb"><span class="section-number-2">3</span> SQL 使用技巧</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org2d5115b" class="outline-3">
+<h3 id="org2d5115b"><span class="section-number-3">3.1</span> 通过 SELECT 语句进行简单的测试</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+SELECT 子句如果省略 FROM 子句可以用来直接执行一些表达式和函数：
+</p>
+<div class="org-src-container">
+<pre class="src src-sql">sqlite&gt; <span class="org-keyword">select</span> <span class="org-type">date</span>();
+2019-03-26
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgde1a7a7" class="outline-3">
+<h3 id="orgde1a7a7"><span class="section-number-3">3.2</span> 通过 TRUNCATE 语句来删除表中的所有行</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+通过 TRUNCATE 语句来删除表中的所有行比使用 DELETE 语句更快：
+</p>
+<div class="org-src-container">
+<pre class="src src-sql">TRUNCATE tbl;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgaf96d4a" class="outline-3">
+<h3 id="orgaf96d4a"><span class="section-number-3">3.3</span> 通过 INSERT SELECT 语句快速插入数据</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+INSERT SELECT 语句可以从另一个表中获取数据插入另一个表：
+</p>
+<div class="org-src-container">
+<pre class="src src-sql"><span class="org-keyword">INSERT</span> <span class="org-keyword">INTO</span> tbl <span class="org-keyword">SELECT</span> * <span class="org-keyword">FROM</span> tbl <span class="org-keyword">WHERE</span> ...;
+</pre>
+</div>
+
+<p>
+同时，可以利用如下语句在运行中创建表：
+</p>
+<div class="org-src-container">
+<pre class="src src-sql"><span class="org-keyword">SELECT</span> * <span class="org-keyword">INTO</span> newtbl <span class="org-keyword">FROM</span> oldtbl;
+</pre>
+</div>
+
+<p>
+只不过不同的数据库支持不一样。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5c5cd43" class="outline-3">
+<h3 id="org5c5cd43"><span class="section-number-3">3.4</span> 通过 UPDATE CASE 语句进行批量更新</h3>
+<div class="outline-text-3" id="text-3-4">
+<p>
+使用 UPDATE CASE 语句时，数据库会将扫描到的行代入条件进行判断，满足后进行更新，无条件满足时则设为 NULL：
+</p>
+<div class="org-src-container">
+<pre class="src src-sql"><span class="org-keyword">UPDATE</span> students
+   <span class="org-keyword">SET</span> LASTNAME =
+       <span class="org-keyword">CASE</span>
+         <span class="org-keyword">WHEN</span> LASTNAME = <span class="org-string">'AAA'</span> <span class="org-keyword">THEN</span> <span class="org-string">'BBB'</span>
+         <span class="org-keyword">WHEN</span> LASTNAME = <span class="org-string">'CCC'</span> <span class="org-keyword">THEN</span> <span class="org-string">'DDD'</span>
+         <span class="org-keyword">WHEN</span> LASTNAME = <span class="org-string">'EEE'</span> <span class="org-keyword">THEN</span> <span class="org-string">'FFF'</span>
+         <span class="org-keyword">ELSE</span> LASTNAME
+       <span class="org-keyword">END</span>
+ <span class="org-keyword">WHERE</span> LASTNAME <span class="org-keyword">IN</span> (<span class="org-string">'AAA'</span>, <span class="org-string">'CCC'</span>, <span class="org-string">'EEE'</span>)
+</pre>
+</div>
+
+<p>
+由于需要进行大量的判断，因此，最好通过 WHERE 子句限制记录条数。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org38ae401" class="outline-2">
+<h2 id="org38ae401"><span class="section-number-2">4</span> SQL 问题集</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-orgceb88bf" class="outline-3">
+<h3 id="orgceb88bf"><span class="section-number-3">4.1</span> SQL 查询语句的子句顺序</h3>
+<div class="outline-text-3" id="text-4-1">
+<div class="org-src-container">
+<pre class="src src-sql"><span class="org-keyword">SELECT</span> ...
+  <span class="org-keyword">FROM</span> ...
+ <span class="org-keyword">WHERE</span> ...
+ <span class="org-keyword">GROUP</span> <span class="org-keyword">BY</span> ...
+ <span class="org-keyword">ORDER</span> <span class="org-keyword">BY</span> ...;
+</pre>
+</div>
+
+<p>
+语句执行顺序：
+</p>
+<ol class="org-ol">
+<li>根据 FROM 子句指定的表获取数据</li>
+<li>根据 WHERE 子句筛选数据</li>
+<li>根据 GROUP BY 子句对数据分组</li>
+<li>根据 ORDER BY 子句对数据排序</li>
+<li>根据 SELECT 子句返回查询结果</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org6b5c40b" class="outline-3">
+<h3 id="org6b5c40b"><span class="section-number-3">4.2</span> 等值连接和内连接之间的关系</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+两者实际上是同一种连接，只是写法不同：
+</p>
+<div class="org-src-container">
+<pre class="src src-sql"><span class="org-keyword">SELECT</span> * <span class="org-keyword">FROM</span> tbl1, tbl2 <span class="org-keyword">WHERE</span> tbl1.xxx = tbl2.xxx;
+<span class="org-keyword">SELECT</span> * <span class="org-keyword">FROM</span> tbl1 <span class="org-keyword">INNER</span> <span class="org-keyword">JOIN</span> tbl2 <span class="org-keyword">ON</span> tbl1.xxx = tbl2.xxx;
+</pre>
+</div>
+
+<p>
+其中，ANSI SQL 规范首选 INNER JOIN 的写法，但是有时另一种更方便：
+</p>
+<div class="org-src-container">
+<pre class="src src-sql"><span class="org-keyword">SELECT</span> cust_name, cust_contact
+  <span class="org-keyword">FROM</span> Customers <span class="org-keyword">AS</span> C, Orders <span class="org-keyword">AS</span> O, OrderItems <span class="org-keyword">AS</span> OI
+ <span class="org-keyword">WHERE</span> C.cust_id = O.cust_id
+   <span class="org-keyword">AND</span> OI.order_num = O.order_num
+   <span class="org-keyword">AND</span> prod_id = <span class="org-string">'RGAN01'</span>;
+
+<span class="org-keyword">SELECT</span> cust_name, cust_contact
+  <span class="org-keyword">FROM</span> Customers <span class="org-keyword">AS</span> C
+         <span class="org-keyword">INNER</span> <span class="org-keyword">JOIN</span> Orders <span class="org-keyword">AS</span> O
+             <span class="org-keyword">ON</span> C.cust_id = O.cust_id
+         <span class="org-keyword">INNER</span> <span class="org-keyword">JOIN</span> OrderItems <span class="org-keyword">AS</span> OI
+             <span class="org-keyword">ON</span> OI.order_num = O.order_num;
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

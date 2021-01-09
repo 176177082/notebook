@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:44 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>并发编程</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">并发编程</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgaa37819">1. 进程和线程</a>
+<ul>
+<li><a href="#org1fea987">1.1. 进程间通信 IPC</a></li>
+<li><a href="#org4dad543">1.2. 进程的状态</a></li>
+</ul>
+</li>
+<li><a href="#orgbfa3b91">2. 锁相关</a>
+<ul>
+<li><a href="#orgf8425e0">2.1. 乐观锁与悲观锁</a></li>
+<li><a href="#org53d4318">2.2. 死锁</a></li>
+</ul>
+</li>
+<li><a href="#orgd5efbe3">3. 同步相关</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgaa37819" class="outline-2">
+<h2 id="orgaa37819"><span class="section-number-2">1</span> 进程和线程</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+进程是具有一定独立功能的程序关于某个数据集合上的一次运行活动，是系统进行资源分配和调度的一个独立单位。
+</p>
+
+<p>
+线程可以看做是进程的一个实体，是 CPU 调度和分派的基本单位，它是比进程更小的能独立运行的基本单位，线程自己基本上不拥有系统资源，只拥有一点在运行中必不可少的资源（如程序计数器,一组寄存器和栈），但是它可与同属一个进程的其他的线程共享进程所拥有的全部资源。
+</p>
+
+<p>
+区别：
+</p>
+<ol class="org-ol">
+<li>进程是运行中的程序，线程是进程的内部的一个执行序列</li>
+<li>进程是资源分配的单元，线程是执行行单元</li>
+<li>进程间切换代价大，线程间切换代价小</li>
+<li>进程拥有资源多，线程拥有资源少</li>
+<li>多个线程共享进程的资源</li>
+</ol>
+
+<p>
+进程上下文：
+</p>
+<ul class="org-ul">
+<li>CPU 寄存器中的值，进程的状态以及堆栈上的内容</li>
+</ul>
+
+<p>
+线程上下文：
+</p>
+<ul class="org-ul">
+<li>CPU 寄存器中的值</li>
+</ul>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.nowcoder.com/questionTerminal/234895a70e0b40e19db7f3fbaabc5fa3">进程和线程的区别是什么？__牛客网</a></li>
+</ul>
+</div>
+
+<div id="outline-container-org1fea987" class="outline-3">
+<h3 id="org1fea987"><span class="section-number-3">1.1</span> 进程间通信 IPC</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+每个进程各自有不同的用户地址空间，任何一个进程的全局变量在另一个进程中都看不到，所以进程之间要交换数据必须通过内核，在内核中开辟一块缓冲区，进程 1 把数据从用户空间拷到内核缓冲区，进程 2 再从内核缓冲区把数据读走，内核提供的这种机制称为进程间通信 IPC。
+</p>
+
+<p>
+主要通信方式有：
+</p>
+<ul class="org-ul">
+<li>匿名管道，只支持具有亲缘关系的进程之间的通信</li>
+<li>命名管道，以文件形式存在于文件系统中</li>
+<li>信号</li>
+<li>消息队列</li>
+<li>共享内存</li>
+<li>信号量</li>
+<li>套接字</li>
+</ul>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.jianshu.com/p/c1015f5ffa74">进程间通信 IPC (InterProcess Communication) - 简书</a></li>
+</ul>
+
+<p>
+补充：
+</p>
+<ul class="org-ul">
+<li>对于不同的系统来说，可能还存在单独适用于某个系统的通信方式，比如 Linux 的 Dbus</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4dad543" class="outline-3">
+<h3 id="org4dad543"><span class="section-number-3">1.2</span> 进程的状态</h3>
+<div class="outline-text-3" id="text-1-2">
+<ul class="org-ul">
+<li>三态模型：就绪、运行、阻塞</li>
+<li>五态模型：新建、终止、运行、就绪、阻塞</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbfa3b91" class="outline-2">
+<h2 id="orgbfa3b91"><span class="section-number-2">2</span> 锁相关</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orgf8425e0" class="outline-3">
+<h3 id="orgf8425e0"><span class="section-number-3">2.1</span> 乐观锁与悲观锁</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+乐观锁与悲观锁的概念：
+</p>
+<ul class="org-ul">
+<li>总是假设最坏的情况，每次去拿数据的时候都认为别人会修改，所以每次在拿数据的时候都会上锁，这样别人想拿这个数据就会阻塞直到它拿到锁</li>
+<li>总是假设最好的情况，每次去拿数据的时候都认为别人不会修改，所以不会上锁，但是在更新的时候会判断一下在此期间别人有没有去更新这个数据，可以使用版本号机制和 CAS 算法实现</li>
+</ul>
+
+<p>
+对于这两种锁来说，乐观锁适用于写比较少的情况下，即冲突真的很少发生的时候，这样可以省去了锁的开销，加大了系统的整个吞吐量。但如果是多写的情况，一般会经常产生冲突，这就会导致上层应用会不断的进行 retry，这样反倒是降低了性能，所以一般多写的场景下用悲观锁就比较合适。
+</p>
+
+<p>
+乐观锁常见的两种实现方式：
+</p>
+<ul class="org-ul">
+<li>版本号机制：每次拿数据时获得一个版本号，操作完成后更新时判断版本号是否相同在进行更新</li>
+<li>CAS 算法：通过原子操作 <b>比较旧值-赋新值</b> 完成数据的更新操作，当 <b>比较</b> 操作失败时，就不断的通过自旋操作重试</li>
+</ul>
+
+<p>
+乐观锁的问题：
+</p>
+<ul class="org-ul">
+<li>ABA 问题：如果一个变量 V 初次读取的时候是 A 值，并且在准备赋值的时候检查到它仍然是 A 值，那我们就能说明它的值没有被其他线程修改过了吗？</li>
+<li>循环时间长开销大：自旋 CAS 如果长时间不成功，会给 CPU 带来非常大的执行开销</li>
+<li>只能保证一个共享变量的原子操作：CAS 只对单个共享变量有效，当操作涉及跨多个共享变量时 CAS 无效</li>
+</ul>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.cnblogs.com/Mainz/p/3546347.html">非阻塞同步算法与 CAS(Compare and Swap)无锁算法 - Mainz - 博客园</a></li>
+<li><a href="https://juejin.im/post/5b4977ae5188251b146b2fc8#heading-2">面试必备之乐观锁与悲观锁 - 掘金</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org53d4318" class="outline-3">
+<h3 id="org53d4318"><span class="section-number-3">2.2</span> 死锁</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+死锁指在多个线程循环等待某一资源的情景，可以通过 <code>wait-for graph</code> 算法检测是否出现了死锁：
+</p>
+<ul class="org-ul">
+<li>每个线程都是图中的一个节点</li>
+<li>当一个线程 A 等待另一个线程 B 占用的资源时，就创建一条 A -&gt; B 的边</li>
+<li>当图中出现环路时就表示出现了死锁</li>
+</ul>
+
+<p>
+产生死锁的条件：
+</p>
+<ul class="org-ul">
+<li>互斥条件：即某个资源在一段时间内只能由一个进程占有，不能同时被两个或两个以上的进程占有</li>
+<li>不可抢占条件：进程所获得的资源在未使用完毕之前，资源申请者不能强行的从资源占有者手中夺取资源，而只能由该资源的占有者进程自行释放</li>
+<li>占有且等待条件：进程至少已经占有了一个资源，但又申请了一个新的被其他进程所占有的资源，此时处于等待状态</li>
+<li>循环等待条件：若干个进程形成环形链，每个都占用对方申请的下一个资源</li>
+</ul>
+
+<p>
+死锁的解决：
+</p>
+<ol class="org-ol">
+<li>预防死锁的发生，在编码时就尽量避免死锁的发生
+<ul class="org-ul">
+<li>以确定的顺序获得锁</li>
+<li>超时放弃</li>
+</ul></li>
+<li>避免死锁的发生</li>
+<li>死锁的检测与恢复</li>
+</ol>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.cnblogs.com/balingybj/p/4782032.html">死锁及处理 - balingybj - 博客园</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd5efbe3" class="outline-2">
+<h2 id="orgd5efbe3"><span class="section-number-2">3</span> 同步相关</h2>
+<div class="outline-text-2" id="text-3">
+<ul class="org-ul">
+<li>互斥：是指某一资源同时只允许一个访问者对其进行访问，具有唯一性和排它性。但互斥无法限制访问者对资源的访问顺序，即访问是无序的</li>
+
+<li>同步：是指在互斥的基础上（大多数情况），通过其它机制实现访问者对资源的有序访问</li>
+
+<li><b>进程同步的基本概念</b>
+<ol class="org-ol">
+<li>两种形式的制约关系
+<ul class="org-ul">
+<li>间接相互制约关系：多个程序并发执行时，由于共享系统资源，致使在这些并发执行的程序之间形成相互制约的关系</li>
+<li>直接相互制约关系：多个程序为完成同一向任务而相互合作，进程间的直接相互制约关系就源于这种合作</li>
+</ul></li>
+<li>临界资源：必须互斥访问的资源，同一时间只能有一个进程访问</li>
+<li>临界区：把在每个进程中访问临界资源的那段代码称为临界区</li>
+<li>同步机制应遵循的规则
+<ul class="org-ul">
+<li>空闲让进：当无进程处于临界区时，表明临界资源处于空闲状态，应允许一个请求进入临界区的进程立即进入自己的临界区，以有效的利用临界资源</li>
+<li>忙则等待：已有进程进入临界区时，表明临界资源正在被访问，因而其他试图进入临界区的进程必须等待，以保证对临界资源的互斥访问</li>
+<li>有限等待：对要求访问的临界资源的进程，应保证在有限时间内能进入自己的临界区，以免陷如死等状态</li>
+<li>让权等待：当进程不能进入自己的临界区时，应立即释放处理机，以免进程陷入忙等状态</li>
+</ul></li>
+</ol></li>
+
+<li><b>硬件同步机制</b>
+<ol class="org-ol">
+<li><p>
+关中断：进程进入锁测试之前关闭中断，知道完成锁测试并上锁后才能打开中断，实现简单，效率太低。
+</p>
+
+<p>
+<b>NOTE</b>: 只有在能够执行中断的情况下才能进行进程调度。
+</p></li>
+
+<li><p>
+利用 Test-and-Set 指令实现互斥
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span class="org-type">bool</span> <span class="org-function-name">TS</span>(<span class="org-type">bool</span>* <span class="org-variable-name">lock</span>) {
+  <span class="org-type">bool</span> <span class="org-variable-name">old</span> = *lock;
+  *lock = <span class="org-constant">true</span>;
+  <span class="org-keyword">return</span> old;
+}
+
+<span class="org-keyword">do</span> {
+  <span class="org-keyword">while</span>(TS(&amp;lock));  <span class="org-comment-delimiter">// </span><span class="org-comment">&#24403; lock &#20026; true &#26102;&#65292;&#31561;&#24453; lock &#20026;false</span>
+
+  <span class="org-type">critical</span> <span class="org-variable-name">section</span>;
+  lock = <span class="org-constant">false</span>;      <span class="org-comment-delimiter">// </span><span class="org-comment">&#37322;&#25918;&#25152;&#65292;&#23558; lock &#35774;&#20026; false</span>
+  <span class="org-type">remainder</span> <span class="org-variable-name">section</span>;
+} <span class="org-keyword">while</span>(<span class="org-constant">true</span>);
+</pre>
+</div></li>
+
+<li><p>
+利用 Swap 指令实现进程互斥
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span class="org-type">void</span> <span class="org-function-name">swap</span>(<span class="org-type">bool</span>* <span class="org-variable-name">a</span>, <span class="org-type">bool</span>* <span class="org-variable-name">b</span>) {
+  <span class="org-type">bool</span> <span class="org-variable-name">temp</span> = *a;
+  *a = *b;
+  *b = temp;
+}
+
+<span class="org-keyword">do</span> {
+  key = <span class="org-constant">true</span>;
+  <span class="org-keyword">do</span> {
+    swap(&amp;lock, &amp;key);
+  } <span class="org-keyword">while</span>(key != <span class="org-constant">false</span>);
+
+  <span class="org-comment-delimiter">// </span><span class="org-comment">&#20020;&#30028;&#21306;&#25805;&#20316;</span>
+
+  lock = <span class="org-constant">false</span>;  <span class="org-comment-delimiter">// </span><span class="org-comment">&#37322;&#25918;&#38145;</span>
+} <span class="org-keyword">while</span>(<span class="org-constant">true</span>);
+</pre>
+</div>
+
+<p>
+<b>NOTE:</b> lock 的初始值通常为 false.
+</p></li>
+</ol></li>
+
+<li><b>信号量机制</b>
+<ol class="org-ol">
+<li><p>
+整型信号量，通过整型数 S 表示资源的数量，通过 P, V 操作来访问资源：
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span class="org-type">void</span> <span class="org-function-name">wait</span>(<span class="org-type">int</span> <span class="org-variable-name">S</span>) {  <span class="org-comment-delimiter">// </span><span class="org-comment">P</span>
+  <span class="org-keyword">while</span> (S &lt;= 0);   <span class="org-comment-delimiter">// </span><span class="org-comment">&#31561;&#24453; S &gt; 0</span>
+  S--;
+}
+
+<span class="org-type">void</span> <span class="org-function-name">signal</span>(<span class="org-type">int</span> <span class="org-variable-name">S</span>) {  <span class="org-comment-delimiter">// </span><span class="org-comment">V</span>
+  S++;                <span class="org-comment-delimiter">// </span><span class="org-comment">&#36164;&#28304;&#22686;&#21152;</span>
+}
+</pre>
+</div></li>
+
+<li><p>
+记录型信号量，避免整型信号量中的忙等：
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span class="org-keyword">typedef</span> <span class="org-keyword">struct</span> {
+  <span class="org-type">int</span> <span class="org-variable-name">value</span>;
+  <span class="org-keyword">struct</span> <span class="org-type">pcb</span>* <span class="org-variable-name">queue</span>;  <span class="org-comment-delimiter">// </span><span class="org-comment">&#31561;&#24453;&#35775;&#38382;&#36164;&#28304;&#30340;&#36827;&#31243;</span>
+} <span class="org-type">semaphore</span>;
+
+<span class="org-type">void</span> <span class="org-function-name">wait</span>(<span class="org-type">semaphore</span>* <span class="org-variable-name">S</span>) {
+  S-&gt;value--;
+  <span class="org-keyword">if</span> (S-&gt;value &lt; 0) {  <span class="org-comment-delimiter">// </span><span class="org-comment">value &lt; 0 &#35828;&#26126;&#36164;&#28304;&#20197;&#20998;&#37197;&#23436;&#27605;&#65292;&#36827;&#31243;&#35843;&#29992; block &#33258;&#25105;&#38459;&#22622;</span>
+    block(S-&gt;queue);
+  }
+}
+
+<span class="org-type">void</span> <span class="org-function-name">signal</span>(<span class="org-type">semaphore</span>* <span class="org-variable-name">S</span>) {
+  S-&gt;value++;
+  <span class="org-keyword">if</span> (S-&gt;value &lt;= 0) {  <span class="org-comment-delimiter">// </span><span class="org-comment">value &lt;= 0 &#35828;&#26126;&#23384;&#22312;&#36827;&#31243;&#31561;&#24453;&#36164;&#28304;&#65292;&#21796;&#37266;&#31532;&#19968;&#20010;&#36827;&#31243;</span>
+    wakeup(S-&gt;queue);
+  }
+}
+</pre>
+</div></li>
+</ol></li>
+
+<li><p>
+<b>信号量的应用</b>
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span class="org-comment-delimiter">// </span><span class="org-comment">-----------------------------------------------------------------------------</span>
+<span class="org-comment-delimiter">//                                </span><span class="org-comment">&#36827;&#31243;&#20114;&#26021;</span>
+<span class="org-comment-delimiter">// </span><span class="org-comment">-----------------------------------------------------------------------------</span>
+
+<span class="org-type">semaphore</span> <span class="org-variable-name">mutex</span> = 1;
+
+<span class="org-type">void</span> <span class="org-function-name">PA</span>() {
+  <span class="org-keyword">while</span> (<span class="org-constant">true</span>) {
+    wait(mutex);
+
+    <span class="org-comment-delimiter">// </span><span class="org-comment">&#20020;&#30028;&#21306;</span>
+
+    signal(mutex);
+
+    <span class="org-comment-delimiter">// </span><span class="org-comment">&#21097;&#20313;&#21306;</span>
+  }
+}
+
+<span class="org-type">void</span> <span class="org-function-name">PB</span>() {
+  <span class="org-keyword">while</span> (<span class="org-constant">true</span>) {
+    wait(mutex);
+
+    <span class="org-comment-delimiter">// </span><span class="org-comment">&#20020;&#30028;&#21306;</span>
+
+    signal(mutex);
+
+    <span class="org-comment-delimiter">// </span><span class="org-comment">&#21097;&#20313;&#21306;</span>
+  }
+}
+
+<span class="org-comment-delimiter">// </span><span class="org-comment">-----------------------------------------------------------------------------</span>
+<span class="org-comment-delimiter">//                                </span><span class="org-comment">&#21069;&#39537;&#20851;&#31995;</span>
+<span class="org-comment-delimiter">// </span><span class="org-comment">-----------------------------------------------------------------------------</span>
+
+<span class="org-comment-delimiter">// </span><span class="org-comment">S1 -&gt; S2, S1 -&gt; S3</span>
+<span class="org-comment-delimiter">// </span><span class="org-comment">S2 -&gt; S4, S2 -&gt; S5</span>
+<span class="org-comment-delimiter">// </span><span class="org-comment">S3 -&gt; S6</span>
+<span class="org-comment-delimiter">// </span><span class="org-comment">S4 -&gt; S6</span>
+<span class="org-comment-delimiter">// </span><span class="org-comment">S5 -&gt; S6</span>
+
+<span class="org-type">void</span> <span class="org-function-name">P1</span>() {
+  S1;
+  signal(a);  <span class="org-comment-delimiter">// </span><span class="org-comment">S1 -&gt; S2</span>
+  signal(b);  <span class="org-comment-delimiter">// </span><span class="org-comment">S1 -&gt; S3</span>
+}
+
+<span class="org-type">void</span> <span class="org-function-name">P2</span>() {
+  wait(a);
+  S2;
+  signal(c);  <span class="org-comment-delimiter">// </span><span class="org-comment">S2 -&gt; S4</span>
+  signal(d);  <span class="org-comment-delimiter">// </span><span class="org-comment">S2 -&gt; S5</span>
+}
+
+<span class="org-type">void</span> <span class="org-function-name">P3</span>() {
+  wait(b);
+  S3;
+  signal(e);  <span class="org-comment-delimiter">// </span><span class="org-comment">S3 -&gt; S6;</span>
+}
+
+<span class="org-type">void</span> <span class="org-function-name">P4</span>() {
+  wait(c);
+  S4;
+  signal(f);  <span class="org-comment-delimiter">// </span><span class="org-comment">S4 -&gt; S6;</span>
+}
+
+<span class="org-type">void</span> <span class="org-function-name">P5</span>() {
+  wait(d);
+  S5;
+  signal(g);  <span class="org-comment-delimiter">// </span><span class="org-comment">S5 -&gt; S6;</span>
+}
+
+<span class="org-type">void</span> <span class="org-function-name">P6</span>() {
+  wait(e);
+  wait(f);
+  wait(g);
+  S6;
+}
+</pre>
+</div></li>
+
+<li><p>
+<b>生产者-消费者问题</b>
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span class="org-type">int</span> <span class="org-variable-name">in</span> = 0, <span class="org-variable-name">out</span> = 0;
+<span class="org-type">item</span> <span class="org-variable-name">buffer</span>[n];
+<span class="org-type">semaphore</span> <span class="org-variable-name">mutex</span> = 1, <span class="org-variable-name">empty</span> = n, <span class="org-variable-name">full</span> = 0;
+
+<span class="org-type">void</span> <span class="org-function-name">Producer</span>() {
+  <span class="org-keyword">do</span> {
+    new_item = ...;  <span class="org-comment-delimiter">// </span><span class="org-comment">&#29983;&#20135;</span>
+
+    wait(empty);  <span class="org-comment-delimiter">// </span><span class="org-comment">&#36991;&#20813;&#32531;&#20914;&#21306;&#28322;&#20986;</span>
+    wait(mutex);  <span class="org-comment-delimiter">// </span><span class="org-comment">&#20445;&#35777;&#32531;&#20914;&#21306;&#25805;&#20316;&#20114;&#26021;</span>
+
+    buffer[in] = new_item;
+    in = (in + 1) % n;
+
+    signal(mutex);
+    signal(full);  <span class="org-comment-delimiter">// </span><span class="org-comment">&#29983;&#20135;&#21518; full &#22686;&#21152;</span>
+  } <span class="org-keyword">while</span>(<span class="org-constant">true</span>);
+}
+
+<span class="org-type">void</span> <span class="org-function-name">Consumer</span>() {
+  <span class="org-keyword">do</span> {
+    wait(full);  <span class="org-comment-delimiter">// </span><span class="org-comment">&#31561;&#24453;&#23384;&#22312;&#36164;&#28304;</span>
+    wait(mutex);
+
+    new_item = buffer[out];  <span class="org-comment-delimiter">// </span><span class="org-comment">&#21462;&#20986;&#36164;&#28304;</span>
+    out = (out + 1) % n;
+
+    signal(mutex);
+    signal(empty);  <span class="org-comment-delimiter">// </span><span class="org-comment">&#21462;&#20986;&#36164;&#28304;&#65292; empty &#22686;&#21152;</span>
+  } <span class="org-keyword">while</span>(<span class="org-constant">true</span>);
+}
+</pre>
+</div></li>
+
+<li><p>
+<b>哲学家进餐问题</b>
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span class="org-type">semaphore</span> <span class="org-variable-name">chopstick</span>[5] = {1, 1, 1, 1, 1};
+
+<span class="org-keyword">do</span> {
+  wait(chopstick[i]);  <span class="org-comment-delimiter">// </span><span class="org-comment">&#31532; i &#20010;&#21746;&#23398;&#23478;&#24038;&#36793;&#30340;&#31607;&#23376;</span>
+  wait(chopstick[(i + 1) % 5]);  <span class="org-comment-delimiter">// </span><span class="org-comment">&#31532; i &#20010;&#21746;&#23398;&#23478;&#21491;&#36793;&#30340;&#31607;&#23376;</span>
+
+  <span class="org-comment-delimiter">// </span><span class="org-comment">eat</span>
+
+  signal(chopstick[(i + 1) % 5]);
+  signal(chopstick[i]);
+
+  <span class="org-comment-delimiter">// </span><span class="org-comment">think</span>
+} <span class="org-keyword">while</span>(<span class="org-constant">true</span>);  <span class="org-comment-delimiter">// </span><span class="org-comment">&#23384;&#22312;&#27515;&#38145;&#38382;&#39064;</span>
+</pre>
+</div></li>
+
+<li><p>
+<b>读者写者问题</b>
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span class="org-type">semaphore</span> <span class="org-variable-name">rmutex</span> = 1, <span class="org-variable-name">wmutex</span> = 1;
+<span class="org-type">int</span> <span class="org-variable-name">reader_count</span> = 0;
+
+<span class="org-type">void</span> <span class="org-function-name">reader</span>() {
+  <span class="org-keyword">do</span> {
+    wait(rmutex);             <span class="org-comment-delimiter">// </span><span class="org-comment">&#20445;&#35777; reader_count &#21516;&#19968;&#26102;&#21051;&#21482;&#26377;&#19968;&#20010;&#35835;&#32773;&#35775;&#38382;</span>
+    <span class="org-keyword">if</span> (reader_count == 0) {  <span class="org-comment-delimiter">// </span><span class="org-comment">&#21482;&#26377;&#35835;&#32773;&#25968;&#37327;&#20026; 0 &#26102;&#25165;&#21487;&#33021;&#23384;&#22312;&#20889;&#32773;</span>
+      wait(wmutex);
+    }
+    reader_count++;
+    signal(rmutex);
+
+    <span class="org-comment-delimiter">// </span><span class="org-comment">read...</span>
+
+    wait(rmutex);
+    reader_count--;
+    <span class="org-keyword">if</span> (reader_count == 0) {  <span class="org-comment-delimiter">// </span><span class="org-comment">&#35835;&#32773;&#25968;&#37327;&#20026; 0, &#21487;&#20197;&#36827;&#34892;&#20889;&#20837;</span>
+      signal(wmutex);
+    }
+    signal(rmutex);
+  } <span class="org-keyword">while</span>(<span class="org-constant">true</span>);
+}
+
+<span class="org-type">void</span> <span class="org-function-name">writer</span>() {
+  <span class="org-keyword">do</span> {
+    wait(wmutex);
+    <span class="org-comment-delimiter">// </span><span class="org-comment">write...</span>
+    signal(wmutex);
+  } <span class="org-keyword">while</span>(<span class="org-constant">true</span>);
+}
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

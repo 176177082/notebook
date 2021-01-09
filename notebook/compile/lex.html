@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:47 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>编译原理 - 词法分析</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">编译原理 - 词法分析</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org11fbaa8">1. 词法分析器的作用</a></li>
+<li><a href="#orga7f70bc">2. 词法单元的规约</a></li>
+<li><a href="#orgc91ac30">3. 词法单元的识别</a></li>
+<li><a href="#org1f4b32b">4. 有穷自动机</a></li>
+<li><a href="#org353c801">5. 从正则表达式到自动机</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org11fbaa8" class="outline-2">
+<h2 id="org11fbaa8"><span class="section-number-2">1</span> 词法分析器的作用</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+词法分析器在编译器中负责读取源程序、识别词素、过滤注释和空白、 将编译器生成的错误信息与源程序的位置联系起来。
+</p>
+
+<ul class="org-ul">
+<li><p>
+<b>词法单元、模式、词素</b>
+</p>
+<ol class="org-ol">
+<li><b>词法单元</b> 由一个词法单元名和一个可选的属性值组成。</li>
+<li><b>模式</b> 描述了一个词法单元可能具有的形式</li>
+<li><b>词素</b> 是源程序中的一个字符序列，和某个词法模式匹配</li>
+</ol>
+
+<p>
+举例说明：
+</p>
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">词法单元</th>
+<th scope="col" class="org-left">模式</th>
+<th scope="col" class="org-left">词素</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">number</td>
+<td class="org-left">\d+(.\d+)</td>
+<td class="org-left">1024, 255.255</td>
+</tr>
+</tbody>
+</table></li>
+
+<li><p>
+<b>词法错误</b>
+</p>
+
+<p>
+假设出现所有词法单元的模式都无法和剩余输入的某个前缀相匹配的情况，此时词法分析器就不能继续处理输入。
+</p>
+
+<p>
+出现这种情况时，最简单的错误恢复策略为： <b>恐慌模式</b> 恢复。从剩余的输入中不断删除字符，直到词法分析器能够在剩余的输入的开头发现一个正确的词法单元为止。
+</p>
+
+<p>
+可能采取的其他错误恢复动作：
+</p>
+<ol class="org-ol">
+<li>从剩余的输入中删除一个字符</li>
+<li>向剩余的输入中插入一个遗漏的字符</li>
+<li>用一个字符来替换另一个字符</li>
+<li>交换两个相邻的字符</li>
+</ol></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga7f70bc" class="outline-2">
+<h2 id="orga7f70bc"><span class="section-number-2">2</span> 词法单元的规约</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li><p>
+<b>串和语言</b>
+</p>
+
+<p>
+字母表是一个有限的符号集合。比如集合 {0, 1} 是 <b>二进制字母表</b>.
+</p>
+
+<p>
+某个字母表上的 <b>串</b> 是该字母表中符号的一个有穷序列。串 s 的长度记作 |s|. 
+<b>空串</b> 是长度为 0 的串，用 ε 表示。
+</p>
+
+<p>
+<b>语言</b> 是某个给定字母表上任意的可数的串的集合。
+</p>
+
+<p>
+串的连接： x = dog, y = house, xy = doghouse
+</p>
+
+<p>
+对于任何串 s 有： sε = εs = s.
+</p>
+
+<p>
+一个串的 n 次幂表示 n 个该串的连接。
+</p></li>
+
+<li><p>
+<b>语言上的运算</b>
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">运算</th>
+<th scope="col" class="org-left">定义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">L 和 M 的并</td>
+<td class="org-left">串 s 属于 L 或属于 M</td>
+</tr>
+
+<tr>
+<td class="org-left">L 和 M 的连接</td>
+<td class="org-left">串 st, s 属于 L, t 属于 M</td>
+</tr>
+
+<tr>
+<td class="org-left">L 的 Kleene 闭包</td>
+<td class="org-left">零个或多个 L 的连接</td>
+</tr>
+
+<tr>
+<td class="org-left">L 的正闭包</td>
+<td class="org-left">一个或多个 L 的连接</td>
+</tr>
+</tbody>
+</table></li>
+
+<li><p>
+<b>正则表达式</b>
+</p>
+
+<p>
+<b>归纳基础：</b> 
+</p>
+<ol class="org-ol">
+<li><b>空串</b> 是一个正则表达式，表示的语言为 {ε}, 即该语言只包含空串</li>
+<li>如果 a 是字母表中中的一个符号，那么 a 是一个正则表达式，并且 a 表示的语言为 {a}.</li>
+</ol>
+
+<p>
+<b>归纳步骤：</b> 假定 r 和 s 都是正则表达式，分别表示语言 L(r) 和 L(s)，那么：
+</p>
+<ol class="org-ol">
+<li>(r)|(s) 是一个正则表达式，表示语言 L(r)|L(s)</li>
+<li>(r)(s) 是一个正则表达式，表示语言 L(r)(Ls)</li>
+<li>(r)* 是一个正则表达式，表示语言 (L(r))*</li>
+<li>(r) 是一个正则表达式，表示语言 L(r)</li>
+</ol>
+
+<p>
+运算符优先级： * &gt; 连接 &gt; |, 都是左结合的运算符。
+</p>
+
+<p>
+通过运算符，可以简化正则表达式，比如 (a)|((b)*(c)) 可以简写为 a|b*c.
+</p></li>
+
+<li><p>
+<b>正则定义</b>
+</p>
+
+<p>
+如果字符集 Σ 是基本符号的集合，那么一个 <b>正则定义</b> 是具有如下形式的定义序列：
+</p>
+<pre class="example">
+d1 -&gt; r1
+d2 -&gt; r2
+  ...
+dn -&gt; rn
+</pre>
+
+<p>
+其中：
+</p>
+<ul class="org-ul">
+<li>每个 di 都是一个新符号，它们都不在 Σ 中，并且各不相同</li>
+<li>每个 ri 是字母表 Σ∪{d1, d2, ···, di-1} 上的正则表达式</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc91ac30" class="outline-2">
+<h2 id="orgc91ac30"><span class="section-number-2">3</span> 词法单元的识别</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+词法分析的一项工作是过滤源程序中的空白字符，这一目标可以通过如下方式实现：
+</p>
+
+<p>
+在读取到空白字符词法单元时不将其返回给语法分析器，而是继续读取下一词法单元，空白字符的词法单元定义：
+</p>
+
+<pre class="example">
+ws -&gt; (blank|tab|newline)+
+</pre>
+
+<ul class="org-ul">
+<li><p>
+<b>保留字和标识符的识别</b>
+</p>
+
+<p>
+可以使用两种方法来处理那些看起来很像标识符的保留字：
+</p>
+<ol class="org-ol">
+<li>初始化是就将各个保留字填入符号表中</li>
+<li>为每个关键字建立单独的状态转换图</li>
+</ol>
+
+<p>
+相对来说，方法 1 更容易实现。
+</p></li>
+
+<li><p>
+<b>基于状态转换图的词法分析器的体系结构</b>
+</p>
+
+<p>
+状态图由一些列的状态组成，为这些状态标上号，程序中可以用一个变量如 <code>state</code> 来表示当前所处的状态。
+</p>
+
+<p>
+读取到一个字符后将状态转移到下一个状态。同时需要注意某些状态上的 <b>字符回退</b>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-C"><span class="org-keyword">while</span> (<span class="org-constant">true</span>) {
+  <span class="org-keyword">switch</span>(state) {
+    <span class="org-keyword">case</span> 0:
+      c = nextChar();
+
+      <span class="org-keyword">if</span> (c == <span class="org-string">'&lt;'</span>) state = 1;
+      elif (c == <span class="org-string">'&gt;'</span>) state = 5;
+      ...
+      <span class="org-keyword">else</span> fail();
+      <span class="org-keyword">break</span>;
+
+    <span class="org-keyword">case</span> 1:
+      ...
+
+    <span class="org-keyword">case</span> 8:
+      retract();  <span class="org-comment-delimiter">// </span><span class="org-comment">&#35813;&#29366;&#24577;&#38656;&#35201;&#23383;&#31526;&#22238;&#36864;</span>
+      <span class="org-keyword">return</span> Token;  <span class="org-comment-delimiter">// </span><span class="org-comment">&#25509;&#21463;&#29366;&#24577;&#36820;&#22238; Token</span>
+  }
+}
+</pre>
+</div>
+
+<p>
+<code>fail</code> 代表状态转换无法继续，词法分析出错，调用错误恢复策略。
+</p>
+
+<p>
+针对不同的词法单元的状态转换图，可以考虑用如下几个方式进行处理：
+</p>
+<ol class="org-ol">
+<li>让词法分析器顺序地尝试各个词法单元的状态转换图</li>
+<li>可以并行的运行各个状态转换图，当多个匹配成功时，选择长的那一个</li>
+<li>将所有状态转换图合并为一个图</li>
+</ol></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org1f4b32b" class="outline-2">
+<h2 id="org1f4b32b"><span class="section-number-2">4</span> 有穷自动机</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+有穷自动机是 <b>识别器</b>, 它们只能对每个输入串简单地回答 <b>是</b> 或 <b>否</b>, 分为两类：
+</p>
+<ol class="org-ol">
+<li><b>不确定的有穷自动机 - NFA</b> - 对边上的标号无限制，一个符号标记离开同一状态的多条边，并且空串也可以作为标号。</li>
+<li><b>确定的有穷自动机 - DFA</b> - 对于每个状态及自动机输入字母表中的每个符号，有且只有一条离开该状态、以该符号位标号的便。</li>
+</ol>
+
+<p>
+NFA 和 DFA 表示的语言的集合是相同的，这个集合中的语言被称为 <b>正则语言</b>.
+</p>
+
+<ul class="org-ul">
+<li><p>
+<b>不确定的有穷自动机</b>
+</p>
+
+<p>
+NFA 的组成包括：
+</p>
+<ol class="org-ol">
+<li>一个有穷的状态集合 S</li>
+<li>一个输入符号集合 - <b>输入字母表</b>, 假设 <b>空串</b> 不是字母表中的元素</li>
+<li>一个 <b>转换函数</b>, 它为每个状态和 <b>{输入字母表,空串}</b> 中的每个符号都给出了相应的 <b>后继状态</b> 的集合</li>
+<li>S 中的一个状态 S0 被指定为 <b>开始状态</b></li>
+<li>S 的一个子集 F 被指定为 <b>接受状态</b></li>
+</ol></li>
+
+<li><p>
+<b>转换表</b>
+</p>
+
+<p>
+NFA 可以表示为一张 <b>转换表</b>, 表的各行对应于状态，各列对应于输入符号和 空串.
+</p>
+
+<p>
+(a|b)*abb 的转换表可以表示为：
+</p>
+<table>
+
+
+<colgroup>
+<col  class="org-right">
+
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">状态</th>
+<th scope="col" class="org-left">a</th>
+<th scope="col" class="org-left">b</th>
+<th scope="col" class="org-left">空串</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">0</td>
+<td class="org-left">{0, 1}</td>
+<td class="org-left">{0}</td>
+<td class="org-left">/</td>
+</tr>
+
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">/</td>
+<td class="org-left">{2}</td>
+<td class="org-left">/</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-left">/</td>
+<td class="org-left">{3}</td>
+<td class="org-left">/</td>
+</tr>
+
+<tr>
+<td class="org-right">3</td>
+<td class="org-left">/</td>
+<td class="org-left">/</td>
+<td class="org-left">/</td>
+</tr>
+</tbody>
+</table></li>
+
+<li><p>
+<b>自动机中输入字符串的接受</b>
+</p>
+
+<p>
+只要存在某条标号序列位某符号串的路径能够从开始状态到达某个接受状态， NFA 就接受这个符号串。
+</p></li>
+
+<li><p>
+<b>确定的有穷自动机</b>
+</p>
+
+<p>
+确定的有穷自动机是不确定的有穷自动机的一个特例，其中：
+</p>
+<ol class="org-ol">
+<li>没有输入空串之上的转换动作</li>
+<li>对每个状态 s 和每个输入符号 a， 有且只有一条标号为 a 的边离开 s</li>
+</ol>
+
+<p>
+NFA 抽象地表示了用来识别某个语言中串的算法，而相应的 DFA 则是一个具体的识别串的算法。
+</p>
+
+<p>
+DFA 的模拟算法：
+</p>
+<div class="org-src-container">
+<pre class="src src-C">s = s0;  <span class="org-comment-delimiter">// </span><span class="org-comment">&#24320;&#22987;&#29366;&#24577;</span>
+c = nextChar();  <span class="org-comment-delimiter">// </span><span class="org-comment">&#19979;&#19968;&#20010;&#36755;&#20837;&#31526;&#21495;</span>
+
+<span class="org-keyword">while</span> (c != eof) {
+  s = move(s, c);  <span class="org-comment-delimiter">// </span><span class="org-comment">&#20174;&#29366;&#24577; s &#20986;&#21457;&#65292;&#26631;&#21495;&#20026; c &#30340;&#36793;&#25152;&#21040;&#36798;&#30340;&#29366;&#24577;</span>
+  c = nextChar();
+}
+
+<span class="org-keyword">if</span> (s <span class="org-type">in</span> <span class="org-variable-name">F</span>) <span class="org-keyword">return</span> <span class="org-string">"yes"</span>;  <span class="org-comment-delimiter">// </span><span class="org-comment">F &#25509;&#21463;&#29366;&#24577;&#38598;</span>
+<span class="org-keyword">else</span> <span class="org-keyword">return</span> <span class="org-string">"no"</span>;
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org353c801" class="outline-2">
+<h2 id="org353c801"><span class="section-number-2">5</span> 从正则表达式到自动机</h2>
+<div class="outline-text-2" id="text-5">
+<ul class="org-ul">
+<li><p>
+<b>子集构造法 NFA -&gt; DFA</b>
+</p>
+
+<p>
+子集构造法的基本思想为：让构造得到的 DFA 的每个状态对应于 NFA 的一个状态集合。
+</p>
+
+<p>
+子集构造算法：
+</p>
+<ul class="org-ul">
+<li>输入： 一个 NFA N</li>
+<li>输出： 一个接受同样语言的 DFA D</li>
+<li><p>
+方法： 算法为 D 构造一个转换表 Dtran。D 的每个状态是一个 NFA 状态集合。
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">操作</th>
+<th scope="col" class="org-left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">closure(s)</td>
+<td class="org-left">能够从 NFA 的 <b>状态</b> s 开始只通过 <b>空串</b> 到达的 NFA 状态集合</td>
+</tr>
+
+<tr>
+<td class="org-left">closure(T)</td>
+<td class="org-left">能够从 T 中的某个 NFA 状态 s 开始只通过 <b>空串</b> 到达的 NFA 状态集合</td>
+</tr>
+
+<tr>
+<td class="org-left">move(T, a)</td>
+<td class="org-left">能够从 T 中的某个状态 s 出发通过标号为 a 的转换到达的 NFA 状态集合</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+s 是单个状态，而 T 是状态集合。
+</p>
+
+<p>
+算法模拟：
+</p>
+<div class="org-src-container">
+<pre class="src src-C">Dstates = [closure(s0)];           <span class="org-comment-delimiter">// </span><span class="org-comment">&#21021;&#22987;&#29366;&#24577;&#38598;&#26410;&#34987;&#26631;&#35760;</span>
+<span class="org-keyword">while</span> (<span class="org-type">not</span> <span class="org-function-name">markedAll</span>(Dstates)) {   <span class="org-comment-delimiter">// </span><span class="org-comment">&#23384;&#22312;&#26410;&#34987;&#26631;&#35760;&#30340;&#29366;&#24577;&#38598;</span>
+  T = Dstates.getNotMarked();      <span class="org-comment-delimiter">// </span><span class="org-comment">&#21462;&#20986;&#19968;&#20010;&#26410;&#34987;&#26631;&#35760;&#30340;&#29366;&#24577;&#38598;</span>
+  mark(T);                         <span class="org-comment-delimiter">// </span><span class="org-comment">&#26631;&#35760;&#23427;</span>
+  U = closure(move(T, a));        <span class="org-comment-delimiter">//  </span><span class="org-comment">&#24456;&#20851;&#38190;</span>
+  <span class="org-keyword">if</span> (U <span class="org-type">not</span> <span class="org-type">in</span> <span class="org-variable-name">Dstates</span>) {
+    Dstates.push(U);
+  }
+  Dtrans[T, a] = U;                <span class="org-comment-delimiter">// </span><span class="org-comment">DFA</span>
+}
+</pre>
+</div></li>
+</ul></li>
+
+<li><p>
+<b>NFA 的模拟</b>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-C">S = closure(s0);
+c = nextChar();
+<span class="org-keyword">while</span> (c != eof) {
+  S = closure(move(S, c));
+  c = nextChar();
+}
+
+<span class="org-keyword">return</span> (S &amp; F) != &#31354;&#65307;
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

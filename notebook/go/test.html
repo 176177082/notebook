@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:46 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Go Test</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">Go Test</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgbe92d1c">1. gotestsum</a></li>
+<li><a href="#orgb447fd9">2. Monkey</a></li>
+<li><a href="#org0f606e3">3. ginkgo</a></li>
+<li><a href="#orgf800463">4. golangci-lint</a></li>
+<li><a href="#orgbff7569">5. gomock</a>
+<ul>
+<li><a href="#org8704949">5.1. 执行顺序</a></li>
+</ul>
+</li>
+<li><a href="#orga1b0f58">6. assert</a></li>
+<li><a href="#org59385a6">7. example</a></li>
+<li><a href="#orgaa9d068">8. 相关问题</a>
+<ul>
+<li><a href="#org66cd39b">8.1. 使用 go test 测试所有包</a></li>
+<li><a href="#org2cef2ea">8.2. 测试在另一个协程的 panic</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgbe92d1c" class="outline-2">
+<h2 id="orgbe92d1c"><span class="section-number-2">1</span> gotestsum</h2>
+<div class="outline-text-2" id="text-1">
+<blockquote>
+<p>
+gotestsum runs tests using go test &#x2013;json, prints friendly test output and a summary of the test run. It is designed for both local development, and running tests in a CI system.
+</p>
+</blockquote>
+
+<p>
+PS: 其实用 Ginkgo 的话这个感觉也没有使用的必要了
+</p>
+
+<ul class="org-ul">
+<li><a href="https://github.com/gotestyourself/gotestsum">GitHub - gotestyourself/gotestsum: 'go test' runner with output optimized for humans, JUnit XML for CI integration, and a summary of the test results.</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb447fd9" class="outline-2">
+<h2 id="orgb447fd9"><span class="section-number-2">2</span> Monkey</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+NOTE：在 macOS Catalina 上该库似乎存在问题，谨慎使用。
+</p>
+
+<p>
+函数/过程打桩：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">guard := monkey.Patch(function, func(...) (...) {
+  // ...
+})
+defer guard.Unpatch()
+</pre>
+</div>
+
+<p>
+方法打桩：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">type Etcd struct {
+
+}
+
+func (e *Etcd) Get(id string) []string {
+  names := make([]string, 0)
+  // ...
+  return names
+}
+
+var e *Etcd
+guard := PatchInstanceMethod(reflect.TypeOf(e), "Get", func(_ string) []string {
+  return []string{"LiLei", "HanMeiMei", "ZhangMing"}
+})
+defer guard.Unpatch()
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><a href="https://studygolang.com/articles/11296">Monkey框架使用指南 - Go语言中文网 - Golang中文社区</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0f606e3" class="outline-2">
+<h2 id="org0f606e3"><span class="section-number-2">3</span> ginkgo</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+使用 ginkgo 来编写 go 的测试用例时，需要在对应包下面执行 ginkgo bootstrap 命令，生成 suite_test 文件，类似：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">package pkg_test
+
+import (
+  "testing"
+
+  . "github.com/onsi/ginkgo"
+  . "github.com/onsi/gomega"
+)
+
+func TestPkg(t *testing.T) {
+  RegisterFailHandler(Fail)
+  RunSpecs(t, "Pkg Suite")
+}
+</pre>
+</div>
+
+<p>
+然后在其他测试文件中编写类似如下形式的测试用例：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">import 	. "github.com/onsi/ginkgo"
+
+var _ = Describe("test strings package", func() {
+  t := GinkgoT()
+
+  Context("strings.Contains()", func() {
+    When("the string contains the substring in the middle", func() {
+      It("returns `true`", func() {
+	// ...
+      })
+    })
+  })
+})
+</pre>
+</div>
+
+<p>
+需要注意的是，真正执行测试时，测试是从 suite_test 开始的，在 suite_test 开始前，其他测试文件中的 Describe、Context、When、It 的执行是在包初始化阶段完成的，而 It 注册的函数才是最终要执行的用例。
+</p>
+
+<p>
+因此，注意依赖初始化的位置！！！
+</p>
+
+<p>
+模板：
+</p>
+<pre class="example">
+import 	. "github.com/onsi/ginkgo"
+
+var _ = Describe("$NAME$", func() {
+  t := GinkgoT()
+
+  $END$
+})
+</pre>
+
+<p>
+命令：
+</p>
+<pre class="example">
+echo "[+] run ginkgo"
+ginkgo -noColor -timeout=30m                              \
+       -r -cover -coverprofile=coverage.out -outputdir=.  \
+       -coverpkg=./... ./...                              \
+       -covermode count
+</pre>
+
+<p>
+链接：<a href="https://github.com/onsi/ginkgo">onsi/ginkgo: BDD Testing Framework for Go</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf800463" class="outline-2">
+<h2 id="orgf800463"><span class="section-number-2">4</span> golangci-lint</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+简单使用方式：
+</p>
+<pre class="example">
+golangci-lint run -v --fix
+</pre>
+
+<p>
+可以使用如下注释关闭针对该行、函数、包的 lint 检测：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">// nolint
+// nolint:linter
+// nolint // comment
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><a href="https://github.com/golangci/golangci-lint">golangci/golangci-lint: Fast linters Runner for Go</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgbff7569" class="outline-2">
+<h2 id="orgbff7569"><span class="section-number-2">5</span> gomock</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+gomock 的使用还是比较简单的，主要就是两步：
+</p>
+<ol class="org-ol">
+<li><p>
+生成 mock 文件，两种方式：
+</p>
+<pre class="example">
+mockgen -package &lt;target_package_name&gt; -destination &lt;target_file_name&gt; &lt;package_path&gt; &lt;interface...&gt;
+mockgen -source=foo.go [other options]
+</pre></li>
+<li><p>
+使用，就更简单了，直接 Any、Return、AnyTimes 走起：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">controller := gomock.NewController(t)
+
+mockXXX := mock.NewMockXXX(controller)
+
+mockXXX.EXPECT().XXXMethod().Return(XXX).AnyTimes()
+</pre>
+</div></li>
+
+<li><a href="https://github.com/golang/mock">golang/mock: GoMock is a mocking framework for the Go programming language.</a></li>
+</ol>
+</div>
+
+<div id="outline-container-org8704949" class="outline-3">
+<h3 id="org8704949"><span class="section-number-3">5.1</span> 执行顺序</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+可以通过两种方式来设置单个函数多次调用的结果顺序：
+</p>
+<pre class="example">
+firstCall := mockObj.EXPECT().SomeMethod(1, "first")
+secondCall := mockObj.EXPECT().SomeMethod(2, "second").After(firstCall)
+mockObj.EXPECT().SomeMethod(3, "third").After(secondCall)
+
+gomock.InOrder(
+    mockObj.EXPECT().SomeMethod(1, "first"),
+    mockObj.EXPECT().SomeMethod(2, "second"),
+    mockObj.EXPECT().SomeMethod(3, "third"),
+)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga1b0f58" class="outline-2">
+<h2 id="orga1b0f58"><span class="section-number-2">6</span> assert</h2>
+<div class="outline-text-2" id="text-6">
+<ul class="org-ul">
+<li><a href="https://github.com/stretchr/testify">GitHub - stretchr/testify: A toolkit with common assertions and mocks that plays nicely with the standard library</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org59385a6" class="outline-2">
+<h2 id="org59385a6"><span class="section-number-2">7</span> example</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+*_test 文件中以 Example 开头的函数可以作为 godoc 的一部分提取出来，在存在 Output 注释的时候还可以被当作测试用例执行：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">func ExampleFoo()     // 作为Foo函数或者类型例子
+func ExampleBar_Qux() // 作为Bar类型的Qux函数例子
+func Example()        // 作为整个库的例子
+
+func ExampleReverse() {
+    fmt.Println(stringutil.Reverse("hello"))
+    // Output: golly
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgaa9d068" class="outline-2">
+<h2 id="orgaa9d068"><span class="section-number-2">8</span> 相关问题</h2>
+<div class="outline-text-2" id="text-8">
+</div>
+<div id="outline-container-org66cd39b" class="outline-3">
+<h3 id="org66cd39b"><span class="section-number-3">8.1</span> 使用 go test 测试所有包</h3>
+<div class="outline-text-3" id="text-8-1">
+<div class="org-src-container">
+<pre class="src src-sh">go test -cover -coverprofile=profile.cov ./...
+go tool cover -func profile.cov
+</pre>
+</div>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/16353016/how-to-go-test-all-tests-in-my-project">testing - How to `go test` all tests in my project? - Stack Overflow</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2cef2ea" class="outline-3">
+<h3 id="org2cef2ea"><span class="section-number-3">8.2</span> 测试在另一个协程的 panic</h3>
+<div class="outline-text-3" id="text-8-2">
+<p>
+类似于这样的代码会在另一个协程抛出 panic，此时，这个 panic 是不可测的，因为它不在当前协程，同时会导致测试进程异常退出：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">func function() {
+  go func() {
+    panic(err)
+  }
+}
+</pre>
+</div>
+
+<p>
+对于这种情况，应该考虑将这个新协程包装在另一个函数中单独测试，并保证测试外部函数时不会导致 panic。
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

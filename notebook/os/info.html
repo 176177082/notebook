@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:44 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>操作系统 - 信息的表示和处理</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">操作系统 - 信息的表示和处理</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgc40d02f">1. 大小端问题</a></li>
+<li><a href="#org2e60804">2. 整数表示</a></li>
+<li><a href="#orge6c3db4">3. 整数运算</a></li>
+<li><a href="#org822101e">4. 浮点数表示</a>
+<ul>
+<li><a href="#org69f5bc9">4.1. IEEE 754</a></li>
+<li><a href="#orgff22852">4.2. 舍入</a></li>
+<li><a href="#orga0a9a4f">4.3. 加法</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc40d02f" class="outline-2">
+<h2 id="orgc40d02f"><span class="section-number-2">1</span> 大小端问题</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li>计算机内存地址分配： <b>由小到大</b></li>
+
+<li>假设有整数 0x01234567</li>
+<li>假设该整数为 4 字节</li>
+<li>假设该整数的地址为 0x100</li>
+</ul>
+
+<p>
+则， 该整数占据的内存地址为： 0x100, 0x101, 0x102, 0x103;
+</p>
+
+<p>
+大端法:
+</p>
+<table>
+
+
+<colgroup>
+<col  class="org-right">
+
+<col  class="org-right">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">地址</th>
+<th scope="col" class="org-right">值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">0x103</td>
+<td class="org-right">0x67</td>
+</tr>
+
+<tr>
+<td class="org-right">0x102</td>
+<td class="org-right">0x45</td>
+</tr>
+
+<tr>
+<td class="org-right">0x101</td>
+<td class="org-right">0x23</td>
+</tr>
+
+<tr>
+<td class="org-right">0x100</td>
+<td class="org-right">0x01</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+小端法：
+</p>
+<table>
+
+
+<colgroup>
+<col  class="org-right">
+
+<col  class="org-right">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">地址</th>
+<th scope="col" class="org-right">值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">0x103</td>
+<td class="org-right">0x01</td>
+</tr>
+
+<tr>
+<td class="org-right">0x102</td>
+<td class="org-right">0x23</td>
+</tr>
+
+<tr>
+<td class="org-right">0x101</td>
+<td class="org-right">0x45</td>
+</tr>
+
+<tr>
+<td class="org-right">0x100</td>
+<td class="org-right">0x67</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+<b>PS:</b> 大多数 Intel 为 小端法
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2e60804" class="outline-2">
+<h2 id="org2e60804"><span class="section-number-2">2</span> 整数表示</h2>
+<div class="outline-text-2" id="text-2">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">十六进制</th>
+<th scope="col" class="org-right">0</th>
+<th scope="col" class="org-right">1</th>
+<th scope="col" class="org-right">2</th>
+<th scope="col" class="org-right">3</th>
+<th scope="col" class="org-right">4</th>
+<th scope="col" class="org-right">5</th>
+<th scope="col" class="org-right">6</th>
+<th scope="col" class="org-right">7</th>
+</tr>
+
+<tr>
+<th scope="col" class="org-left">十进制</th>
+<th scope="col" class="org-right">0</th>
+<th scope="col" class="org-right">1</th>
+<th scope="col" class="org-right">2</th>
+<th scope="col" class="org-right">3</th>
+<th scope="col" class="org-right">4</th>
+<th scope="col" class="org-right">5</th>
+<th scope="col" class="org-right">6</th>
+<th scope="col" class="org-right">7</th>
+</tr>
+
+<tr>
+<th scope="col" class="org-left">二进制</th>
+<th scope="col" class="org-right">0000</th>
+<th scope="col" class="org-right">0001</th>
+<th scope="col" class="org-right">0010</th>
+<th scope="col" class="org-right">0011</th>
+<th scope="col" class="org-right">0100</th>
+<th scope="col" class="org-right">0101</th>
+<th scope="col" class="org-right">0110</th>
+<th scope="col" class="org-right">0111</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">十六进制</td>
+<td class="org-right">8</td>
+<td class="org-right">9</td>
+<td class="org-right">A</td>
+<td class="org-right">B</td>
+<td class="org-right">C</td>
+<td class="org-right">D</td>
+<td class="org-right">E</td>
+<td class="org-right">F</td>
+</tr>
+
+<tr>
+<td class="org-left">十进制</td>
+<td class="org-right">8</td>
+<td class="org-right">9</td>
+<td class="org-right">10</td>
+<td class="org-right">11</td>
+<td class="org-right">12</td>
+<td class="org-right">13</td>
+<td class="org-right">14</td>
+<td class="org-right">15</td>
+</tr>
+
+<tr>
+<td class="org-left">二进制</td>
+<td class="org-right">1000</td>
+<td class="org-right">1001</td>
+<td class="org-right">1010</td>
+<td class="org-right">1011</td>
+<td class="org-right">1100</td>
+<td class="org-right">1101</td>
+<td class="org-right">1110</td>
+<td class="org-right">1111</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+<b>PS:</b> 负数的范围比正数范围大 1.
+<b>PS:</b> 强制类型转换， 位值不变， 但改变解释这些位的方式.
+</p>
+
+
+<p>
+<b>规则：</b> <code>n</code> 代表二进制数的位数， <code>w = n - 1</code>.
+</p>
+
+<dl class="org-dl">
+<dt>二进制转无符号数 BSU</dt><dd><p>
+<code>UMax</code> = <code>2ⁿ - 1</code>
+</p>
+
+<p>
+<code>BSU([0000])</code> ==&gt; <code>0·2³ + 0·2² + 0·2¹ + 0·2⁰</code> ==&gt; <code>0</code>
+</p>
+
+<p>
+<code>BSU([1111])</code> ==&gt; <code>1·2³ + 1·2² + 1·2¹ + 1·2⁰</code> ==&gt; <code>2⁴ - 1</code> ==&gt; <code>15</code>
+</p></dd>
+
+<dt>二进制转补码 BST</dt><dd><p>
+<code>TMax</code> = <code>2ʷ - 1</code>, <code>TMin = -2ʷ</code>, <code>|TMin| = |TMax| + 1,</code>
+<code>UMax = 2Tmax + 1</code>
+</p>
+
+<p>
+<code>BST([0000])</code> ==&gt; <code>-1·0·2³ + 0·2² + 0·2¹ + 0·2⁰</code> ==&gt; <code>0</code>
+</p>
+
+<p>
+<code>BST([1111])</code> ==&gt; <code>-1·1·2³ + 1·2² + 1·2¹ + 1·2⁰</code> ==&gt; <code>-1</code>
+</p>
+
+<p>
+<b>PS:</b> 补码的首位为 <b>负权</b>
+</p>
+
+<p>
+反码： 最高位的权是 <code>-(2ʷ - 1)</code> 而不是 <code>-2ʷ</code>, 其他和补码相同
+</p>
+
+<p>
+原码： 最高位确定符号， <code>1</code> 为负数， <code>0</code> 为正数， 无权
+</p></dd>
+
+<dt>补码转无符号数 T2U</dt><dd>设补码数为 <code>x</code>, 当 <code>x &lt; 0</code> 时， <code>T2U(x) = x + 2ⁿ</code>; 当 <code>x &gt;= 0</code> 时，
+<code>T2U(x) = x</code></dd>
+
+<dt>无符号数转补码 U2T</dt><dd>设无符号数为 <code>x</code>, 当 <code>x &lt;= TMax</code> 时， <code>U2T(x) = x</code>; 当 <code>x &gt; TMax</code> 时，
+<code>U2T(x) = x - 2ⁿ</code></dd>
+
+<dt>无符号数的零扩展</dt><dd>在表示的开头添 <code>0</code></dd>
+
+<dt>补码数的符号扩展</dt><dd>在表示中添加最高有效位的值， 负数为 <code>1</code>, 正数为 <code>0</code></dd>
+
+<dt>截断数字</dt><dd>截断高位， 保留低位， 根据相应的编码解释剩下的位。 <code>-1</code> 的截断值总是 <code>-1</code>.</dd>
+</dl>
+</div>
+</div>
+
+<div id="outline-container-orge6c3db4" class="outline-2">
+<h2 id="orge6c3db4"><span class="section-number-2">3</span> 整数运算</h2>
+<div class="outline-text-2" id="text-3">
+<dl class="org-dl">
+<dt>无符号数加法</dt><dd><p>
+对于无符号数 <code>0 &lt;= x, y &lt; 2ⁿ</code>, 如果 <code>x + y &lt; 2ⁿ</code>, 那么加法正常;
+如果 <code>x + y &gt;= 2ⁿ</code>, 那么加法 <b>溢出</b>, 结果为 <code>x + y - 2ⁿ</code>. (<code>(x + y) mod 2ⁿ</code>)
+</p>
+
+<p>
+溢出检测： 令 <code>s = x + y</code>, 当 <code>s &lt; x</code> 或 <code>s &lt; y</code> 时， 发生了溢出
+</p></dd>
+
+<dt>无符号数加法逆元</dt><dd><code>x = 0, -x = 0</code>, <code>x &gt; 0, -x = 2ⁿ - x</code>, <code>x + -x = 0</code>.</dd>
+
+<dt>补码加法</dt><dd><p>
+对于补码数 <code>-2ⁿ &lt;= x, y &lt;= 2ⁿ - 1</code>:
+</p>
+
+<p>
+正溢出： <code>x + y = x + y - 2ⁿ, 2ʷ &lt;= x + y</code>
+</p>
+
+<p>
+正常： <code>x + y = x + y, -2ʷ &lt;= x + y &lt; 2ʷ</code>
+</p>
+
+<p>
+负溢出： <code>x + y = x + y + 2ⁿ, x + y &lt; -2ʷ</code>
+</p>
+
+<p>
+溢出检测： 零 <code>s = x + y</code>, 当 <code>x &gt; 0, y &gt; 0, s &lt; 0</code> 或 <code>x &lt; 0, y &lt; 0, s &gt; 0</code> 时溢出
+</p></dd>
+
+<dt>补码数加法逆元</dt><dd><code>x = TMin, -x = TMin</code>, <code>x &gt; TMin, -x = -x</code>, <code>x + -x = 0</code>.</dd>
+
+<dt>无符号数乘法</dt><dd><code>x*y = (x·y) mod 2ⁿ</code></dd>
+
+<dt>补码乘法</dt><dd><code>x*y = U2T((x·y) mod 2ⁿ)</code>, 结果截断为补码数</dd>
+
+<dt>乘以 2 的幂</dt><dd><code>x &lt;&lt; k</code></dd>
+
+<dt>除以 2 的幂</dt><dd>结果向下取整 <code>x &gt;&gt; k</code>, 结果向上取整 <code>(x + (1 &lt;&lt; k) - 1) &gt;&gt; k</code> (P71)</dd>
+</dl>
+
+<p>
+补码乘法： <a href="http://pages.cs.wisc.edu/~smoler/cs354/beyond354/int.mult.html">Two's Complement Multiplication</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org822101e" class="outline-2">
+<h2 id="org822101e"><span class="section-number-2">4</span> 浮点数表示</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+二进制小数点后表示的值 = 原本代表的值 / 2^(-小数点后的位数) &#x2013;(类比十进制)
+</p>
+
+<p>
+如： 0.001: (001) = 1, 2^(-3) = 8, 0.001 ==&gt; 1/8
+</p>
+</div>
+
+<div id="outline-container-org69f5bc9" class="outline-3">
+<h3 id="org69f5bc9"><span class="section-number-3">4.1</span> IEEE 754</h3>
+<div class="outline-text-3" id="text-4-1">
+<ul class="org-ul">
+<li><a href="https://zh.wikipedia.org/wiki/IEEE_754">IEEE 754 维基百科</a></li>
+</ul>
+
+<p>
+公式： <code>V = pow(-1, s) * M * pow(2, E)</code>
+</p>
+<dl class="org-dl">
+<dt>符号 (sign)</dt><dd><code>s</code> 决定浮点数的符号</dd>
+<dt>尾数 (significand)</dt><dd><code>M</code> 是一个二进制小数</dd>
+<dt>阶码 (exponent)</dt><dd><code>E</code> 的作用是对浮点数加权， 权重是 <code>2</code> 的 <code>E</code> 次幂</dd>
+</dl>
+
+<p>
+浮点数的位表示：
+</p>
+<ul class="org-ul">
+<li>一个单独的符号位 <code>s</code> 直接编码符号 <code>s</code></li>
+<li><code>k</code> 位的阶码字段 <code>exp</code> 编码阶码 <code>E</code></li>
+<li><code>n</code> 位小数字段 <code>frac</code> 编码尾数 <code>M</code></li>
+</ul>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-right">
+
+<col  class="org-right">
+
+<col  class="org-right">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">浮点数类型</th>
+<th scope="col" class="org-right">s</th>
+<th scope="col" class="org-right">exp</th>
+<th scope="col" class="org-right">frac</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">单精度浮点数</td>
+<td class="org-right">1</td>
+<td class="org-right">8</td>
+<td class="org-right">23</td>
+</tr>
+
+<tr>
+<td class="org-left">双精度浮点数</td>
+<td class="org-right">1</td>
+<td class="org-right">11</td>
+<td class="org-right">52</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+根据 <code>exp</code> 的值分为三种情况：
+</p>
+<dl class="org-dl">
+<dt>规格化的值</dt><dd><p>
+<code>exp</code> 的位模式既不全为 <code>0</code> 也不全为 <code>1</code>.
+</p>
+
+<p>
+此时， 阶码字段被解释为以 <b>偏置(biased)</b> 形式表示的有符号整数， 阶码的值 <code>E = exp - Bias</code>. 其中， <code>E</code> 为实际的阶码值， <code>exp</code> 为 <code>exp</code> 字段按无符号解释出的值，
+<code>Bias = pow(2, k-1) - 1</code>. <code>k</code> 为 <code>exp</code> 的位数。
+</p>
+
+<p>
+小数字段 <code>frac</code> 被解释为描述小数值 <code>f</code>, <code>0 &lt;= f &lt; 1</code>. 二进制表示为 <code>0.f</code>, 小数点在最高有效位的左边。 尾数 <code>M = 1 + f</code>. 这种表示方式也叫做 <b>隐含的以 1 开头的</b> 表示。
+</p>
+
+<p>
+表示的浮点数应该为： <code>pow(-1, s) * (1 + frac) * pow(2, exp - Bias)</code>.
+</p></dd>
+
+<dt>非规格化的值</dt><dd><p>
+当 <code>exp</code> 全为 <code>0</code> 时.
+</p>
+
+<p>
+此时， 阶码值 <code>E = 1- Bias</code>, 尾数 <code>M = f</code>.
+</p>
+
+<p>
+非规格化的值的两种用途：
+</p>
+<ul class="org-ul">
+<li>提供表示数值 0 的方法， <code>+0.0</code> 和 <code>-0.0</code></li>
+<li>表示哪些非常接近 <code>0.0</code> 的数</li>
+</ul></dd>
+
+<dt>特殊值</dt><dd><p>
+当 <code>exp</code> 全为 <code>1</code> 时。
+</p>
+
+<p>
+此时如果 <code>frac</code> 全为 <code>0</code>, 得到的值表示无穷。 根据 <code>s</code> 的值分别表示正负无穷。
+</p>
+
+<p>
+无穷可以表示 <b>溢出</b> 的结果。
+</p>
+
+<p>
+如果此时 <code>frac</code> 不全为 <code>0</code>, 那么得到的值表示 <code>NaN</code> 非数。 比如 <code>sqrt(-1)</code> 会得到 <code>NaN</code>.
+</p></dd>
+</dl>
+
+<p>
+转换例子：
+</p>
+<pre class="example">
+(int):(0x00359141) ==&gt; (float):(0x4A564504)
+
+(bit)(int):(0x00359141) ==&gt; (bit):1101011001000101000001
+
+==&gt; (bit):1.101011001000101000001 * 2^21 ==&gt; (E = 21, M = 1.101011001000101000001)
+
+==&gt; frac = 101011001000101000001000
+
+==&gt; exp = (E + Bias) = (21 + 127) = 10010100
+
+==&gt; (float):(0, exp, frac) ==&gt; (0100 1010 0101 0110 0100 0101 0000 01000)
+
+==&gt; (float):(0x4A564504)
+</pre>
+
+<p>
+<b>一种理解方式：</b>
+</p>
+
+<p>
+32 位浮点数为分布：
+</p>
+<pre class="example">
+|&lt;---- 1 ----&gt;| &lt;---- 8 ----&gt; | &lt;---- 23 ----&gt; |
+</pre>
+
+<p>
+其中：
+</p>
+<ul class="org-ul">
+<li>开头 1 位表示正负 S</li>
+<li>后 8 位表示 exp 指数</li>
+<li>最后 23 为表示实际的值 xxxx，依次表示的值为 2^-1, 2^-2 ··· 2^-23</li>
+<li>整个浮点数的值为： (-1)^S * 1.xxxxx * 2^(exp - 127)</li>
+</ul>
+
+<p>
+整数转换为 1.xxxx 的形式：
+</p>
+<pre class="example">
+Num: 7.0
+7.0 =&gt; 7.0 * 2^0
+7.0 =&gt; 3.5 * 2^1
+7.0 =&gt; 1.75 * 2^2
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgff22852" class="outline-3">
+<h3 id="orgff22852"><span class="section-number-3">4.2</span> 舍入</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+四种舍入方式：
+</p>
+<dl class="org-dl">
+<dt>向偶数舍入（向最接近的值舍入）</dt><dd><p>
+默认方式， 当舍入的值距离一个值比另一个值更接近时， 舍入更接近的值。 如果与两个值的距离相同， 向偶数舍入。
+</p>
+
+<p>
+如： 对于 <code>1.4</code>, 和 <code>1</code> 的距离是 <code>0.4</code>, 和 <code>2</code> 的距离是 <code>0.6</code>. 因此舍入为 <code>1</code>.
+</p>
+
+<p>
+对于 <code>1.5</code>, 和 <code>1</code> 与 <code>2</code> 的距离都是 <code>0.5</code>, 但 <code>2</code> 是偶数， 因此舍入为 <code>2</code>.
+</p>
+
+<p>
+同理， <code>2.5</code> 舍入为 <code>2</code>.
+</p></dd>
+
+<dt>向上舍入</dt><dd><code>1.1</code> 舍入为 <code>2</code>, <code>-1.1</code> 舍入为 <code>-1</code>. 舍入为较大的值</dd>
+
+<dt>向下舍入</dt><dd><code>1.1</code> 舍入为 <code>1</code>, <code>-1.1</code> 舍入为 <code>-2</code>. 舍入为较小的值</dd>
+
+<dt>向零舍入</dt><dd>正数向下舍入， 负数向上舍入， 趋近于 <code>0</code></dd>
+</dl>
+
+<p>
+对于二进制小数， 最低有效位是 <code>0</code> 为偶数， <code>1</code> 为奇数。
+</p>
+
+<p>
+因此， 二进制小数的舍入倾向于使最低有效位为 <code>0</code>.
+</p>
+
+<p>
+<b>Example</b>:
+</p>
+<pre class="example">
+10.00011 ==&gt; 10.00
+10.00110 ==&gt; 10.01
+
+10.11100 ==&gt; 11.00
+10.10100 ==&gt; 10.10
+</pre>
+
+<p>
+对于前两个舍入， 舍入值并不是中间值， 因此舍入到最接近的值。
+</p>
+
+<p>
+对于第三个舍入， 最低有效位是 <code>1</code>, 向上舍入进位使得最低有效位为 <code>0</code>.
+</p>
+
+<p>
+对于第四个舍入， 最低有效位是 <code>0</code>, 向下舍入使得最低有效位保持不变为 <code>0</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga0a9a4f" class="outline-3">
+<h3 id="orga0a9a4f"><span class="section-number-3">4.3</span> 加法</h3>
+<div class="outline-text-3" id="text-4-3">
+<ul class="org-ul">
+<li><a href="https://www.cs.uaf.edu/2000/fall/cs301/notes/Chapter6/node3.html">Addition and Subtraction</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

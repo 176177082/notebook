@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:45 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Linux 问题集</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">Linux 问题集</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgba310ed">1. 如何快速删除文件</a></li>
+<li><a href="#org48b0407">2. 避免 SSH 连接因超时闲置断开</a>
+<ul>
+<li><a href="#org4b392a6">2.1. 方案一：客户端设置</a></li>
+<li><a href="#org0a624f9">2.2. 方案二：在服务器端设置</a></li>
+</ul>
+</li>
+<li><a href="#org3218504">3. 忘记 root 密码怎么办</a></li>
+<li><a href="#org2e2696a">4. 如何强制用户下线</a></li>
+<li><a href="#org8eed55f">5. 怎样编译开源程序</a></li>
+<li><a href="#org32abd1f">6. 怎样创建交换分区</a></li>
+<li><a href="#org429ea5c">7. 怎样搭建 FTP 服务器</a></li>
+<li><a href="#orga0d7d44">8. 怎样合并两个目录</a></li>
+<li><a href="#orgededc88">9. 怎样创建需要定时执行的任务</a></li>
+<li><a href="#org000631d">10. X11、GTK、GNOME 等之间的关系</a></li>
+<li><a href="#orgc0b3bb0">11. 怎样关闭一个占用了指定端口的进程</a></li>
+<li><a href="#org39a2a2a">12. 如何通过 Shell 脚本分发软件包</a></li>
+<li><a href="#orgc9bfd95">13. 在命令行生成文本 Hash 摘要时得到的值不正确</a></li>
+<li><a href="#org15a4a34">14. 系统平均负载的含义</a></li>
+<li><a href="#orged3ab98">15. man 1 2 3…… 的含义</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgba310ed" class="outline-2">
+<h2 id="orgba310ed"><span class="section-number-2">1</span> 如何快速删除文件</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li><a href="https://www.slashroot.in/which-is-the-fastest-method-to-delete-files-in-linux">Which is the fastest method to delete files in Linux</a></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-sh"><span class="org-comment-delimiter"># </span><span class="org-comment">&#21024;&#38500; target &#20013;&#27604; empty &#30446;&#24405;&#22810;&#30340;&#25991;&#20214;</span>
+$ rsync -a --detate empty/ target/
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org48b0407" class="outline-2">
+<h2 id="org48b0407"><span class="section-number-2">2</span> 避免 SSH 连接因超时闲置断开</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org4b392a6" class="outline-3">
+<h3 id="org4b392a6"><span class="section-number-3">2.1</span> 方案一：客户端设置</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+编辑文件 <code>/etc/ssh/ssh_config</code>, 添加如下一行：
+</p>
+<pre class="example">
+ServerAliveInterval 60
+</pre>
+
+<p>
+<b>NOTE:</b> 是 <code>ssh_config</code> 不是 <code>sshd_config</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0a624f9" class="outline-3">
+<h3 id="org0a624f9"><span class="section-number-3">2.2</span> 方案二：在服务器端设置</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+编辑文件 <code>/etc/ssh/sshd_config</code> 并添加：
+</p>
+<pre class="example">
+ClientAliveInterval 60
+</pre>
+
+<p>
+重启 SSH 服务后该项设置会生效，这样设置安全性会有一定下降。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3218504" class="outline-2">
+<h2 id="org3218504"><span class="section-number-2">3</span> 忘记 root 密码怎么办</h2>
+<div class="outline-text-2" id="text-3">
+<ol class="org-ol">
+<li><p>
+系统启动时按任意键进入如下界面：
+</p>
+<pre class="example">
+root (hd0,0) 
+kernel /vmlinuz-2.6.18-128.el5 ro root=LABEL=/ rhgb quiet 
+initrd /initrd-2.6.18-128.el5.img 
+</pre></li>
+
+<li><p>
+将光标移动到 kernel 那一行，按 e 进行编辑，在最后键入 <code>single</code>:
+</p>
+<pre class="example">
+kernel /vmlinuz-2.6.18-128.el5 ro root=LABEL=/ rhgb quiet single 
+</pre></li>
+
+<li>按下 Enter 确定，按 b 进入单人维护模式。然后使用命令 <code>passwd</code> 修改密码</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org2e2696a" class="outline-2">
+<h2 id="org2e2696a"><span class="section-number-2">4</span> 如何强制用户下线</h2>
+<div class="outline-text-2" id="text-4">
+<ol class="org-ol">
+<li>命令 who 查看哪些用户在线</li>
+<li>使用 <code>pkill -kill -t pts/n</code> 踢出用户</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org8eed55f" class="outline-2">
+<h2 id="org8eed55f"><span class="section-number-2">5</span> 怎样编译开源程序</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+通常的步骤：
+</p>
+<pre class="example">
+./configure - 生成 Makefile
+make - 编译
+make intsall - 安装
+</pre>
+
+<p>
+在第一步前也可能存在 <code>./autogen.sh</code> 这一步骤。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org32abd1f" class="outline-2">
+<h2 id="org32abd1f"><span class="section-number-2">6</span> 怎样创建交换分区</h2>
+<div class="outline-text-2" id="text-6">
+<div class="org-src-container">
+<pre class="src src-bash">$ dd <span class="org-variable-name">if</span>=/dev/zero <span class="org-variable-name">of</span>=/root/.swap <span class="org-variable-name">bs</span>=1M <span class="org-variable-name">count</span>=128
+$ chmod 0600 /root/.swap
+$ mkswap /root/.swap
+$ swapon /root/.swap
+$ vim /etc/fstab
+<span class="org-comment-delimiter"># </span><span class="org-comment">/root/.swap swap swap defaults 0 0</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org429ea5c" class="outline-2">
+<h2 id="org429ea5c"><span class="section-number-2">7</span> 怎样搭建 FTP 服务器</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+教程：<a href="https://www.digitalocean.com/community/tutorials/how-to-set-up-vsftpd-for-a-user-s-directory-on-ubuntu-18-04">How To Set Up vsftpd for a User's Directory on Ubuntu 18.04 | DigitalOcean</a>
+</p>
+
+<p>
+问题：
+</p>
+<ol class="org-ol">
+<li>由于是云服务器，防火墙就不用管了，但是要添加安全组，开放 21 端口</li>
+<li>用户的添加，Debian 需要使用 adduser 命令：<a href="https://askubuntu.com/questions/374870/home-directory-not-being-created">command line - Home directory not being created - Ask Ubuntu</a></li>
+<li>服务器的配置跟着配就可以了，但是还有一个地方要改：<a href="https://askubuntu.com/questions/413677/vsftpd-530-login-incorrect">server - vsftpd: 530 Login incorrect - Ask Ubuntu</a></li>
+<li>被动模式的配置：
+<ul class="org-ul">
+<li><a href="https://www.cnblogs.com/kuliuheng/p/3209744.html">vsftpd的主动模式与被动模式 - VictoKu - 博客园</a></li>
+<li>Debian 系统中 iptables 默认开发所有端口，不需要配置了</li>
+<li>服务器的安全组需要配置，开放需要的端口，例如 TCP:10240-20480</li>
+<li>FTP 服务器网页可以查看文件，在资源管理器中打开可以上传文件</li>
+<li>链接格式： <a href="ftp://user:passwd@host">ftp://user:passwd@host</a></li>
+</ul></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orga0d7d44" class="outline-2">
+<h2 id="orga0d7d44"><span class="section-number-2">8</span> 怎样合并两个目录</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+方式一：通过 cp 命令合并目录：
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">$ cp -RT src dst
+</pre>
+</div>
+
+<p>
+参考：<a href="https://stackoverflow.com/questions/4572225/how-do-i-merge-one-directory-into-another-using-bash">shell - How do I merge one directory into another using Bash? - Stack Overflow</a>
+</p>
+
+<p>
+方式二：通过 rsync 命令合并目录：
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">rsync -a src/ dst/
+</pre>
+</div>
+
+<p>
+参考：<a href="https://unix.stackexchange.com/questions/149965/how-to-copy-merge-two-directories">ubuntu - How to copy-merge two directories? - Unix &amp; Linux Stack Exchange</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgededc88" class="outline-2">
+<h2 id="orgededc88"><span class="section-number-2">9</span> 怎样创建需要定时执行的任务</h2>
+<div class="outline-text-2" id="text-9">
+<p>
+通过 crontab 命令，我们可以在固定的间隔时间执行指定的系统指令或 shell script 脚本。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://linuxtools-rst.readthedocs.io/zh_CN/latest/tool/crontab.html">19. crontab 定时任务 — Linux Tools Quick Tutorial</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org000631d" class="outline-2">
+<h2 id="org000631d"><span class="section-number-2">10</span> X11、GTK、GNOME 等之间的关系</h2>
+<div class="outline-text-2" id="text-10">
+<p>
+X11 是 X Window System Protocol, Version 11（RFC1013），是 X server 和 X client 之间的通信协议。X server 是 xfree86/xorg 驱动下的显示设备鼠标键盘统称，
+X client 通过 X11 协议和 xfree86/xorg 实现的 X server通信。
+</p>
+
+<p>
+为了方便开发人员编写 X clients，就有了 Xlib 来封装协议。Xlib 不够方便，于是就有了 QT 和 GTK，提供了很多窗口控件（widgets）。
+</p>
+
+<p>
+为了方便用户，就出现了 GNOME 和 KDE 等桌面管理系统。GNOME 用的是 GTK 库，KDE 用的是 QT 库。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://blog.csdn.net/chenglian_999/article/details/4927459">X11,GTK,QT,GNOME 的区别与联系 - chenglian_999的专栏 - CSDN博客</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/X_Window%E7%B3%BB%E7%B5%B1">X 窗口系统 - 维基百科，自由的百科全书</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc0b3bb0" class="outline-2">
+<h2 id="orgc0b3bb0"><span class="section-number-2">11</span> 怎样关闭一个占用了指定端口的进程</h2>
+<div class="outline-text-2" id="text-11">
+<p>
+简易版本为：
+</p>
+<pre class="example">
+kill -9 $(lsof -t -i tcp:8080)
+</pre>
+
+<p>
+更加完美的版本：
+</p>
+<pre class="example">
+kill -9 $(lsof -t -i:3000 -sTCP:LISTEN)
+</pre>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/11583562/how-to-kill-a-process-running-on-particular-port-in-linux">unix - How to kill a process running on particular port in Linux? - Stack Overflow</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org39a2a2a" class="outline-2">
+<h2 id="org39a2a2a"><span class="section-number-2">12</span> 如何通过 Shell 脚本分发软件包</h2>
+<div class="outline-text-2" id="text-12">
+<p>
+经常可以看到的一种分发包，就只是一个 Shell 脚本，内部同时包含了 Shell 脚本和二进制数据。
+</p>
+
+<p>
+这样做是因为 Bash 对于脚本中的二进制数据会选择忽略，因此，通过这种方式将脚本和二进制数据组合在一起的方式，使得安装的同时可以进行一些其他的操作。 
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://unix.stackexchange.com/questions/27285/is-it-a-script-or-is-it-a-binary">linux - Is it a script or is it a binary? - Unix &amp; Linux Stack Exchange</a></li>
+<li><a href="https://linux.cn/article-6291-1.html">技术|如何用 Bash 创建一个二进制发布包</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc9bfd95" class="outline-2">
+<h2 id="orgc9bfd95"><span class="section-number-2">13</span> 在命令行生成文本 Hash 摘要时得到的值不正确</h2>
+<div class="outline-text-2" id="text-13">
+<p>
+有时会通过如下的方式来生成 Hash 摘要，但是会得到错误的值：
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">$ echo foobar | sha256sum
+</pre>
+</div>
+
+<p>
+这是因为 echo 通常会输出一个换行符，可以通过 <code>-n</code> 选项关闭这一行为：
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">$ echo -n foobar | sha256sum
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org15a4a34" class="outline-2">
+<h2 id="org15a4a34"><span class="section-number-2">14</span> 系统平均负载的含义</h2>
+<div class="outline-text-2" id="text-14">
+<p>
+通过 <code>uptime</code> 命令查看系统启动时间是可以得到类似 <code>load average: 0.00, 0.00, 0.00</code> 的信息，这是系统在最近 <code>1, 5, 15</code> 分钟的平均负载值。
+</p>
+
+<p>
+平均负载的含义是：在特定时间间隔内运行队列中的平均进程数，其中，当一个进程满足一下条件之一时就会位于运行队列中：
+</p>
+<ul class="org-ul">
+<li>它没有在等待 I/O 操作的结果</li>
+<li>它没有主动进入等待状态</li>
+<li>没有被停止</li>
+</ul>
+
+<p>
+也就是说，运行队列中的进程包括正在被 CPU 执行的进程和等待 CPU 执行的进程。
+</p>
+
+<p>
+一般来说，如果每个 CPU 内核的当前活动进程数不大于 3 的话，那么系统的性能是良好的。如果每个 CPU 内核的任务数大于 5，那么这台机器的性能就有严重问题。
+</p>
+
+<p>
+使用平均负载值除以 CPU 的数目，既是每个 CPU 的活动进程数。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orged3ab98" class="outline-2">
+<h2 id="orged3ab98"><span class="section-number-2">15</span> man 1 2 3…… 的含义</h2>
+<div class="outline-text-2" id="text-15">
+<blockquote>
+<p>
+MANUAL SECTIONS
+    The standard sections of the manual include:
+</p>
+
+<p>
+1      User Commands
+2      System Calls
+3      C Library Functions
+4      Devices and Special Files
+5      File Formats and Conventions
+6      Games et. al.
+7      Miscellanea
+8      System Administration tools and Daemons
+</p>
+
+<p>
+Distributions customize the manual section to their specifics,
+which often include additional sections.
+</p>
+</blockquote>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

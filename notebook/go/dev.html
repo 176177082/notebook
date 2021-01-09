@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:46 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Go Development</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">Go Development</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgedc91bc">1. 环境变量</a></li>
+<li><a href="#org203b72b">2. 配置代理</a></li>
+<li><a href="#org3bd8605">3. 依赖管理</a></li>
+<li><a href="#orgbf4419b">4. go modget</a></li>
+<li><a href="#org65f2408">5. 编译参数</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgedc91bc" class="outline-2">
+<h2 id="orgedc91bc"><span class="section-number-2">1</span> 环境变量</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Go 环境变量可以通过配置系统环境变量的方式配置，但是在 <code>Go version &gt;= 1.13</code> 时可以通过 <code>go env -w</code> 命令设置：
+</p>
+<pre class="example">
+go env -w GO111MODULE=on
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org203b72b" class="outline-2">
+<h2 id="org203b72b"><span class="section-number-2">2</span> 配置代理</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+当我们使用 go get、go install、go mod 等命令时，会自动下载相应的包或依赖包。但由于众所周知的原因，类似于 golang.org/x/&#x2026; 的包会出现下载失败的情况。如下所示：
+</p>
+<pre class="example">
+$ go get -u golang.org/x/sys
+
+go get golang.org/x/sys: unrecognized import path "golang.org/x/sys" (https fetch: Get https://golang.org/x/sys?go-get=1: dial tcp 216.239.37.1:443: i/o timeout)
+</pre>
+
+<p>
+这时可以考虑通过设置代理的方式解决这一问题：
+</p>
+<pre class="example">
+go env -w GOPROXY=https://goproxy.io
+</pre>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://shockerli.net/post/go-get-golang-org-x-solution/">一键解决 go get golang.org/x 包失败 - 格物</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org3bd8605" class="outline-2">
+<h2 id="org3bd8605"><span class="section-number-2">3</span> 依赖管理</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Go 作为现代编程语言，是自带依赖管理功能的，但是，这个功能在历史上存在多次变动，带来了额外的理解学习成本。
+</p>
+
+<p>
+首先需要了解一下最初的两种依赖管理方式带来的影响：
+</p>
+<ol class="org-ol">
+<li><p>
+基于 GOPATH 的依赖管理模式，要求项目和依赖都在 GOPATH 下，通过类似命名空间的方式隔离，这样的管理方式存在很多问题，比如，依赖不能存在多个版本，这使得不同项目无法使用不同版本的依赖。
+</p>
+
+<p>
+带来的影响：虽然现在项目可以不在 GOPATH 下，但是很多项目往往还是会在 GOPATH 下开发，而且 GOPATH 这个环境变量依然发挥着作用，下载的依赖现在也还保存在 GOPATH 下。
+</p></li>
+
+<li><p>
+基于 vendor 目录的依赖管理模式，这是 Go 1.5 引入的模式，当 Go 工具发现存在 vendor 目录时，就会优先使用 vendor 目录中的依赖编译测试。这在一定程度上解决了依赖的版本问题。
+</p>
+
+<p>
+带来的影响：现在一些使用 go mod 的项目依然存在 vendor 目录，Go 工具也同样还识别该目录，go mod 也提供了 vendor 这个子命令。
+</p></li>
+</ol>
+
+<p>
+而在 Go 1.11 后引入的 Go Module 则是现在官方支持的依赖管理模式，在经过几个版本的迭代后，这种管理方式也完善了很多：
+</p>
+<ol class="org-ol">
+<li>通过 go mod init 初始化项目，如果是基于旧的依赖管理模式的项目，那么会自动转换</li>
+<li>通过 go mod download 下载依赖</li>
+<li>命令 go build、go get 甚至 go list 都能识别 go.mod 并进行更新</li>
+<li>通过 go mod vendor 将依赖拷贝到 vendor 目录</li>
+<li>……</li>
+</ol>
+
+<p>
+命令使用：
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span class="org-comment-delimiter"># </span><span class="org-comment">&#19979;&#36733;&#20381;&#36182;&#65292;&#20294;&#19981;&#20250;&#26356;&#26032;</span>
+$ go get
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">&#26356;&#26032;&#25152;&#26377;&#20381;&#36182;</span>
+$ go get -u
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">&#26356;&#26032;&#25351;&#23450;&#20381;&#36182;&#21450;&#20854;&#20381;&#36182;</span>
+$ get get -u full_package_name
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">&#33719;&#21462;&#20381;&#36182;&#30340;&#25351;&#23450;&#29256;&#26412;</span>
+$ go get package@version
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">&#19979;&#36733;&#20381;&#36182;</span>
+$ go mod download
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">&#31227;&#38500;&#26080;&#29992;&#20381;&#36182;</span>
+$ go mod tidy
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">&#22797;&#21046;&#20381;&#36182;&#21040; vendor &#30446;&#24405;</span>
+$ go mod vendor
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">&#21028;&#26029;&#20026;&#20160;&#20040;&#20381;&#36182;</span>
+$ go mod why
+</pre>
+</div>
+
+<p>
+另外需要注意，Go 1.13 后使用 go get 命令下载依赖时会到特定位置下载和效验，这时，应该将私有库前缀放在 GOPRIVATE 环境变量里面。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbf4419b" class="outline-2">
+<h2 id="orgbf4419b"><span class="section-number-2">4</span> go modget</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+在高版本的 go 中，使用 go module 的时候，go get 命令对应的其实是 go modget，没有开启 go module 特性时才会替换为 go path get：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">if args[0] == "get" || args[0] == "help" {
+  if !modload.WillBeEnabled() {
+    // Replace module-aware get with GOPATH get if appropriate.
+    *modget.CmdGet = *get.CmdGet
+  }
+}
+</pre>
+</div>
+
+<p>
+对于 go modget 来说，在不使用 -u 选项时会默认获取最新版本的指定 package，但不会更新其依赖：
+</p>
+<blockquote>
+<p>
+For each named package or package pattern, get must decide which version of
+the corresponding module to use. By default, get looks up the latest tagged
+release version, such as v0.4.5 or v1.2.3. If there are no tagged release
+versions, get looks up the latest tagged pre-release version, such as
+v0.0.1-pre1. If there are no tagged versions at all, get looks up the latest
+known commit. If the module is not already required at a later version
+(for example, a pre-release newer than the latest release), get will use
+the version it looked up. Otherwise, get will use the currently
+required version.
+</p>
+</blockquote>
+
+<p>
+使用 -u 选项时还会更新 package 的依赖项：
+</p>
+<blockquote>
+<p>
+The -u flag instructs get to update modules providing dependencies
+of packages named on the command line to use newer minor or patch
+releases when available. Continuing the previous example, 'go get -u A'
+will use the latest A with B v1.3.1 (not B v1.2.3). If B requires module C,
+but C does not provide any packages needed to build packages in A
+(not including tests), then C will not be updated.
+</p>
+</blockquote>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://github.com/golang/go/issues/28156">cmd/go: go get -u on a single module results in indirect modules being updated too · Issue #28156 · golang/go</a></li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-org65f2408" class="outline-2">
+<h2 id="org65f2408"><span class="section-number-2">5</span> 编译参数</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+golang 支持通过编译参数在编译时修改变量的值：
+</p>
+<blockquote>
+<p>
+-X importpath.name=value
+    Set the value of the string variable in importpath named name to value.
+    Note that before Go 1.5 this option took two separate arguments.
+    Now it takes one argument split on the first = sign.
+</p>
+</blockquote>
+
+<p>
+比如：
+</p>
+<pre class="example">
+go build -ldflags "-X my/package/config.Version=1.0.0"
+</pre>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/47509272/how-to-set-package-variable-using-ldflags-x-in-golang-build">go - How to set package variable using -ldflags -X in Golang build - Stack Overflow</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

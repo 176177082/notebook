@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:45 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spring IOC</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">Spring IOC</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org7d85f5b">1. 基本概念</a></li>
+<li><a href="#org265e44a">2. BeanFactory</a></li>
+<li><a href="#orgf9dea7f">3. ApplicationContext</a></li>
+<li><a href="#org54064a8">4. Spring Bean</a>
+<ul>
+<li><a href="#orgf5164d3">4.1. AutoWired 和 FactoryBean</a></li>
+<li><a href="#org9ca2450">4.2. Bean 属性</a></li>
+<li><a href="#org48f1545">4.3. 自动注入</a></li>
+<li><a href="#org00cc610">4.4. 依赖关系</a></li>
+<li><a href="#orge4cbda9">4.5. 注意事项</a></li>
+</ul>
+</li>
+<li><a href="#org3d40f7b">5. Spring 配置</a>
+<ul>
+<li><a href="#org17f7137">5.1. 思维导图</a></li>
+<li><a href="#org9483c8e">5.2. @Configuration</a></li>
+<li><a href="#org67eae6e">5.3. @ConfigurationProperties</a></li>
+</ul>
+</li>
+<li><a href="#org19d6787">6. 类元数据</a></li>
+<li><a href="#org24ab821">7. 相关技巧</a></li>
+<li><a href="#org1af5de3">8. 相关问题</a>
+<ul>
+<li><a href="#org0e021e6">8.1. 怎样在 XML 配置文件中指定 Qualifier</a></li>
+<li><a href="#orgbac51bd">8.2. 怎样在获取 Bean 的时候指定 Qualifier</a></li>
+<li><a href="#org9f33a8b">8.3. Spring 低版本下自我装配失败的问题</a></li>
+<li><a href="#orgea71792">8.4. Bean Name 和 ID 的区别</a></li>
+<li><a href="#orga094f72">8.5. 怎样获取所有被同一个注解注解了的 Bean</a></li>
+<li><a href="#org56480a7">8.6. Spring IOC 是如何解决循环依赖问题的</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7d85f5b" class="outline-2">
+<h2 id="org7d85f5b"><span class="section-number-2">1</span> 基本概念</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+IOC 的全名是 Inversion of Control，即控制反转，还有别名叫做依赖注入。
+</p>
+
+<p>
+IOC 容器注入依赖的方式主要有三种：
+</p>
+<ol class="org-ol">
+<li>构造方法注入</li>
+<li>setter 方法注入</li>
+<li>接口注入 - 根据对象实现的接口来进行注入，现在不提倡</li>
+</ol>
+
+<p>
+IOC 对于 TDD 来说是一种很好的方式。
+</p>
+
+<p>
+IOC 容器的职责为：业务对象的构建管理和业务对象的依赖绑定。
+</p>
+
+<p>
+依赖管理的方式主要有：
+</p>
+<ol class="org-ol">
+<li>直接编码</li>
+<li>配置文件</li>
+<li>元数据 - 注解，其实也算是特殊的直接编码方式</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org265e44a" class="outline-2">
+<h2 id="org265e44a"><span class="section-number-2">2</span> BeanFactory</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+BeanFactory 内部通过三部分来管理 Bean，包括：
+</p>
+<ul class="org-ul">
+<li>BeanDefine - 保存 Bean 的定义</li>
+<li>BeanDefineRegistry - 注册 Bean 的逻辑</li>
+<li>BeanFactory - 访问容器类管理的 Bean</li>
+</ul>
+
+<p>
+具体的 BeanFactory 通常会同时实现 BeanFactory 和 BeanDefineRegistry，这意味着同时实现了管理访问和注册逻辑的功能。
+</p>
+
+<p>
+Spring 的 IOC 容器同时支持直接编码、配置文件和元数据的依赖管理方式。
+</p>
+
+<p>
+Spring IOC 容器加载配置元数据和组装的过程可以分为两个阶段：
+</p>
+<ol class="org-ol">
+<li><p>
+容器的启动阶段，这时通过某种途径加载配置元数据，这时不会创建 Bean 的实例，更注重于对象管理信息的收集。
+</p>
+
+<p>
+这个阶段可以通过 BeanFactoryPostProcessor 在实例化相应对象之前对注册到容器的 BeanDefine 所保存的信息做出相应的修改。
+Bean 的 AutoWired 依赖信息就是通过 BeanFactoryPostProcessor 进行处理的。
+</p>
+
+<p>
+Spring IOC 通过这个机制实现了配置信息中占位符的处理、自动类型转换……
+</p></li>
+
+<li><p>
+第二阶段便是 Bean 的创建和管理了，Bean 的实例化过程为：实例化 Bean 对象、设置对象属性、检查 Aware 接口、BeanPostProcessor 前置处理、检查是否为 InitializingBean、检查是否配置 init-method、
+BeanPostProcessor 后置处理、注册必要的 Destruction 回调接口、使用、是否实现 DisposableBean 接口、是否配置 destory 方法
+</p>
+
+<p>
+这个阶段可以通过 BeanWrapper 来方便操作 Bean，避免直接使用 Java 反射接口。
+</p>
+
+<p>
+而 BeanPostProcessor 是我们可以插足 Bean 创建过程的一种机制。
+</p></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgf9dea7f" class="outline-2">
+<h2 id="orgf9dea7f"><span class="section-number-2">3</span> ApplicationContext</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+ApplicationContext 也属于 BeanFactory，但实现了更多的接口，包括：ResourcePatternLoader、MessageSource、ApplicationEventPublisher。
+</p>
+
+<p>
+这样一来就为 ApplicationContext 提供了：统一资源加载策略、国际化信息支持、容器内部事件发布的功能。
+</p>
+
+<p>
+而通过统一资源加载策略可以更方便的加载多个配置文件。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org54064a8" class="outline-2">
+<h2 id="org54064a8"><span class="section-number-2">4</span> Spring Bean</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-orgf5164d3" class="outline-3">
+<h3 id="orgf5164d3"><span class="section-number-3">4.1</span> AutoWired 和 FactoryBean</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+默认情况下，Spring 按 <b>类型</b> 解析 @Autowired 的，如果找不到该类型的 Bean 就会出错，如果找到多个该类型的 Bean，就会尝试用默认的限定符进行匹配。匹配失败就会报错，此时应该考虑通过 @Qualifier 进行限定。
+</p>
+
+<p>
+而 <code>FactoryBean</code> 是一种特殊的 Bean，它代表的 Bean 类型不是其本身的类型，而是其 <code>getObjectType()</code> 方法返回的类型：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">public</span> <span class="org-keyword">interface</span> <span class="org-type">FactoryBean</span>&lt;<span class="org-type">T</span>&gt; {
+  <span class="org-type">T</span> <span class="org-function-name">getObject</span>() <span class="org-keyword">throws</span> <span class="org-type">Exception</span>;
+  <span class="org-type">Class</span>&lt;?&gt; <span class="org-function-name">getObjectType</span>();
+  <span class="org-type">boolean</span> <span class="org-function-name">isSingleton</span>();
+}
+</pre>
+</div>
+
+<p>
+当上下文中存在某类型的 FactoryBean 时，自动注入该类型的 Bean 时，就会调用该 FactoryBean 的 <code>getObject()</code> 方法注入对象。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.baeldung.com/spring-factorybean">How to use the Spring FactoryBean? | Baeldung</a></li>
+<li><a href="https://spring.io/blog/2011/08/09/what-s-a-factorybean">What's a FactoryBean?</a></li>
+<li><a href="https://www.baeldung.com/spring-autowire">Guide to Spring @Autowired | Baeldung</a></li>
+</ul>
+
+<p>
+PS：网上好多 FactoryBean 的教程中都是用的 XML 配置，然而，自动注入是可行的
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9ca2450" class="outline-3">
+<h3 id="org9ca2450"><span class="section-number-3">4.2</span> Bean 属性</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+Bean 的定义包括如下属性：
+</p>
+<blockquote>
+<p>
+Class、Name、Scope、Constructor arguments、Properties、Autowiring mode、Lazy initialization mode、Initialization method、Destruction method
+</p>
+</blockquote>
+
+<p>
+其中，初始化方法和销毁方法可以通过注解配置。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.cnblogs.com/zrtqsk/p/3735273.html">Spring Bean 的生命周期 - Chandler Qian - 博客园</a></li>
+<li><a href="https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/core.html#beans-definition">Core Technologies - Bean Overview</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org48f1545" class="outline-3">
+<h3 id="org48f1545"><span class="section-number-3">4.3</span> 自动注入</h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+使用 @ComponentScan 定义扫描范围的时候，可以通过 <code>includeFilters</code> 和 <code>excludeFilters</code> 更详细的设置扫描范围。
+</p>
+
+<p>
+Filter 的类型可以是：annotation、assignable、aspectj、regex 和 custom。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/core.html#beans-scanning-filters">Core Technologies - Using Filters to Customize Scanning</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org00cc610" class="outline-3">
+<h3 id="org00cc610"><span class="section-number-3">4.4</span> 依赖关系</h3>
+<div class="outline-text-3" id="text-4-4">
+<p>
+Spring 中各个 Bean 的依赖关系可以通过 <code>@DependsOn</code> 这个注解来定义，该注解可以声明在一个 <code>@Bean</code> 方法或 <code>@Component</code> 类上。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.baeldung.com/spring-depends-on">Controlling Bean Creation Order with @DependsOn | Baeldung</a></li>
+<li><a href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/annotation/DependsOn.html">DependsOn (Spring Framework 5.2.0.RELEASE API)</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orge4cbda9" class="outline-3">
+<h3 id="orge4cbda9"><span class="section-number-3">4.5</span> 注意事项</h3>
+<div class="outline-text-3" id="text-4-5">
+<ul class="org-ul">
+<li>通过 @Condition 创建 Bean 时，如果创建失败就无法获取实例了（单例作用域是这样的）</li>
+<li>没有使用 AOP 的 Bean 获取是返回的就是它的实例，而使用了 AOP 的 Bean 返回的就是它的动态代理</li>
+<li>当自动装配和 JavaConfig 同时存在时，会优先使用自动装配</li>
+<li>配置的处理顺序：AutoWired、JavaConfig、XMLConfig，其中，如果自动装配已创建 Bean，那么 JavaConfig 中的便无效</li>
+<li>XML 中的配置是必然会执行的，那怕是单例作用域</li>
+<li>原型作用域会在需要 bean 的时候创建，单例会在启动时创建</li>
+<li>自动装配、JavaConfig 和 XML 配置都可以使用大多数装配技术，如 @Condition</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3d40f7b" class="outline-2">
+<h2 id="org3d40f7b"><span class="section-number-2">5</span> Spring 配置</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-org17f7137" class="outline-3">
+<h3 id="org17f7137"><span class="section-number-3">5.1</span> 思维导图</h3>
+<div class="outline-text-3" id="text-5-1">
+<div class="org-src-container">
+<pre class="src src-plantuml">@startmindmap
+
+* Spring Config
+** Spring Bean Config
+*** @Configuration
+**** @Import
+***** @Configuration
+***** @ImportSelector
+***** @ImportBeanDefinitionRegistrar
+**** @ImportResource
+*** ComponentScan
+**** @Component
+***** @Configuration
+***** @Repository
+***** @Controller
+***** @Service
+** Externalized values
+*** Envirement
+*** @PropertySource
+*** @Value
+*** @ConfigurationProperties
+@endmindmap
+</pre>
+</div>
+
+<img src="https://i.loli.net/2019/10/15/nIU1LKFaZxlRvVX.png">
+</div>
+</div>
+
+<div id="outline-container-org9483c8e" class="outline-3">
+<h3 id="org9483c8e"><span class="section-number-3">5.2</span> @Configuration</h3>
+<div class="outline-text-3" id="text-5-2">
+<p>
+注解 <code>@Configuration</code> 除了让被注解的类成为一个配置类以外，还可以通过 <code>@Import</code> 和 <code>@ImportResource</code> 这两个注解导入其他配置。
+</p>
+
+<p>
+其中，@ImportResource 主要用于导入 XML 配置，而 @Import 则可以导入：
+</p>
+<ul class="org-ul">
+<li>@Configuration - 另一个配置类</li>
+<li>@ImportBeanDefinitionRegistrar - 用于添加额外的 Bean 的配置类</li>
+<li>@ImportSelector - 用于选择其他配置类的配置类</li>
+</ul>
+
+<p>
+其中，@ImportSelector 被用于实现 Spring Boot 的自动配置，详情可见 AutoConfigurationImportSelector。
+</p>
+
+<p>
+而 @ImportBeanDefinitionRegistrar 则提供了注册额外的 Bean 的扩展接口，当需要自己动态创建 Bean 的时候可以考虑使用这个注解。
+</p>
+
+<p>
+通过这几个注解，单个 @Configuration 起点就可以串联起来很多的配置，而 ComponentScan 扫描到的 @Configuration 注解还会进行自动装配，这样一来，大量配置便可以通过这个看似简单实则无比强大的方式载入。
+</p>
+
+<p>
+其中，这些注解的处理是在调用 <code>BeanFactoryPostProcessor</code> 时调用的 <code>ConfigurationClassPostProcessor</code> 进行处理的，详情可见源码。
+</p>
+
+<p>
+NOTE：@Configuration 配置类中可以嵌套配置类，从而避免使用 @Import 注解。
+</p>
+
+<p>
+NOTE：@Configuration 配置类中的 Bean 方法应该是可以被继承的，即：不是 private 和 final 的
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/context/annotation/Configuration.html">Configuration (Spring Framework 5.2.0.RELEASE API)</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org67eae6e" class="outline-3">
+<h3 id="org67eae6e"><span class="section-number-3">5.3</span> @ConfigurationProperties</h3>
+<div class="outline-text-3" id="text-5-3">
+<p>
+虽然 @Configuration 注解解决了 Bean 配置的问题，但是，在配置时往往还需要外部的值，这时，可以选择使用 <code>Environment</code> 获取外部配置的值，可以通过 <code>@PropertySource</code> 指定外部属性来源。
+</p>
+
+<p>
+简单的使用的话，还可以通过 <code>@Value</code> 注解直接注入外部属性值。
+</p>
+
+<p>
+但是，对于需要在不同的地方使用的外部属性，想要通过统一的命名空间进行管理的时候，就可以考虑使用 <code>@ConfigurationProperties</code> 来进行配置。
+</p>
+
+<p>
+通常情况下，@ConfigurationProperties 被用于类上，将外部属性注入该类，但是，@ConfigurationProperties 注解还可以用在 @Bean 方法上，当 @Bean 方法返回创建的 Bean 后，就可以使用 @ConfigurationProperties 中的值设置 Bean 的属性。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.baeldung.com/configuration-properties-in-spring-boot">Guide to @ConfigurationProperties in Spring Boot | Baeldung</a></li>
+<li><a href="https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/context/properties/ConfigurationProperties.html">ConfigurationProperties (Spring Boot Docs 2.1.9.RELEASE API)</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org19d6787" class="outline-2">
+<h2 id="org19d6787"><span class="section-number-2">6</span> 类元数据</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Spring IOC 容器中至关重要的一环就是类元数据的加载，由于 Spring IOC 容器中需要读取元数据的地方太多，使用 Java 反射的性能代价也许过大，因此，Spring 选择了通过 ASM 字节码操作的方式来读取类的元数据。
+</p>
+
+<p>
+这可以参考 <code>ClassPathScanningCandidateComponentProvider</code> 的源码，一路看下去就明白了。
+</p>
+
+<p>
+在读取元数据的过程中，Spring IOC 容器会递归的读取注解之上的注解，以获取注解上所有的元信息。通过这种方式，使得 Spring 中注解的处理仿佛就是会自动继承一样，可以很轻松的组合多个注解。
+</p>
+
+<p>
+这让我曾经以为这就是 Java 反射原生自带的功能，知道在实际尝试后发现并不是那样的。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/annotation/ClassPathScanningCandidateComponentProvider.html">ClassPathScanningCandidateComponentProvider (Spring Framework 5.2.0.RELEASE API)</a></li>
+<li><a href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/core/type/AnnotationMetadata.html">AnnotationMetadata (Spring Framework 5.2.0.RELEASE API)</a></li>
+<li><a href="https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/core/annotation/AliasFor.html">AliasFor (Spring Framework 5.2.0.RELEASE API)</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org24ab821" class="outline-2">
+<h2 id="org24ab821"><span class="section-number-2">7</span> 相关技巧</h2>
+<div class="outline-text-2" id="text-7">
+<ul class="org-ul">
+<li>BeanFactory 和 ApplicationContext 这些对象会被 Spring 自动注册为 Bean，因此可以通过自动注入获取这些对象</li>
+<li>当被 <code>@AutoWired</code> 注解的字段类型为数组、集合或映射的时候，IOC 容器将自动装配所有与声明的值 <b>类型匹配</b> 的 Bean，并且会自动根据 Bean 上的 <code>@Order</code> 注解进行排序，是一个很好用的特性，参考：
+<ul class="org-ul">
+<li><a href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/annotation/Autowired.html">Autowired (Spring Framework 5.2.3.BUILD-SNAPSHOT API)</a></li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org1af5de3" class="outline-2">
+<h2 id="org1af5de3"><span class="section-number-2">8</span> 相关问题</h2>
+<div class="outline-text-2" id="text-8">
+</div>
+<div id="outline-container-org0e021e6" class="outline-3">
+<h3 id="org0e021e6"><span class="section-number-3">8.1</span> 怎样在 XML 配置文件中指定 Qualifier</h3>
+<div class="outline-text-3" id="text-8-1">
+<p>
+在 XML 中指定 Bean 的 Qualifier 是很简单的：
+</p>
+<div class="org-src-container">
+<pre class="src src-xml"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">bean</span> <span class="org-nxml-attribute-local-name">class</span>=<span class="org-string">"xxx"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+  <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">qualifier</span> <span class="org-nxml-attribute-local-name">value</span> = <span class="org-string">"xxx"</span> <span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">bean</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbac51bd" class="outline-3">
+<h3 id="orgbac51bd"><span class="section-number-3">8.2</span> 怎样在获取 Bean 的时候指定 Qualifier</h3>
+<div class="outline-text-3" id="text-8-2">
+<p>
+可以使用 <code>BeanFactoryAnnotationUtils</code> 完成这一操作：
+</p>
+<div class="org-src-container">
+<pre class="src src-java">BeanFactoryAnnotationUtils.qualifiedBeanOfType(ctx.<span class="org-type">getBeanFactory</span>(), Service.<span class="org-keyword">class</span>, <span class="org-string">"Wanted"</span>)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9f33a8b" class="outline-3">
+<h3 id="org9f33a8b"><span class="section-number-3">8.3</span> Spring 低版本下自我装配失败的问题</h3>
+<div class="outline-text-3" id="text-8-3">
+<p>
+Spring 低版本下自我装配会出现错误，官方对此的支持从 4.3 版本开始：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">public</span> <span class="org-keyword">class</span> <span class="org-type">Test</span> {
+  <span class="org-c-annotation">@AutoWired</span>
+  <span class="org-keyword">private</span> <span class="org-type">Test</span> <span class="org-variable-name">test</span>;
+}
+</pre>
+</div>
+
+<p>
+参考： <a href="https://stackoverflow.com/questions/5152686/self-injection-with-spring">java - Self injection with Spring - Stack Overflow</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgea71792" class="outline-3">
+<h3 id="orgea71792"><span class="section-number-3">8.4</span> Bean Name 和 ID 的区别</h3>
+<div class="outline-text-3" id="text-8-4">
+<p>
+ID 和 Name 的本质区别：Id 只能定义 1 个 Identifier，而 Name 可以定义多个 Aliases。
+</p>
+
+<ol class="org-ol">
+<li>配置一个 bean 的时候，我们可以不设置 id，也可以不设置 name，spring 默认会使用类的全限定名作为 bean 的标识符</li>
+<li>如果使用 id 属性来设置 bean 的标识符，那么 id 在 spring 容器中必需唯一</li>
+<li>如果使用 name 属性来设置，那么设置的其实就是 bean 的标识符，必需在容器中唯一</li>
+<li>如果同时设置 id 和 name，那么 id 设置的是标识符，name 设置的是别名</li>
+<li>如果 id 和 name 的值相同，那么 spring 容器会自动检测并消除冲突：让这个 bean 只有标识符，而没有别名</li>
+<li>name 属性设置多个值。不设置 id，那么第一个被用作标识符，其他的被视为别名。如果设置了 id，那么 name 的所有值都是别名</li>
+<li>使用 &lt;alias&gt; 标签指定别名，别名也必须在 IoC 容器中唯一</li>
+</ol>
+
+<div class="org-src-container">
+<pre class="src src-java">context.getAliases()
+context.getBean()
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga094f72" class="outline-3">
+<h3 id="orga094f72"><span class="section-number-3">8.5</span> 怎样获取所有被同一个注解注解了的 Bean</h3>
+<div class="outline-text-3" id="text-8-5">
+<p>
+简单的方式，通过 <code>ApplicationContext.getBeansWithAnnotation</code> 就可以了，参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/14236424/how-can-i-find-all-beans-with-the-custom-annotation-foo">spring - How can I find all beans with the custom annotation @Foo? - Stack Overflow</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org56480a7" class="outline-3">
+<h3 id="org56480a7"><span class="section-number-3">8.6</span> Spring IOC 是如何解决循环依赖问题的</h3>
+<div class="outline-text-3" id="text-8-6">
+<p>
+Spring IOC 通过 <b>三级缓存</b> 的方式能够解决单例模式下 <code>setter</code> 方法注入的循环依赖问题。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://segmentfault.com/a/1190000015221968">Spring IOC 容器源码分析 - 循环依赖的解决办法 - 个人文章 - SegmentFault 思否</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

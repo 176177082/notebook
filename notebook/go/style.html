@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:46 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Go Style</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">Go Style</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgc16946a">1. Effective Go</a>
+<ul>
+<li><a href="#orgf965745">1.1. Formatting</a></li>
+<li><a href="#orgc2262c7">1.2. Commentary</a></li>
+<li><a href="#org5c3fa08">1.3. Names</a></li>
+<li><a href="#orgdff4b6d">1.4. Control structures</a></li>
+<li><a href="#orgbf1df06">1.5. Initialization</a></li>
+<li><a href="#org83ed661">1.6. Interfaces and other types</a></li>
+</ul>
+</li>
+<li><a href="#org5f5eabd">2. Go Code Review Comments</a>
+<ul>
+<li><a href="#orgb056e79">2.1. Contexts</a></li>
+<li><a href="#orgb4e0c14">2.2. Crypto Rand</a></li>
+<li><a href="#orgddeed6d">2.3. Declaring Empty Slices</a></li>
+<li><a href="#org5a0a9d0">2.4. Error Strings</a></li>
+<li><a href="#org4d4f5d0">2.5. Examples</a></li>
+<li><a href="#orgd13a57c">2.6. Goroutine Lifetimes</a></li>
+<li><a href="#org534a93e">2.7. Handle Errors</a></li>
+<li><a href="#org5146ff7">2.8. Imports</a></li>
+<li><a href="#orgaf3643a">2.9. Indent Error Flow</a></li>
+<li><a href="#orgfff81f6">2.10. Initialisms</a></li>
+<li><a href="#org5f0cc93">2.11. Interfaces</a></li>
+<li><a href="#org0d1c3e2">2.12. Named Result Parameters</a></li>
+<li><a href="#orgb2a7b22">2.13. Package Names</a></li>
+<li><a href="#org44a5dfe">2.14. Receiver Names</a></li>
+<li><a href="#org7929ebb">2.15. Variable Names</a></li>
+</ul>
+</li>
+<li><a href="#org8cf1bc8">3. 相关问题</a>
+<ul>
+<li><a href="#org575a523">3.1. 使用字面量还是使用 make 进行初始化？</a></li>
+<li><a href="#orgdd78367">3.2. receiver 使用 value 还是使用 pointer</a></li>
+</ul>
+</li>
+<li><a href="#org52bf51d">4. 相关链接</a></li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-orgc16946a" class="outline-2">
+<h2 id="orgc16946a"><span class="section-number-2">1</span> Effective Go</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-orgf965745" class="outline-3">
+<h3 id="orgf965745"><span class="section-number-3">1.1</span> Formatting</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+go 中代码基本的格式化通过 gofmt 完成，这会统一缩进、空格等问题，比如：
+</p>
+<ul class="org-ul">
+<li>go 使用 tab 作为缩进符，这和其他语言使用空格不太一样</li>
+<li>go 也不限制单行的最大长度</li>
+<li><p>
+go 通过控制空格的方式让运算符优先级得到更直观的体现
+</p>
+<div class="org-src-container">
+<pre class="src src-go">x&lt;&lt;8 + y&lt;&lt;16
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc2262c7" class="outline-3">
+<h3 id="orgc2262c7"><span class="section-number-3">1.2</span> Commentary</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+godoc 可以提取紧靠 top-level 声明的注释作为该声明的文档，利用这一便利性，每个包都应包含一段包注释，即放置在包子句前的一个块注释。对于包含多个文件的包，包注释只需出现在其中的任一文件中即可。<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>
+</p>
+
+<p>
+同时，在程序中，每个可导出（首字母大写）的名称都应该有文档注释。
+</p>
+
+<p>
+文档注释最好是完整的句子，这样它才能适应各种自动化的展示。 第一句应当以被声明的东西开头，并且是单句的摘要：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">// Compile parses a regular expression and returns, if successful, a Regexp
+// object that can be used to match against text.
+func Compile(str string) (regexp *Regexp, err error) {
+</pre>
+</div>
+
+<p>
+Go 的声明语法允许成组声明。单个文档注释应介绍一组相关的常量或变量。 由于是整体声明，这种注释往往较为笼统：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">// Error codes returned by failures to parse an expression.
+var (
+  ErrInternal      = errors.New("regexp: internal error")
+  ErrUnmatchedLpar = errors.New("regexp: unmatched '('")
+  ErrUnmatchedRpar = errors.New("regexp: unmatched ')'")
+)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5c3fa08" class="outline-3">
+<h3 id="org5c3fa08"><span class="section-number-3">1.3</span> Names</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+Go 中包应当以小写的单个单词来命名，且不应使用下划线或驼峰记法，同时，包应当以小写的单个单词来命名，且不应使用下划线或驼峰记法。
+</p>
+
+<p>
+由于包下名称的使用方式通常为 package.XXX 这一形式，因此，包下名称就不用子以包名作为前缀了，比如使用 tcc.Get 而非 tcc.TccGet。
+</p>
+
+<p>
+Go 里面不建议将 getter 命名为 GetXXX，假如有一个未导出的名称 owner，那么，getter 的命名建议为 Owner()，setter 命名为 SetOwner()。
+</p>
+
+<p>
+只包含一个方法的接口应该以该方法的名称加上 - er 后缀来命名，比如 Reader、Writer、 Formatter、CloseNotifier 等。
+</p>
+
+<p>
+最后，Go 中约定使用驼峰记法 MixedCaps 或 mixedCaps 而非下划线的方式来对多单词名称进行命名。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgdff4b6d" class="outline-3">
+<h3 id="orgdff4b6d"><span class="section-number-3">1.4</span> Control structures</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+Go 里面 if、for 的语法还是很不错的，但是，go 的错误处理风格使得它们使用起来很难受，又臭又长：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">f, err := os.Open(name)
+if err != nil {
+  return err
+}
+d, err := f.Stat()
+if err != nil {
+  f.Close()
+  return err
+}
+codeUsing(f, d)
+</pre>
+</div>
+
+<p>
+但是 Go 的 switch 语句很好用，以将 if-else-if-else 链写成一个 switch：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">func unhex(c byte) byte {
+  switch {
+  case '0' &lt;= c &amp;&amp; c &lt;= '9':
+    return c - '0'
+  case 'a' &lt;= c &amp;&amp; c &lt;= 'f':
+    return c - 'a' + 10
+  case 'A' &lt;= c &amp;&amp; c &lt;= 'F':
+    return c - 'A' + 10
+  }
+  return 0
+}
+</pre>
+</div>
+
+<p>
+switch 并不会自动下溯，但 case 可通过逗号分隔来列举相同的处理条件：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">func shouldEscape(c byte) bool {
+  switch c {
+  case ' ', '?', '&amp;', '=', '#', '+', '%':
+    return true
+  }
+  return false
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbf1df06" class="outline-3">
+<h3 id="orgbf1df06"><span class="section-number-3">1.5</span> Initialization</h3>
+<div class="outline-text-3" id="text-1-5">
+<p>
+Go 中的常量就是不变量。它们在 <b>编译时</b> 创建，即便它们可能是函数中定义的局部变量。常量只能是数字、字符、字符串或布尔值。由于编译时的限制，定义它们的表达式必须也是可被编译器求值的常量表达式。
+</p>
+
+<p>
+最后，每个源文件都可以通过定义自己的无参数 init 函数来设置一些必要的状态。而它的结束就意味着初始化结束：只有该包中的所有变量声明都通过它们的初始化器求值后 init 才会被调用，而那些 init 只有在所有已导入的包都被初始化后才会被求值。
+</p>
+
+<p>
+简单来说就是这张图：
+</p>
+<img src="https://astaxie.gitbooks.io/build-web-application-with-golang/en/images/2.3.init.png?raw=true">
+</div>
+</div>
+
+<div id="outline-container-org83ed661" class="outline-3">
+<h3 id="org83ed661"><span class="section-number-3">1.6</span> Interfaces and other types</h3>
+<div class="outline-text-3" id="text-1-6">
+<p>
+若某种现有的类型仅实现了一个接口，且除此之外并无可导出的方法，则该类型本身就无需导出。在这种情况下，构造函数应当返回一个接口值而非实现的类型。
+</p>
+
+<p>
+思考：反之，是不是就应该返回具体的类型呢？即使是未导出的类型？   
+</p>
+
+<p>
+<a href="#org5f0cc93">☞ Interfaces</a>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5f5eabd" class="outline-2">
+<h2 id="org5f5eabd"><span class="section-number-2">2</span> Go Code Review Comments</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orgb056e79" class="outline-3">
+<h3 id="orgb056e79"><span class="section-number-3">2.1</span> Contexts</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+不要将 Context 成员添加到某个 struct 类型中，而是将 ctx 参数添加到该类型的方法上。一个例外情况是当前方法签名必须与标准库或第三方库中的接口方法匹配。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb4e0c14" class="outline-3">
+<h3 id="orgb4e0c14"><span class="section-number-3">2.2</span> Crypto Rand</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+不要使用包 math/rand 来生成密钥，即使是一次性密钥。在没有种子的情况下，生成器是完全可以被预测的。使用 time.Nanoseconds() 作为种子值，熵只有几位。请使用 crypto/rand 的 Reader 作为替代，如果你倾向于使用文本，请输出成十六进制或 base64 编码：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">import (
+    "crypto/rand"
+    // "encoding/base64"
+    // "encoding/hex"
+    "fmt"
+)
+func Key() string {
+    buf := make([]byte, 16)
+    _, err := rand.Read(buf)
+    if err != nil {
+	panic(err)  // out of randomness, should never happen
+    }
+    return fmt.Sprintf("%x", buf)
+    // or hex.EncodeToString(buf)
+    // or base64.StdEncoding.EncodeToString(buf)
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgddeed6d" class="outline-3">
+<h3 id="orgddeed6d"><span class="section-number-3">2.3</span> Declaring Empty Slices</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+当声明一个空 slice 时，倾向于用：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">var t []string
+</pre>
+</div>
+
+<p>
+代替：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">t := []string{}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5a0a9d0" class="outline-3">
+<h3 id="org5a0a9d0"><span class="section-number-3">2.4</span> Error Strings</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+错误信息字符串不应大写（除非以专有名词或首字母缩略词开头）或以标点符号结尾，因为它们通常是在其他上下文后打印的。即使用 fmt.Errorf("something bad") 而不要使用 fmt.Errorf("Something bad")，因此 log.Printf("Reading %s: %v", filename, err) 的格式中将不会出现额外的大写字母。否则这将不适用于日志记录，因为它是隐式的面向行，而不是在其他消息中组合。
+</p>
+
+<p>
+注：针对的是 error.Error() 返回值而非日志，日志该大写还是大写。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4d4f5d0" class="outline-3">
+<h3 id="org4d4f5d0"><span class="section-number-3">2.5</span> Examples</h3>
+<div class="outline-text-3" id="text-2-5">
+<p>
+添加新包时，请包含预期用法的示例：可运行的示例，或是演示完整调用链的简单测试。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://blog.golang.org/examples">Testable Examples in Go - The Go Blog</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd13a57c" class="outline-3">
+<h3 id="orgd13a57c"><span class="section-number-3">2.6</span> Goroutine Lifetimes</h3>
+<div class="outline-text-3" id="text-2-6">
+<p>
+当你生成 goroutines 时，要清楚它们何时或是否会退出。
+</p>
+
+<p>
+尽量让并发代码足够简单，从而更容易地确认 goroutine 的生命周期。如果这不可行，请记录 goroutines 退出的时间和原因。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org534a93e" class="outline-3">
+<h3 id="org534a93e"><span class="section-number-3">2.7</span> Handle Errors</h3>
+<div class="outline-text-3" id="text-2-7">
+<p>
+不要使用 _ 变量丢弃 error。如果函数返回 error，请检查它以确保函数成功。处理 error，返回 error，或者在真正特殊的情况下使用 panic。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5146ff7" class="outline-3">
+<h3 id="org5146ff7"><span class="section-number-3">2.8</span> Imports</h3>
+<div class="outline-text-3" id="text-2-8">
+<p>
+如果发生命名冲突，则更倾向于重命名最接近本地的包或特定于项目的包。
+</p>
+
+<p>
+包导入按组进行组织，组与组之间有空行。标准库包始终位于第一组中。
+</p>
+
+<p>
+可以使用用 goimports 工具。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgaf3643a" class="outline-3">
+<h3 id="orgaf3643a"><span class="section-number-3">2.9</span> Indent Error Flow</h3>
+<div class="outline-text-3" id="text-2-9">
+<p>
+尝试将正常的代码路径保持在最小的缩进处，优先处理错误并缩进。通过允许快速可视化扫描正常路径来提高代码的可读性。例如，不要写：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">if err != nil {
+    // error handling
+} else {
+    // normal code
+}
+</pre>
+</div>
+
+<p>
+相反，书写以下代码：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">if err != nil {
+    // error handling
+    return // or continue, etc.
+}
+// normal code
+</pre>
+</div>
+
+<p>
+如果 if 语句具有初始化语句，例如：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">if x, err := f(); err != nil {
+    // error handling
+    return
+} else {
+    // use x
+}
+</pre>
+</div>
+
+<p>
+那么这可能需要将短变量声明移动到新行：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">x, err := f()
+if err != nil {
+    // error handling
+    return
+}
+// use x
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfff81f6" class="outline-3">
+<h3 id="orgfff81f6"><span class="section-number-3">2.10</span> Initialisms</h3>
+<div class="outline-text-3" id="text-2-10">
+<p>
+名称中的单词是首字母或首字母缩略词（例如 “URL” 或 “NATO” ）需要具有相同的大小写规则。例如，“URL” 应显示为 “URL” 或 “url” （如 “urlPony” 或 “URLPony” ），而不是 “Url”。举个例子：ServeHTTP 不是 ServeHttp。对于具有多个初始化 “单词” 的标识符，也应当显示为 “xmlHTTPRequest” 或 “XMLHTTPRequest”。
+</p>
+
+<p>
+当 “ID” 是 “identifier” 的缩写时，此规则也适用于 “ID” ，因此请写 “appID” 而不是“appId”。
+</p>
+
+<p>
+由协议缓冲区编译器生成的代码不受此规则的约束。人工编写的代码比机器编写的代码要保持更高的标准。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5f0cc93" class="outline-3">
+<h3 id="org5f0cc93"><span class="section-number-3">2.11</span> Interfaces</h3>
+<div class="outline-text-3" id="text-2-11">
+<p>
+Go 接口通常属于使用 interface 类型值的包，而不是实现这些值的包。实现包应返回具体（通常是指针或结构）类型：这样一来可以将新方法添加到实现中，而无需进行大量重构。
+</p>
+
+<p>
+<a href="#org83ed661">☞ Interfaces and other types</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0d1c3e2" class="outline-3">
+<h3 id="org0d1c3e2"><span class="section-number-3">2.12</span> Named Result Parameters</h3>
+<div class="outline-text-3" id="text-2-12">
+<ol class="org-ol">
+<li>不要仅仅为了避免在函数内做结果参数的声明而命名结果参数</li>
+<li>如果函数行数较少，那么非命名结果参数是可以的</li>
+<li>一旦它是一个中等规模的函数，请明确返回值</li>
+<li>在某些情况下，您需要命名结果参数，以便在延迟闭包中更改它，这也是可以的</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgb2a7b22" class="outline-3">
+<h3 id="orgb2a7b22"><span class="section-number-3">2.13</span> Package Names</h3>
+<div class="outline-text-3" id="text-2-13">
+<p>
+包中名称的所有引用都将使用包名完成，因此您可以从标识符中省略该名称。例如，如果有一个 chubby 包，你不应该定义类型名称为 ChubbyFile ，否则使用者将写为 chubby.ChubbyFile。而是应该命名类型名称为 File，使用时将写为 chubby.File。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org44a5dfe" class="outline-3">
+<h3 id="org44a5dfe"><span class="section-number-3">2.14</span> Receiver Names</h3>
+<div class="outline-text-3" id="text-2-14">
+<p>
+方法接收者的名称应该反映其身份。通常，其类型的一个或两个字母缩写就足够了。不要使用通用名称，例如 “this”或“self”，这是面向对象语言的典型标识符，它们更强调方法而不是函数。名称不必像方法论证那样具有描述性，因为它的作用是显而易见的，不起任何记录目的。名称可以非常短，因为它几乎出现在每种类型的每个方法的每一行上。使用上也要保持一致：如果你在一个方法中叫将接收器命名为 “c”，那么在其他方法中不要把它命名为 “cl”。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7929ebb" class="outline-3">
+<h3 id="org7929ebb"><span class="section-number-3">2.15</span> Variable Names</h3>
+<div class="outline-text-3" id="text-2-15">
+<p>
+Go 中的变量名称应该短而不是长。对于范围域中的局部变量尤其如此。
+</p>
+
+<p>
+基本规则：范围域中，越晚使用的变量，名称必须越具有描述性。对于方法接收器，一个或两个字母就足够了。诸如循环索引和读取器（Reader）之类的公共变量可以是单个字母（i，r）。更多不寻常的事物和全局变量则需要更具描述性的名称。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8cf1bc8" class="outline-2">
+<h2 id="org8cf1bc8"><span class="section-number-2">3</span> 相关问题</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org575a523" class="outline-3">
+<h3 id="org575a523"><span class="section-number-3">3.1</span> 使用字面量还是使用 make 进行初始化？</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+随便，没有硬性要求。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgdd78367" class="outline-3">
+<h3 id="orgdd78367"><span class="section-number-3">3.2</span> receiver 使用 value 还是使用 pointer</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+The Code Review comment can help:
+</p>
+<blockquote>
+<ul class="org-ul">
+<li>If the receiver is a map, func or chan, don't use a pointer to it.</li>
+<li>If the receiver is a slice and the method doesn't reslice or reallocate the slice, don't use a pointer to it.</li>
+<li>If the method needs to mutate the receiver, the receiver must be a pointer.</li>
+<li>If the receiver is a struct that contains a sync.Mutex or similar synchronizing field, the receiver must be a pointer to avoid copying.</li>
+<li>If the receiver is a large struct or array, a pointer receiver is more efficient. How large is large? Assume it's equivalent to passing all its elements as arguments to the method. If that feels too large, it's also too large for the receiver.</li>
+<li>Can function or methods, either concurrently or when called from this method, be mutating the receiver? A value type creates a copy of the receiver when the method is invoked, so outside updates will not be applied to this receiver. If changes must be visible in the original receiver, the receiver must be a pointer.</li>
+<li>If the receiver is a struct, array or slice and any of its elements is a pointer to something that might be mutating, prefer a pointer receiver, as it will make the intention more clear to the reader.</li>
+<li>If the receiver is a small array or struct that is naturally a value type (for instance, something like the time.Time type), with no mutable fields and no pointers, or is just a simple basic type such as int or string, a value receiver makes sense.</li>
+<li>A value receiver can reduce the amount of garbage that can be generated; if a value is passed to a value method, an on-stack copy can be used instead of allocating on the heap. (The compiler tries to be smart about avoiding this allocation, but it can't always succeed.) Don't choose a value receiver type for this reason without profiling first.</li>
+<li>Finally, when in doubt, use a pointer receiver.</li>
+</ul>
+</blockquote>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/27775376/value-receiver-vs-pointer-receiver">function - Value receiver vs. pointer receiver - Stack Overflow</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org52bf51d" class="outline-2">
+<h2 id="org52bf51d"><span class="section-number-2">4</span> 相关链接</h2>
+<div class="outline-text-2" id="text-4">
+<ul class="org-ul">
+<li><a href="https://github.com/bingohuang/effective-go-zh-en">GitHub - bingohuang/effective-go-zh-en: 《Effective Go》中英双语版</a></li>
+<li><a href="https://golang.org/doc/effective_go.html">Effective Go - The Go Programming Language</a></li>
+<li><a href="https://github.com/golang/go/wiki/CodeReviewComments">CodeReviewComments · golang/go Wiki</a></li>
+</ul>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">&#33050;&#27880;: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+比如使用 doc.go 作为包注释
+</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

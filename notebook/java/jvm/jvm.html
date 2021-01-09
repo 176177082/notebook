@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:46 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Java 虚拟机结构</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">Java 虚拟机结构</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgc064b3b">1. 运行时数据区域</a>
+<ul>
+<li><a href="#org7c138d2">1.1. 永久代和元空间</a></li>
+</ul>
+</li>
+<li><a href="#org7e21898">2. 对象的创建和内存布局</a></li>
+<li><a href="#org0bcad16">3. 垃圾回收</a>
+<ul>
+<li><a href="#org4316a56">3.1. G1 收集器</a></li>
+</ul>
+</li>
+<li><a href="#org2d51ba0">4. 类文件结构</a></li>
+<li><a href="#orge7e3fb8">5. 字节码指令</a></li>
+<li><a href="#orgb8cbada">6. 类加载机制</a>
+<ul>
+<li><a href="#org1dd63bb">6.1. 类加载器</a></li>
+<li><a href="#org9f5bcc3">6.2. 相关问题</a></li>
+</ul>
+</li>
+<li><a href="#org1225876">7. 字节码执行引擎</a>
+<ul>
+<li><a href="#org4f65529">7.1. 解析</a></li>
+<li><a href="#orgd74b80e">7.2. 分派</a></li>
+</ul>
+</li>
+<li><a href="#orgb37bb67">8. 程序编译与代码优化</a></li>
+<li><a href="#org3ac0982">9. 内存模型和线程</a>
+<ul>
+<li><a href="#org839df0f">9.1. 内存模型</a></li>
+<li><a href="#org24dd32b">9.2. 线程</a></li>
+</ul>
+</li>
+<li><a href="#org8a804df">10. 锁优化</a>
+<ul>
+<li><a href="#org93cce07">10.1. 偏向锁、轻量级锁和重量级锁</a></li>
+</ul>
+</li>
+<li><a href="#org1c94a87">11. 相关问题</a>
+<ul>
+<li><a href="#org26a8987">11.1. 新生代、老年代和永久代</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc064b3b" class="outline-2">
+<h2 id="orgc064b3b"><span class="section-number-2">1</span> 运行时数据区域</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Java 虚拟机的运行时数据区分为：
+</p>
+<ol class="org-ol">
+<li>程序计数器 PC，是一块较小的内存空间，可以看做是当前线程所指向的字节码的行号指示器，各线程的程序计数器互不影响</li>
+<li>Java 虚拟机栈，线程私有，保存方法执行时需要的数据，可能抛出 StackOverflowError 和 OutOfMemoryError 异常</li>
+<li>本地方法栈，和虚拟机栈类似，为 native 方法服务，可能抛出 StackOverflowError 和 OutOfMemoryError 异常</li>
+<li>Java 堆，被所有线程共享的内存区域，用于存放所有的对象实例，可能抛出 OutOfMemoryError 异常</li>
+<li>方法区，是各个线程共享的内存区域，用于存储已被虚拟机加载的类信息、常量、静态常量等数据，可能抛出 OutOfMemoryError 异常</li>
+<li>运行时常量池，是方法区的一部分，用于存放编译器生成的各种字面量和符号引用，也可以在运行期间将新的常量放入</li>
+</ol>
+
+<p>
+其中，程序计数器、虚拟机栈和本地方法栈都是线程独立的，而方法区和堆被所有线程共享。
+</p>
+
+<img src="https://images2015.cnblogs.com/blog/820406/201603/820406-20160326200119386-756216654.png">
+
+<p>
+另外，需要注意区分 Class 文件常量池和运行时常量池，Class 文件常量池中的内容会在加载时自动放入运行时常量池，但同时也可以在运行期间将常量放入运行时常量池。
+</p>
+</div>
+
+<div id="outline-container-org7c138d2" class="outline-3">
+<h3 id="org7c138d2"><span class="section-number-3">1.1</span> 永久代和元空间</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+永久代是 JVM 规范的一种实现，通常指代用于存储长期不会被回收的对象的区域，在 JDK7 中，永久代中的很多对象就放到了堆中，方法区中只保存这些对象的引用。
+</p>
+
+<p>
+到了 JDK8，JVM 就已经移除永久代了，替换为了元空间，元空间位于本地内存中，和堆隔离。
+</p>
+
+<img src="https://imgconvert.csdnimg.cn/aHR0cDovL2R1Znl1bi5naXRlZS5pby9pbWFnZXNfYmVkL2ltYWdlcy90ZWNoeS9KVk0wMy0wMy01LnBuZw">
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.cnblogs.com/paddix/p/5309550.html">Java8 内存模型—永久代(PermGen)和元空间(Metaspace) - liuxiaopeng - 博客园</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7e21898" class="outline-2">
+<h2 id="org7e21898"><span class="section-number-2">2</span> 对象的创建和内存布局</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+通过 <code>new</code> 指令创建对象的流程为：
+</p>
+<ol class="org-ol">
+<li>检查这个指令的参数能否在常量池中定位到一个类的符号引用（JVM 不会预先加载所有会用到的类，而是在第一次用到那个类的时候进行加载）</li>
+<li>检查这个符号引用代表的类是否已被加载、解析和初始化过</li>
+<li>如果没有，就必须先执行类加载过程</li>
+<li>在类加载检查通过后，虚拟机便可以为新对象分配内存</li>
+<li>内存分配完后，需要将分配到的内存空间都初始化为零值（不包括对象头），这一步保证了实例字段即使不赋值也可以直接使用</li>
+<li>对对象进行必要的设置，例如这个对象是哪个类的实例、如何找到类的元数据信息、对象的哈希码等信息，这些信息存放在对象头（Object Header）中</li>
+<li>一般来说，在前面的步骤完成后还会执行 <code>&lt;init&gt;</code> 方法，由字节码中是否跟随 <code>invokespecail</code> 指令决定</li>
+</ol>
+
+<p>
+其中，在分配内存时可以选择的策略有：
+</p>
+<ol class="org-ol">
+<li>指针碰撞，内存空间规整，直接一段指针分配内存就可以了</li>
+<li>空闲列表，内存空间不规整，虚拟机需要维护一个列表，记录哪些内存块时可用的，在分配的时候在列表中找到足够大的空间划分给对象实例，并更新列表记录</li>
+</ol>
+
+<p>
+另外，由于对象创建十分频繁的行为，为了避免出现正在给对象 A 分配内存，指针还没来得及修改，对象 B 有同时使用了原来的指针分配内存的情况，虚拟机有两种解决方案：
+</p>
+<ol class="org-ol">
+<li>对分配内存空间的动作进行同步处理，保证原子性</li>
+<li><p>
+把内存分配的动作按照线程划分到不同的空间进行，即每个线程在 Java 堆中预分配一小块内存，称为本地线程分配缓冲（Thread Local Allocation Buffer，TLAB）。先在 TLAB 上分配内存，不够时才同步分配新的 TLAB。
+</p>
+
+<p>
+对象创建的第 5 步其实就可以提前到 TLAB 阶段完成。
+</p></li>
+</ol>
+
+<p>
+对象在内存中主要包含两个部分：
+</p>
+<ol class="org-ol">
+<li><p>
+对象头，包含两个部分，一部分用于存储对象自身的运行时数据，如哈希码、锁状态标志、线程持有的锁等。另一部分是类型指针，用于执行对象类元数据的指针，但不是所有虚拟机实现都有。
+</p>
+
+<p>
+因为对象的访问定位可以由两种形式：
+</p>
+<ol class="org-ol">
+<li>使用句柄，在堆中划分一块内存作为句柄池，引用中保存的就是对象的句柄地址，而句柄中包含 <b>对象实例数据</b> 和 <b>类型数据</b> 各自的地址信息</li>
+<li>使用直接指针访问，这时对象头中就需要类型指针了</li>
+</ol>
+
+<p>
+同时，假如对象是数组，那么对象头还需要保证数组的大小信息。
+</p></li>
+
+<li>实例数据，主要就是各个实例字段数据，通常相同宽度的字段会被放在一起</li>
+</ol>
+
+<p>
+除了对象头和实例数据以外，可能还要对齐填充，保证对象的大小是 8 的整数倍。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0bcad16" class="outline-2">
+<h2 id="org0bcad16"><span class="section-number-2">3</span> 垃圾回收</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Java 中通过（根）可达性分析算法来判定对象是否存活，在 Java 语言中，可作为 GC Roots 的对象有：
+</p>
+<ol class="org-ol">
+<li>虚拟机栈中引用的对象<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup></li>
+<li>方法区中类静态属性引用的对象</li>
+<li>方法区中常量引用的对象</li>
+<li>本地方法栈中引用的对象</li>
+</ol>
+
+<p>
+堆中对象的死活判定比较方便，而方法区中的常量也很容易判断死活，相对麻烦的是类，满足以下条件的类才是无用的类：
+</p>
+<ol class="org-ol">
+<li>该类的所有实例都已被回收</li>
+<li>加载该类的 ClassLoader 已经被回收</li>
+<li>该类对应的 Class 对象没有在任何地方被引用</li>
+</ol>
+
+<p>
+在知道怎么判断一个对象的死活后，剩下的就是如何回收内存了，主要有三种算法：
+</p>
+<ol class="org-ol">
+<li>标记清除算法，首先标记出所有需要回收的对象，在标记完成后统一回收所有被标记的对象，主要问题是效率低，同时会产生大量不连续的内存碎片</li>
+<li>复制算法，将内存分配为多个区域，每次只使用其中一部分内存，回收时将存活对象复制到空闲内存，主要问题是会造成内存空间的浪费，内存不足时还需要依赖其他内存进行分配担保</li>
+<li>标记整理算法，算法过程和标记清除算法类似，区别在于清理时是将存活对象往内存的一端移动</li>
+</ol>
+
+<p>
+根据对象存活的周期不同，虚拟机往往采用分代收集算法来同时使用多个算法，比如将内存分为新生代和老年代，在新生代采用复制算法，在老年代采用标记清除或标记整理算法
+</p>
+
+<p>
+实现这些回收策略的垃圾收集器：
+</p>
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">垃圾收集器</th>
+<th scope="col" class="org-left">特点</th>
+<th scope="col" class="org-left">新生代算法</th>
+<th scope="col" class="org-left">老年代算法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Serial</td>
+<td class="org-left">单线程，GC 时阻塞所有工作现场</td>
+<td class="org-left">复制算法</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">ParNew</td>
+<td class="org-left">多线程，GC 时阻塞所有工作现场</td>
+<td class="org-left">复制算法</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">Parallel Scavenge</td>
+<td class="org-left">可以通过控制收集评率达到一个可控制的吞吐量</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">Serial Old</td>
+<td class="org-left">Serial 的老年代版本</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">标记整理算法</td>
+</tr>
+
+<tr>
+<td class="org-left">ParNew Old</td>
+<td class="org-left">ParNew 的老年代版本</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">标记整理算法</td>
+</tr>
+
+<tr>
+<td class="org-left">CMS</td>
+<td class="org-left">以获取最短回收停顿时间为目标的收集器</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">标记整理算法</td>
+</tr>
+
+<tr>
+<td class="org-left">G1</td>
+<td class="org-left">同时兼顾年轻代和老年代</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+因为对内存区域进行了划分，因此 GC 方法也可以分为 Minor GC（新生代 GC）和 Full GC，通常，现在一些优秀的垃圾回收器可以在不阻塞工作线程的情况下进行 GC，但是 Full GC 的时候，往往就避免不了要停顿工作线程了。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://crowhawk.github.io/2017/08/15/jvm_3/">深入理解 JVM(3)——7 种垃圾收集器 - 王泽远的博客 | Crow's Blog</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/58896728">7 种 JVM 垃圾收集器特点，优劣势、及使用场景 - 知乎</a></li>
+</ul>
+</div>
+
+<div id="outline-container-org4316a56" class="outline-3">
+<h3 id="org4316a56"><span class="section-number-3">3.1</span> G1 收集器</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+G1 收集器是可以同时兼顾年轻的和老年代的垃圾收集器，特点为：
+</p>
+<ol class="org-ol">
+<li>并行和并发：回收期间, 可由多个线程同时工作, 有效利用多核 CPU 资源</li>
+<li>分代收集：依然保留分代的概念，但不要求分区连续</li>
+<li>空间整合：整体基于标记整理算法，局部基于复制算法</li>
+<li>可预测的停顿：G1 可选取部分区域进行回收, 可以缩小回收范围, 减少全局停顿</li>
+</ol>
+
+<p>
+原理：
+</p>
+<ol class="org-ol">
+<li>G1 收集器将整个 Java 堆分为多个大小相等的独立区域，老年代和新生代都是一部分区域的集合</li>
+<li>通过跟踪维护每个区域中垃圾回收价值的大小，按照优先级堆不同的区别进行垃圾回收，避免全局垃圾收集的发生</li>
+<li>通过 Remembered Set 来避免全堆扫描，每个区域的 Remembered Set 中记录了其他区域的对象，这些对象引用了该区域的对象，这样就不需要担心只扫描单个区域时会错漏引用</li>
+</ol>
+
+<p>
+G1 收集器的阶段分以下几个步骤：
+</p>
+<ol class="org-ol">
+<li>初始标记，标记了从 GC Root 开始直接可达的对象</li>
+<li>并发标记，从 GC Roots 开始对堆中对象进行可达性分析，找出存活对象</li>
+<li>最终标记，标记那些在并发标记阶段发生变化的对象，将被回收</li>
+<li>筛选回收，首先对各个 Regin 的回收价值和成本进行排序，根据用户所期待的 GC 停顿时间指定回收计划，回收一部分 Region</li>
+</ol>
+
+<img src="https://pic4.zhimg.com/80/v2-6f8317ca7d9ddfca50531819825b2263_1440w.jpg">
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2d51ba0" class="outline-2">
+<h2 id="org2d51ba0"><span class="section-number-2">4</span> 类文件结构</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Java 虚拟机类文件中采用类似 C 语言结构体的伪结构来存储数据，这种结构只有两种数据类型：无符号数和表，其中，无符号数采用大端形式存储：
+</p>
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-right">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">名称</th>
+<th scope="col" class="org-right">数量</th>
+<th scope="col" class="org-left">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">u4</td>
+<td class="org-left">magic</td>
+<td class="org-right">1</td>
+<td class="org-left">Magic Number</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">u2</td>
+<td class="org-left">minor_version</td>
+<td class="org-right">1</td>
+<td class="org-left">次版本号</td>
+</tr>
+
+<tr>
+<td class="org-left">u2</td>
+<td class="org-left">major_version</td>
+<td class="org-right">1</td>
+<td class="org-left">主版本号</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">u2</td>
+<td class="org-left">constant_pool_count</td>
+<td class="org-right">1</td>
+<td class="org-left">常量池大小</td>
+</tr>
+
+<tr>
+<td class="org-left">cp_info</td>
+<td class="org-left">constant_pool</td>
+<td class="org-right">constant_pool_count - 1</td>
+<td class="org-left">常量信息表</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">u2</td>
+<td class="org-left">acess_flags</td>
+<td class="org-right">1</td>
+<td class="org-left">访问标志</td>
+</tr>
+
+<tr>
+<td class="org-left">u2</td>
+<td class="org-left">this_class</td>
+<td class="org-right">1</td>
+<td class="org-left">当前类全限定名索引</td>
+</tr>
+
+<tr>
+<td class="org-left">u2</td>
+<td class="org-left">super_class</td>
+<td class="org-right">1</td>
+<td class="org-left">父类全限定名索引</td>
+</tr>
+
+<tr>
+<td class="org-left">u2</td>
+<td class="org-left">interfaces_count</td>
+<td class="org-right">1</td>
+<td class="org-left">实现接口数量</td>
+</tr>
+
+<tr>
+<td class="org-left">u2</td>
+<td class="org-left">interfaces</td>
+<td class="org-right">interfaces_count</td>
+<td class="org-left">接口全限定名索引</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">u2</td>
+<td class="org-left">fields_count</td>
+<td class="org-right">1</td>
+<td class="org-left">字段信息表数量</td>
+</tr>
+
+<tr>
+<td class="org-left">field_info</td>
+<td class="org-left">fields</td>
+<td class="org-right">fields_count</td>
+<td class="org-left">字段信息表</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">u2</td>
+<td class="org-left">methods_count</td>
+<td class="org-right">1</td>
+<td class="org-left">方法信息表数量</td>
+</tr>
+
+<tr>
+<td class="org-left">method_info</td>
+<td class="org-left">methods</td>
+<td class="org-right">methods_count</td>
+<td class="org-left">方法信息表</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">u2</td>
+<td class="org-left">attributes_count</td>
+<td class="org-right">1</td>
+<td class="org-left">类额外属性数量</td>
+</tr>
+
+<tr>
+<td class="org-left">attribute_info</td>
+<td class="org-left">attributes</td>
+<td class="org-right">attributes_count</td>
+<td class="org-left">类额外属性表</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+除了类文件以外，字段信息表和方法信息表都可以有自己的属性表，各表主体信息只保存一些相对固定的数据，比如访问表示、限定名称索引等，而其他属性，如方法字节码、行号等就保存在对应的属性表中。
+</p>
+
+<p>
+整体来看，类文件的格式和网络协议相似，类似于 TLV 格式，可以通过 <code>javap -v</code> 选项来查看对应信息。
+</p>
+
+<p>
+方法和字段描述符格式：
+</p>
+<ol class="org-ol">
+<li><p>
+类型的表示方式通过标识字符和限定名组成：
+</p>
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">标识字符</th>
+<th scope="col" class="org-left">含义</th>
+<th scope="col" class="org-left">标识字符</th>
+<th scope="col" class="org-left">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">B</td>
+<td class="org-left">byte</td>
+<td class="org-left">J</td>
+<td class="org-left">long</td>
+</tr>
+
+<tr>
+<td class="org-left">C</td>
+<td class="org-left">char</td>
+<td class="org-left">S</td>
+<td class="org-left">short</td>
+</tr>
+
+<tr>
+<td class="org-left">D</td>
+<td class="org-left">double</td>
+<td class="org-left">Z</td>
+<td class="org-left">boolean</td>
+</tr>
+
+<tr>
+<td class="org-left">F</td>
+<td class="org-left">float</td>
+<td class="org-left">V</td>
+<td class="org-left">void</td>
+</tr>
+
+<tr>
+<td class="org-left">I</td>
+<td class="org-left">int</td>
+<td class="org-left">L</td>
+<td class="org-left">对象类型，如 Ljava/lang/Object</td>
+</tr>
+</tbody>
+</table></li>
+<li>对于数组类型，每一维度使用一个前置的 <code>[</code> 字符描述，因此 <code>String[][]</code> 的描述符就为 <code>[[Ljava/lang/String</code></li>
+<li>方法描述符的格式为 <code>(参数描述符...)返回值描述符</code>, 比如 <code>void method(int a, String b)</code> 的描述符就为 <code>(ILjava/lang/String)V</code></li>
+<li>描述符结尾往往还会有一个分号，比如 <code>(II)I;</code></li>
+</ol>
+
+<p>
+需要注意的是，方法描述符包括返回值，但是方法签名是不包括的。
+</p>
+
+<p>
+Tips:
+</p>
+<ol class="org-ol">
+<li>类文件中保存的只是符号引用，而符号引用对其他类的引用只是一个描述符，因此，在加载类的时候，可以通过修改描述符达到引用其他类的目的，毕竟，字节码中指令参数也是常量池中的符号引用，不需要去修改字节码</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orge7e3fb8" class="outline-2">
+<h2 id="orge7e3fb8"><span class="section-number-2">5</span> 字节码指令</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+Java 虚拟机采用面向操作数栈的架构，指令由单字节的操作码和跟随之后的零个或多个操作数构成。
+</p>
+
+<p>
+针对不同的类型，虚拟机可能提供了相同操作码的不同特化，这些操作码可以通过操作码助记符区分：
+</p>
+<ul class="org-ul">
+<li>i - int、l - long、s - short、b - byte、c - char、f - float、d - double、a - reference</li>
+</ul>
+
+<p>
+这里可以看出来，能够存储在栈中的数据除了基本数据类型以外就是引用了。
+</p>
+
+<p>
+编译器会在编译期货运行期将 byte 和 short 类型数据符号扩展为相应的 int 类型数据，将 boolean 和 char 类型无符号扩展为相应的 int 类型数据，从而复用 int 类型的操作码，避免重复定义太多指令。
+</p>
+
+<p>
+相对特殊的是同步指令，分为两种情况：
+</p>
+<ol class="org-ol">
+<li>方法级别的同步，无需字节码指令实现，当虚拟机发现 ACC_SYNCHRONIZED 标志为 true 时便会自动加锁</li>
+<li><p>
+代码块的同步，通过 <code>monitorenter</code> 和 <code>monitorexit</code> 指令完成，编译器会保证只要调用过 <code>monitorenter</code> 就一定会调用 <code>monitorexit</code>
+</p>
+
+<p>
+比如生成一个异常处理器，即使同步代码块中抛出了异常也会执行 <code>monitorexit</code> 指令
+</p></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgb8cbada" class="outline-2">
+<h2 id="orgb8cbada"><span class="section-number-2">6</span> 类加载机制</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Java 虚拟机中，类型的加载、连接和初始化都是在程序运行期间完成的，整个生命周期大致可以分为：加载、验证、准备、解析、初始化、使用和卸载七个阶段，其中，验证、准备和解析三个阶段被称为连接。
+</p>
+
+<p>
+各阶段的操作：
+</p>
+<ol class="org-ol">
+<li>加载，通过类的全限定名来获取定义此类的二进制字节流，将这个字节流代表的静态文件存储结构转化保存到方法区，并在内存中生成相应的 <code>Class</code> 对象</li>
+<li>验证，对文件格式、元数据（类型语义，如继承、实现接口、抽象方法的实现等）、字节码和符号引用（引用的符号是否存在、能否访问）进行验证</li>
+<li>准备，为类变量（不是实例变量）分配内存并设置初始值，通常为零值，但假如字段属性表中存在 <code>ConstantValue</code> 属性，那么准备阶段就可以完成赋值，通常为基本类型或字符串</li>
+<li><p>
+解析，将符号引用转换为直接引用的过程，主要包括类、接口、字段、类方法、接口方法、方法类型、方法句柄、调用限定符的解析
+</p>
+
+<p>
+注意：字段解析会先根据类名称寻找字段，找不到的时候回到父接口和父类中去找，这就使得：
+</p>
+<ul class="org-ul">
+<li>当子类和父类存在同名字段时，用哪个类名获取就是哪个类的</li>
+<li>父类和父接口存在同名字段时，父接口优先级更高，但是编译器往往会在存在同名字段时报错</li>
+</ul>
+
+<p>
+解析成功后，还会对符号进行 <b>符号引用验证</b>
+</p></li>
+<li><p>
+初始化，执行类或接口的 <code>&lt;clinit&gt;</code> 方法，会先执行父类的 <code>&lt;clinit&gt;</code> 方法，但是不会执行父接口的，另外，该方法的执行是同步的，这意味执行时阻塞可能导致其他线程阻塞
+</p>
+
+<p>
+问：为什么接口也有 <code>&lt;clinit&gt;</code> 方法？答：应该是为了初始化接口字段的值，当字段类型为除了 <code>String</code> 以为的对象时，就只能在 <code>&lt;clinit&gt;</code> 方法中初始化了
+</p>
+
+<p>
+问：为什么不需要先执行接口的 <code>&lt;clinit&gt;</code> 方法？答： <del>接口中的属性都是 <code>static final</code> 类型的常量，因此在 <b>准备阶段</b> 就已经初始化</del> 只有在接口中的字段被使用时才会执行接口的 <code>&lt;clinit&gt;</code> 方法
+</p>
+
+<p>
+另外，方法 <code>&lt;init&gt;</code> 和方法 <code>&lt;clinit&gt;</code> 分别为实例和类的初始化服务。
+</p></li>
+</ol>
+
+<p>
+对于类的初始化来说，只有满足以下五个情况之一时才会对类进行初始化：
+</p>
+<ol class="org-ol">
+<li>遇到 new、getstatic、putstatic 或 invokestatic 四个指令时，即：使用 new 关键字实例化对象时、获取或设置一个类的静态字段（被 final 修饰、已在编译器把结果放入常量池的静态字段除外）、调用类的静态方法时。这里需要注意字段被 final 修饰或已在编译器把结果放入常量池的情况（基本类型和字符串），这时，它们的值在准备阶段就已经准备好了，不需要对类进行初始化。</li>
+<li>对类进行反射调用的时候</li>
+<li>初始化一个类的时候，其父类还没有初始化，那么就会先进行父类的初始化，注意，没有父接口</li>
+<li>加载执行主类的时候回初始化主类</li>
+<li>使用动态语言支持对应的方法句柄没有初始化时</li>
+</ol>
+</div>
+
+<div id="outline-container-org1dd63bb" class="outline-3">
+<h3 id="org1dd63bb"><span class="section-number-3">6.1</span> 类加载器</h3>
+<div class="outline-text-3" id="text-6-1">
+<p>
+Java 虚拟机中每个类由 <b>类</b> 本身和它的 <b>类加载器</b> 唯一确定，类一样但是类加载器不一样，那么也不是同一个类。
+</p>
+
+<p>
+对于 Java 虚拟机来说，只存在两种类加载器，分别为：
+</p>
+<ul class="org-ul">
+<li>启动类加载器 - BootstrapClassLoader，是虚拟机的一部分，无法被用户获取</li>
+<li>其他类加载器，由 Java 语言实现，独立于虚拟机，都继承自抽象类 <code>ClassLoader</code></li>
+</ul>
+
+<p>
+对于开发人员来说，系统提供的类加载器又可以分为三类：
+</p>
+<ol class="org-ol">
+<li>启动类加载器 - BootstrapClassLoader，用于加载 <code>&lt;JAVA_HOME&gt;/lib</code> 目录下的类，通过名称进行识别，不符合的名称不会进行加载</li>
+<li>扩展类加载器 - ExtensionClassLoader，用于加载 <code>&lt;JAVA_HOME&gt;/lib/ext</code> 目录下的类，同样通过名称进行识别，父类加载器为 null(BootstrapClassLoader)，可以被用户获取</li>
+<li>应用程序类加载器 - ApplicationClassLoader，用于加载用户类路径上的类，也被成为系统类加载器，父类加载器为 ExtensionClassLoader</li>
+</ol>
+
+<p>
+详情可以查看 <code>sun.misc.Launcher</code> 这个类的源码。
+</p>
+
+<p>
+类加载器之间的关系通常满足双亲委派模型，每个类加载器都通过组合关系持有它的父类加载器，加载类时，先用父类加载器尝试加载，加载不了才使用子类加载器。这保证了 JDK 中类的优先级。
+</p>
+
+<p>
+基本逻辑为：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">protected</span> <span class="org-type">Class</span>&lt;?&gt; <span class="org-function-name">loadClass</span>(<span class="org-type">String</span> <span class="org-variable-name">name</span>, <span class="org-type">boolean</span> <span class="org-variable-name">resolve</span>) <span class="org-keyword">throws</span> <span class="org-type">ClassNotFoundException</span> {
+  <span class="org-keyword">synchronized</span> (getClassLoadingLock(<span class="org-type">name</span>)) {
+    <span class="org-comment-delimiter">// </span><span class="org-comment">&#39318;&#20808;&#26816;&#26597;&#26159;&#21542;&#24050;&#32463;&#21152;&#36733;&#20102;</span>
+    <span class="org-type">Class</span>&lt;?&gt; <span class="org-variable-name">c</span> = findLoadedClass(name);
+    <span class="org-keyword">if</span> (c == <span class="org-constant">null</span>) {
+      <span class="org-keyword">try</span> {
+        <span class="org-keyword">if</span> (parent != <span class="org-constant">null</span>) {
+          c = parent.loadClass(name, <span class="org-constant">false</span>);
+        } <span class="org-keyword">else</span> {
+          <span class="org-comment-delimiter">// </span><span class="org-comment">&#29238;&#31867;&#21152;&#36733;&#22120;&#19981;&#23384;&#22312;&#26102;&#23601;&#20351;&#29992; BootstrapClassLoader</span>
+          c = findBootstrapClassOrNull(name);
+        }
+      } <span class="org-keyword">catch</span> (<span class="org-type">ClassNotFoundException</span> <span class="org-variable-name">e</span>) {
+        <span class="org-comment-delimiter">// </span><span class="org-comment">ClassNotFoundException thrown if class not found</span>
+        <span class="org-comment-delimiter">// </span><span class="org-comment">from the non-null parent class loader</span>
+      }
+
+      <span class="org-keyword">if</span> (c == <span class="org-constant">null</span>) {
+        <span class="org-comment-delimiter">// </span><span class="org-comment">&#29238;&#31867;&#21152;&#36733;&#22120;&#21152;&#36733;&#22833;&#36133;&#65292;&#35843;&#29992;&#33258;&#24049;&#30340;&#21152;&#36733;&#26041;&#27861;</span>
+        c = findClass(name);
+      }
+    }
+    <span class="org-keyword">if</span> (resolve) {
+      <span class="org-comment-delimiter">// </span><span class="org-comment">&#25191;&#34892;&#36830;&#25509;&#25805;&#20316;</span>
+      resolveClass(c);
+    }
+    <span class="org-keyword">return</span> c;
+  }
+}
+</pre>
+</div>
+
+<p>
+在这种结构性，定义自己的类加载往往只需要定义 <code>findClass</code> 方法就足够了。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9f5bcc3" class="outline-3">
+<h3 id="org9f5bcc3"><span class="section-number-3">6.2</span> 相关问题</h3>
+<div class="outline-text-3" id="text-6-2">
+<ul class="org-ul">
+<li><p>
+为什么说 SPI 打破双亲委派机制？
+</p>
+
+<p>
+SPI 机制中，在为指定类加载时会使用 <code>Thread.currentThread().getContextClassLoader()</code> 中的类加载器，如果不用的话就可能会出现如下情况：
+</p>
+<ol class="org-ol">
+<li>从 META-INF/services/java.sql.Driver 文件得到实现类名字 DriverA</li>
+<li>Class.forName("xx.xx.DriverA") 来加载实现类</li>
+<li>Class.forName() 方法默认使用当前类的 ClassLoader，JDBC是 在 DriverManager 类里调用 Driver 的，当前类也就是 DriverManager，它的加载器是 BootstrapClassLoader</li>
+<li>用 BootstrapClassLoader 去加载非 rt.jar 包里的类 xx.xx.DriverA，就会找不到</li>
+<li>要加载 xx.xx.DriverA 就需要用到 AppClassLoader 或其他自定义 ClassLoader</li>
+<li>最终矛盾出现在，要在 BootstrapClassLoader 加载的类里，调用 AppClassLoader 去加载实现类</li>
+</ol>
+
+<p>
+虽然实现细节上存在区别，但大致逻辑就是这么个逻辑，用那个类加载器加载一个类，那么那个类的类加载器就是加载它的类加载器。也就是说，我们的程序运行时，存在拥有不同类加载器的类。
+</p></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1225876" class="outline-2">
+<h2 id="org1225876"><span class="section-number-2">7</span> 字节码执行引擎</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+栈帧时用于支持虚拟机进行方法调用和方法执行的虚拟结构，每个栈帧存储了方法的局部变量表、操作数栈、动态连接和方法返回地址等信息。
+</p>
+
+<p>
+位于栈顶的栈帧称为当前栈帧，对应的方法称为当前方法，通过 <code>Throwable.printStackTrace</code> 打印出的内容在一定程度上反应了栈帧结构。
+</p>
+
+<blockquote>
+<p>
+这里应该注意区分栈帧和栈的概念，栈不用多说，但是栈帧通常指代的是函数调用过程中，在栈上维护的一个独立的区域，保存函数调用需要的信息<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>。
+</p>
+</blockquote>
+
+<p>
+栈帧位于虚拟机栈中，各部分的数据结构和作用为：
+</p>
+<ol class="org-ol">
+<li><p>
+局部变量表，用于存放方法参数和方法内部定义的局部变量，容量以变量槽为最小单位，对于实例方法来说，局部变量表中的第一个变量往往为 <code>this</code> 引用。
+</p>
+
+<p>
+另外，因为局部变量表 Slot 复用的原因，可能导致局部变量即使离开了其作用域，但是 Slot 中依然存在相应的引用使得其无法被回收。
+</p></li>
+
+<li>操作数栈，栈容量的单位是 32 位，对于基于栈的指令架构来说，优势是可移植，缺陷是由于频繁的出入栈而额外的操作，执行速度会变慢</li>
+
+<li>动态连接，每个栈帧都包含一个执行运行时常量池中该栈帧所属方法的引用，用于支持方法调用过程中的动态连接（每次运行期间将符号引用转化为直接引用）</li>
+
+<li>方法返回地址</li>
+</ol>
+
+<p>
+字节码执行引擎这一部分中一项重要的内容就是方法调用的过程，主要可以分为解析和分派两类。
+</p>
+</div>
+
+<div id="outline-container-org4f65529" class="outline-3">
+<h3 id="org4f65529"><span class="section-number-3">7.1</span> 解析</h3>
+<div class="outline-text-3" id="text-7-1">
+<p>
+对于能够在编译器就能够确定下来的方法调用类型被称为解析，符合这一要求的方法类型有：静态方法、私有方法、实例构造器、父类方法和被 <code>final</code> 修饰的方法，这些方法被叫做非虚方法，主要通过 <code>invokestatic</code> 和 <code>invokespecail</code> 指令调用。
+</p>
+
+<p>
+而 <code>final</code> 方法虽然需要通过 <code>invokevirtual</code> 指令调用，但是它还是可以通过解析的方式调用。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd74b80e" class="outline-3">
+<h3 id="orgd74b80e"><span class="section-number-3">7.2</span> 分派</h3>
+<div class="outline-text-3" id="text-7-2">
+<p>
+分派中的两种主要分派方式为静态分派和动态分派，其中，静态分派时重载机制实现的基础，而动态分派则是重写机制实现的基础。
+</p>
+
+<p>
+对于如下语句来说，我们将 <code>Human</code> 称为 <code>man</code> 的静态类型，而将 <code>Man</code> 称为 <code>man</code> 的实际类型：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-type">Human</span> <span class="org-variable-name">man</span> = <span class="org-keyword">new</span> <span class="org-type">Man</span>();
+</pre>
+</div>
+
+<p>
+静态类型仅在使用时发生变化，而实际类型却需要在运行期间确定：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-comment-delimiter">// </span><span class="org-comment">&#23454;&#38469;&#31867;&#22411;&#21464;&#21270;</span>
+<span class="org-type">Human</span> <span class="org-variable-name">man</span> = <span class="org-keyword">new</span> <span class="org-type">Man</span>();
+man = <span class="org-keyword">new</span> <span class="org-type">Woman</span>();
+
+<span class="org-comment-delimiter">// </span><span class="org-comment">&#38745;&#24577;&#31867;&#22411;&#21464;&#21270;</span>
+sr.sayHello((<span class="org-type">Man</span>) man);
+sr.sayHello((<span class="org-type">Woman</span>) man);
+</pre>
+</div>
+
+<p>
+使用方法的那个重载版本有传入参数的数量和 <b>静态类型</b> 确定，整个过程在编译期完成，需要注意的是字面量的类型推导过程，当不存在和字面量直接匹配的重载时会历经如下步骤：
+</p>
+<pre class="example">
+自动类型转换(char -&gt; int -&gt; long -&gt; float -&gt; double) -&gt; 自动装箱 -&gt; 尝试匹配实现的接口 -&gt; 父类 -&gt; 变长参数
+</pre>
+
+<p>
+而和 <b>动态分派</b> 对应的便是重写了，通常由 <code>invokevirtual</code> 指令调用，运行时解析过程大致为：
+</p>
+<ol class="org-ol">
+<li>找到调用 <b>对象</b> 的 <b>实际类型</b> 并判断是否存在相应的方法，通过对象头上的类型指针完成</li>
+<li>不存在就到 <b>实际类型</b> 的 <b>父类</b> 上找</li>
+</ol>
+
+<p>
+这就是为什么，子类重写父类方法后，通过父类引用能够正确调用子类方法的原因。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgb37bb67" class="outline-2">
+<h2 id="orgb37bb67"><span class="section-number-2">8</span> 程序编译与代码优化</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+Java 中的编译期可能指：
+</p>
+<ol class="org-ol">
+<li>前端编译器，把 <code>*.java</code> 文件转变成 <code>*.class</code> 文件</li>
+<li>后端运行期编译器 JIT，把字节码转变为本地机器代码</li>
+<li>静态提前编译器 AOT，直接把 <code>*.java</code> 文件编译为本地机器代码</li>
+</ol>
+
+<p>
+javac 就是一个通过 Java 语言编写的前端编译器，在源码编译的过程中，它会做的一些事：
+</p>
+<ol class="org-ol">
+<li>常量折叠，将诸如 <code>int a = 1 + 1</code> 形式的代码中的常量运算结果算出，简化为 <code>int a = 2</code></li>
+<li>数据流分析，比如说 <code>final</code> 局部变量的检查便在编译期完成，因为局部变量在常量池中是不存在 <code>CONSTANT_Fieldref_info</code> 引用的，自然就没有访问标志</li>
+<li><p>
+字节码生成，包括 <code>&lt;init&gt;</code> 和 <code>&lt;clinit&gt;</code> 方法的生成，对于 <code>&lt;clinit&gt;</code> 来说，会根据类变量和静态代码块的顺序生成，而 <code>&lt;init&gt;</code> 则会按照调用父类 <code>&lt;init&gt;</code> 方法，初始化字段、初始化代码块、构造方法代码的方式组织
+</p>
+
+<p>
+类初始化过程：
+</p>
+<ol class="org-ol">
+<li>加载类并在准备阶段将静态字段的值设为零值或常量</li>
+<li>在初始化阶段调用类的 <code>&lt;clinit&gt;</code> 方法，执行相关逻辑并初始化其他类变量</li>
+</ol>
+
+<p>
+对象初始化过程：
+</p>
+<ol class="org-ol">
+<li>创建对象实例，并将对象内存区域置为 0 值</li>
+<li>调用 <code>&lt;init&gt;</code> 方法，内部顺序为：调用父类 <code>&lt;init&gt;</code> 方法 -&gt; 初始化实例字段 -&gt; 执行初始化代码块 -&gt; 执行对应构造方法内部逻辑</li>
+</ol></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org3ac0982" class="outline-2">
+<h2 id="org3ac0982"><span class="section-number-2">9</span> 内存模型和线程</h2>
+<div class="outline-text-2" id="text-9">
+</div>
+<div id="outline-container-org839df0f" class="outline-3">
+<h3 id="org839df0f"><span class="section-number-3">9.1</span> 内存模型</h3>
+<div class="outline-text-3" id="text-9-1">
+<p>
+Java 内存模型 JMM 中每个线程都拥有自己的工作内存，每个线程对变量（不包括局部变量）的操作都必须在工作内存中进行，同时和主内存保持同步。
+</p>
+
+<img src="https://img-blog.csdn.net/20170608221857890?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvamF2YXplamlhbg==">
+
+<p>
+工作内存和主内存之间的原子操作有：
+</p>
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">操作</th>
+<th scope="col" class="org-left">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">锁定 lock</td>
+<td class="org-left">将主内存中的一个变量标识为线程独占的状态</td>
+</tr>
+
+<tr>
+<td class="org-left">解锁 unlock</td>
+<td class="org-left">将处于锁定状态的变量解锁</td>
+</tr>
+
+<tr>
+<td class="org-left">读取 read</td>
+<td class="org-left">读取主内存中的变量到工作内存中</td>
+</tr>
+
+<tr>
+<td class="org-left">载入 load</td>
+<td class="org-left">将读取得到的变量值放入工作内存的变量副本中</td>
+</tr>
+
+<tr>
+<td class="org-left">使用 use</td>
+<td class="org-left">将工作内存中的变量值传递给执行引擎</td>
+</tr>
+
+<tr>
+<td class="org-left">赋值 assign</td>
+<td class="org-left">将执行引擎接受到的值赋给工作内存中的变量</td>
+</tr>
+
+<tr>
+<td class="org-left">存储 store</td>
+<td class="org-left">将工作内存中的变量传送主内存</td>
+</tr>
+
+<tr>
+<td class="org-left">写入 write</td>
+<td class="org-left">将存储的变量值写入主内存的变量中</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+PS：工作内存和主内存之间的值传递居然需要两个不一定连续的操作完成。
+</p>
+
+<p>
+这些操作会满足的一些规则：
+</p>
+<ul class="org-ul">
+<li>新的变量只会在主内存中诞生</li>
+<li>执行 lock 操作时会情况工作内存中该变量的值</li>
+<li>执行 unlock 操作前需要先把变量的值同步回主内存</li>
+</ul>
+
+<p>
+而通过 <code>volatile</code> 关键字修饰的变量还可以保证：
+</p>
+<ol class="org-ol">
+<li>每次使用一个变量的值时，都必须先从主内存刷新最新的值</li>
+<li>每次修改一个变量的值后，都必须立刻同步回主内存中</li>
+<li>被 <code>volatile</code> 修饰的变量不会被指令重排序优化（JDK 1.5+）</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org24dd32b" class="outline-3">
+<h3 id="org24dd32b"><span class="section-number-3">9.2</span> 线程</h3>
+<div class="outline-text-3" id="text-9-2">
+<p>
+抛开 Java 来看，线程的实现方式大致有三种：
+</p>
+<ol class="org-ol">
+<li>内核线程 KLT，直接由操作系统实现，程序通常不会直接使用内核线程，而是使用内核线程的高级接口轻量级进程 LWP，轻量级进程和内核线程之间是 1:1 的关系
+<ul class="org-ul">
+<li>优势：有内核调度器的支持，每个轻量级进程都可以时单独的调度单元，单个轻量级进程阻塞不会影响整个进程</li>
+<li>缺陷：各种线程操作都需要进行系统调用，代价相对较高，同时需要消耗内核资源，使得系统支持的轻量级进程数量有限</li>
+</ul></li>
+<li>用户线程 UT，用户线程的建立、同步、消耗和调度操作完全在用户态中完成，不需要内核的帮助，进程和线程之间是 1:N 的关系
+<ul class="org-ul">
+<li>优势：不需要内核的帮助，消耗的资源少</li>
+<li>缺陷：没有内核的帮助，什么都要自己搞定，实现太复杂</li>
+</ul></li>
+<li>用户线程加轻量级进程混合实现，进程和线程之间是 N:M 的关系</li>
+</ol>
+
+<p>
+目前 Java 中线程的实现方式是基于操作系统原生线程模型类实现的，在 Windows 和 Linux 中一般就是内核线程了。
+</p>
+
+<p>
+Java 中为线程定义了五种状态：
+</p>
+<ul class="org-ul">
+<li>新建 New，创建后尚未启动的线程</li>
+<li>运行 Runable，包括了操作系统线程状态中的 Running 和 Ready</li>
+<li>等待 Waiting，分为无限期等待和限期等待两种</li>
+<li>阻塞 Blocked，和等待的区别在于阻塞状态是在等待着获取到一个排它锁</li>
+<li>结束 Terminated，线程已结束执行</li>
+</ul>
+
+<p>
+线程调度的方式为抢占式线程调度，每个线程由系统来分配执行时间，可以通过设置线程的优先级来影响调度，但不一定有效。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8a804df" class="outline-2">
+<h2 id="org8a804df"><span class="section-number-2">10</span> 锁优化</h2>
+<div class="outline-text-2" id="text-10">
+<p>
+简单的锁优化方式：
+</p>
+<ul class="org-ul">
+<li>自旋锁与自适应循环：互斥同步对性能最大的影响是阻塞的实现，挂起和恢复线程都需要切换到内核态完成，而代码块实际的阻塞时间往往又很短，因此可以通过让线程执行一个忙循环的方式代替阻塞等待。超过一定循环次数再去获取锁。</li>
+<li>锁消除：一些代码不可能会发生共享数据的竞争，因此可以将锁去除，例如只存在于函数内部的 <code>StringBuffer</code></li>
+<li>锁粗化：如果在局部频繁对同一个对象加锁解锁也会带来额外的消耗，因此可以通过锁粗化扩大锁定范围</li>
+</ul>
+</div>
+
+<div id="outline-container-org93cce07" class="outline-3">
+<h3 id="org93cce07"><span class="section-number-3">10.1</span> 偏向锁、轻量级锁和重量级锁</h3>
+<div class="outline-text-3" id="text-10-1">
+<p>
+偏向锁、轻量级锁和重量级锁分别适用于只有一个线程进入临界区、多个线程交替进入临界区和多个线程同时进入临界区的场景，其中偏向锁和轻量级锁为乐观锁，而重量级锁为悲观锁。
+</p>
+
+<p>
+一个对象刚开始实例化的时候，没有任何线程来访问它的时候。它是可偏向的，意味着，它现在认为只可能有一个线程来访问它，所以当第一个线程来访问它的时候，它会偏向这个线程，此时，对象持有偏向锁。偏向第一个线程，这个线程在修改对象头成为偏向锁的时候使用 CAS 操作，并将对象头中的 ThreadID 改成自己的 ID，之后再次访问这个对象时，只需要对比 ID，不需要在使用 CAS 进行操作。
+</p>
+
+<p>
+一旦有第二个线程访问这个对象，因为偏向锁不会主动释放，所以第二个线程可以看到对象是偏向状态，这时表明在这个对象上已经存在竞争了，检查原来持有该对象锁的线程是否依然存活，如果挂了，则可以将对象变为无锁状态，然后重新偏向新的线程，如果原来的线程依然存活，则马上执行那个线程的操作栈，检查该对象的使用情况，如果仍然需要持有偏向锁，则偏向锁升级为轻量级锁，（偏向锁就是这个时候升级为轻量级锁的）。如果不存在使用了，则可以将对象回复成无锁状态，然后重新偏向。
+</p>
+
+<p>
+轻量级锁认为竞争存在，但是竞争的程度很轻，一般两个线程对于同一个锁的操作都会错开，或者说稍微等待一下（自旋），另一个线程就会释放锁。 但是当自旋超过一定的次数，或者一个线程在持有锁，一个在自旋，又有第三个来访时，轻量级锁膨胀为重量级锁，重量级锁使除了拥有锁的线程以外的线程都阻塞，防止 CPU 空转。
+</p>
+
+<img src="https://pic1.zhimg.com/80/v2-bddd3f3f9f0b74866badc777e3e4dea5_hd.jpg">
+
+<ol class="org-ol">
+<li>对于偏向锁来说，当前线程只有第一次 <b>加锁</b> 的时候需要 <code>CAS</code> 操作设置对象头，同时不需要撤销</li>
+<li>对于轻量级锁来说，当前线程在 <b>加锁</b> 和 <b>解锁</b> 的时候都需要通过 <code>CAS</code> 操作设置还原对象头，操作量相较于偏向锁多了一下，但依然比重量级锁少</li>
+<li>对于重量级锁来说，就很直接了，直接阻塞其他线程</li>
+</ol>
+
+<p>
+从偏向锁升级到轻量级锁，在从轻量级锁升级到重量级锁，中间的关键操作时 <code>CAS</code> 操作是否可以成功。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.zhihu.com/question/53826114">java 偏向锁，轻量级锁与重量级锁为什么会相互膨胀? - 知乎</a></li>
+<li><a href="https://rgb-24bit.github.io/blog/2020/java-synchronized.html">Java 偏向锁、轻量级锁和重量级锁</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1c94a87" class="outline-2">
+<h2 id="org1c94a87"><span class="section-number-2">11</span> 相关问题</h2>
+<div class="outline-text-2" id="text-11">
+</div>
+<div id="outline-container-org26a8987" class="outline-3">
+<h3 id="org26a8987"><span class="section-number-3">11.1</span> 新生代、老年代和永久代</h3>
+<div class="outline-text-3" id="text-11-1">
+<p>
+虚拟机通常会采用 <b>分代收集</b> 的思想来回收内存，会为每个对象定义一个对象年龄计数器，对象每熬过一次 Minor GC 年龄就增加 1 岁，到达一定年龄后就进入老年代。
+</p>
+
+<p>
+而永久代，则是过去为了省去单独为方法区编写内存管理代码的工作，将 GC 分代收集扩展到方法区的产物，在 JDK8 中永久代已经被移除。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.cnblogs.com/paddix/p/5309550.html">Java8 内存模型—永久代(PermGen)和元空间(Metaspace) - liuxiaopeng - 博客园</a></li>
+<li>《深入了解 JVM 虚拟机 第 2 版》 - P42，P95</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">&#33050;&#27880;: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">
+Java 线程的 <code>run</code> 方法的局部变量表中会存在该 <code>Thread</code> 对象的引用，因此线程不能及时回收的话，可能造成内存泄漏
+</p></div></div>
+
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">
+<a href="https://juejin.im/post/5b1560afe51d4506a74d2aeb">栈帧(Stack Frame) - 掘金</a> 
+</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

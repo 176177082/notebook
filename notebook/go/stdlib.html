@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:46 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Go 标准库</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">Go 标准库</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org8c8ea9e">1. atmoic</a></li>
+<li><a href="#org39f66db">2. expvar</a></li>
+<li><a href="#org4ae6ccf">3. database/sql</a></li>
+<li><a href="#orgb998ba0">4. fmt</a></li>
+<li><a href="#orgd56fb65">5. json</a></li>
+<li><a href="#orgd72205e">6. regexp</a></li>
+<li><a href="#orge96c992">7. net/http</a></li>
+<li><a href="#orgc5681a8">8. runtime</a></li>
+<li><a href="#org95acb3d">9. ioutil</a></li>
+<li><a href="#orgd8a5d5e">10. io</a></li>
+<li><a href="#org33795f7">11. time</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org8c8ea9e" class="outline-2">
+<h2 id="org8c8ea9e"><span class="section-number-2">1</span> atmoic</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+在并发场景下，如果能够使用原子操作替代互斥锁，那么，往往能够在保证并发安全的同时得到更好的性能表现。
+</p>
+
+<p>
+Go 中通过标准库 <code>atmoic</code> 提供了常用的原子操作，比较特别的是针对指针的 LoadPointer/StorePointer 和类型无关的 atmoic.Value。
+</p>
+
+<p>
+使用 unsafe.Pointer 和 LoadPointer/StorePointer，可以加载或存储指向任意变量的指针，利用指针的强大特性，可以做到很多有趣的事情。
+</p>
+
+<p>
+而 atmoic.Value 则允许我们对任意类型的变量进行原子的 Load/Store 操作，这也是很有用的。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://studygolang.com/articles/3557">Go 语言 atomic 原子操作 - Go语言中文网 - Golang中文社区</a></li>
+<li><a href="https://blog.betacat.io/post/golang-atomic-value-exploration/">Go 语言标准库中 atomic.Value 的前世今生 - 喵叔没话说</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org39f66db" class="outline-2">
+<h2 id="org39f66db"><span class="section-number-2">2</span> expvar</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li><a href="https://books.studygolang.com/The-Golang-Standard-Library-by-Example/chapter13/13.3.html">expvar - 公共变量的标准化接口 · Go语言标准库</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4ae6ccf" class="outline-2">
+<h2 id="org4ae6ccf"><span class="section-number-2">3</span> database/sql</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Go 里面数据库的操作是基于 database/sql 包完成的，对于使用者来说，需要在导入 database/sql 的同时导入相应的驱动，然后通过如下方式获得 *sql.DB 对象：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">db, err := sql.Open("mysql", "user:password@tcp(127.0.0.1:3306)/hello")
+</pre>
+</div>
+
+<p>
+所有的数据库操作都基于 sql.DB 对象完成，使用 Open 创建 sql.DB 对象后并不会与数据库建立连接, 也不会验证连接参数。它只是单纯地为后面的数据库操作建立了一个数据库对象的抽象，在第一次需要的时候，它才与数据库建立实际连接。
+</p>
+
+<p>
+可以通过 db.Ping() 来验证是否能够正常连接到数据库：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">err = db.Ping()
+if err != nil {
+  // do something here
+}
+</pre>
+</div>
+
+<p>
+数据库操作通常就是 CURD，其中，查询应该使用 QueryXXX 方法完成，增删改或者其它更多的操作应该使用 Exec 方法完成：
+</p>
+<pre class="example">
+type DB
+    func (db *DB) Exec(query string, args ...interface{}) (Result, error)
+    func (db *DB) Query(query string, args ...interface{}) (*Rows, error)
+    func (db *DB) QueryRow(query string, args ...interface{}) *Row
+</pre>
+
+<p>
+查询操作返回 sql.Rows 对象，可以通过如下方式获取结果：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">defer rows.Close()
+for rows.Next() {
+  err := rows.Scan(&amp;id, &amp;name)
+  if err != nil {
+    log.Fatal(err)
+  }
+  log.Println(id, name)
+}
+</pre>
+</div>
+
+<p>
+Scan 方法可以基于目标变量的类型自动完成数据类型转换的转换，转换失败会返回 err，这可以省略一些工作。
+</p>
+
+<p>
+当然，裸的 SQL 语句是存在很大的安全隐患的，大多数语言都提供了通过预编译的方式来转义输入参数的方式，Go 中使用 db.Prepare 实现：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">stmt, err := db.Prepare("select id, name from users where id = ?")
+if err != nil {
+  log.Fatal(err)
+}
+defer stmt.Close()
+rows, err := stmt.Query(1)
+if err != nil {
+  log.Fatal(err)
+}
+defer rows.Close()
+for rows.Next() {
+  // ...
+}
+if err = rows.Err(); err != nil {
+  log.Fatal(err)
+}
+</pre>
+</div>
+
+<p>
+比较特殊的是不同数据库的占位符是不一样的，但 MySQL 还是熟悉的 ? 号。
+</p>
+
+<p>
+单行查询：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">err = db.QueryRow("select name from users where id = ?", 1).Scan(&amp;name)
+</pre>
+</div>
+
+<p>
+增删改等不需要返回行的任务使用 Exec 方法来执行，方法返回 sql.Result 对象，它提供对语句元数据的访问, 包括最后一行的 ID 和此次操作影响的行数：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">stmt, err := db.Prepare("INSERT INTO users(name) VALUES(?)")
+if err != nil {
+  log.Fatal(err)
+}
+res, err := stmt.Exec("Dolly")
+if err != nil {
+  log.Fatal(err)
+}
+lastId, err := res.LastInsertId()
+if err != nil {
+  log.Fatal(err)
+}
+rowCnt, err := res.RowsAffected()
+if err != nil {
+  log.Fatal(err)
+}
+log.Printf("ID = %d, affected = %d\n", lastId, rowCnt)
+</pre>
+</div>
+
+<p>
+事务的使用从 db.Begin 开始，该方法返回一个 Tx 对象，在该对象上调用 Query/Exec 方法执行数据库操作，调用 Commit/Rallback 提交回滚事务。
+</p>
+
+<p>
+对于可空的列，可以使用 sql.NullXXX 会自定义类型来接收值：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">for rows.Next() {
+  var s sql.NullString
+  err := rows.Scan(&amp;s)
+  // check err
+  if s.Valid {
+    // use s.String
+  } else {
+    // NULL value
+  }
+}
+</pre>
+</div>
+
+<p>
+比较特别的一点是，database/sql 包自身已经实现了一个简单的数据库连接池，需要注意的几点：
+</p>
+<ul class="org-ul">
+<li>连接是在需要时被创建的, 在池中并没有一条空闲的连接在等待你</li>
+<li>默认情况下，连接的数量没有限制</li>
+<li>可以使用 db.SetMaxIdleConns(N) 来限制池中空闲连接数，但是这并不会限制池的大小</li>
+<li>可以使用 db.SetMaxOpenConns(N) 来限制数据库的总打开连接数</li>
+<li>回收连接的速度相当快，使用 db.SetMaxIdleConns(N) 设置一个比较大的空闲连接数能减少连接的流失</li>
+<li>由于重用长期连接可能会带来一些网络问题，可以通过设置 db.SetConnMaxLifetime(duration) 来指定一个连接的最大重用次数，这个函数会关闭未使用的连接，比如那些可能被延迟关闭的过期连接</li>
+</ul>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://github.com/simpleowen/go-database-sql-tutorial-cn">GitHub - simpleowen/go-database-sql-tutorial-cn: http://go-database-sql.org 中文版</a></li>
+<li><a href="https://golang.org/pkg/database/sql/">sql - The Go Programming Language</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb998ba0" class="outline-2">
+<h2 id="orgb998ba0"><span class="section-number-2">4</span> fmt</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+和 C 不同，像 %d 这样的数值格式并不接受表示符号或大小的标记， 打印例程会根据实参的类型来决定这些属性：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">var x uint64 = 1&lt;&lt;64 - 1
+fmt.Printf("%d %x; %d %x\n", x, x, int64(x), int64(x))  // =&gt; 18446744073709551615 ffffffffffffffff; -1 -1
+</pre>
+</div>
+
+<p>
+fmt 在输出指针的时候，经常会只输出指针地址，可以通过实现 stringer 接口让 fmt 输出更清楚的内容。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd56fb65" class="outline-2">
+<h2 id="orgd56fb65"><span class="section-number-2">5</span> json</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+tag:
+</p>
+<ul class="org-ul">
+<li>omitempty - 字段为零值时省略该字段</li>
+<li>- - 直接省略该字段</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd72205e" class="outline-2">
+<h2 id="orgd72205e"><span class="section-number-2">6</span> regexp</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Go 的正则还是比较强大的，可以从 Compile 开始：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">pattern := regexp.MustCompile(`pattern`)  // 不会返回 error，存在错误就直接 panic
+</pre>
+</div>
+
+<p>
+操作：
+</p>
+<ul class="org-ul">
+<li>在字符串开始的地方匹配：正则以 ^ 开头就可以了</li>
+<li>转义正则元字符：regexp.QuoteMeta</li>
+</ul>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.cnblogs.com/golove/p/3269099.html">基础知识 - Golang 中的正则表达式 - GoLove - 博客园</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orge96c992" class="outline-2">
+<h2 id="orge96c992"><span class="section-number-2">7</span> net/http</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+可以通过 http.FileServer 实现简单的静态文件服务器，参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://shockerli.net/post/golang-pkg-http-file-server/">Go 标准库 http.FileServer 实现静态文件服务 - 格物</a></li>
+</ul>
+
+<p>
+构建 query 参数：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">q := req.URL.Query()
+q.Add("api_key", "key_from_environment_or_flag")
+q.Add("another_thing", "foo &amp; bar")
+req.URL.RawQuery = q.Encode()
+</pre>
+</div>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/30652577/go-doing-a-get-request-and-building-the-querystring">http - Go doing a GET request and building the Querystring - Stack Overflow</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc5681a8" class="outline-2">
+<h2 id="orgc5681a8"><span class="section-number-2">8</span> runtime</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+runtime 包提供和 go 运行时环境的互操作，比如通过 runtime.Caller 来获取调用栈，打印行号、方法。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://studygolang.com/articles/28981">Go 日志，打印源码文件名和行号造成的性能开销 - Go语言中文网 - Golang中文社区</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org95acb3d" class="outline-2">
+<h2 id="org95acb3d"><span class="section-number-2">9</span> ioutil</h2>
+<div class="outline-text-2" id="text-9">
+<p>
+可以使用 ioutil 包中的函数完成一些简单的 io 操作，比如排序列出目录下的文件，读取文件的所有内容等。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://golang.org/pkg/io/ioutil/#example_ReadDir">ioutil - The Go Programming Language</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd8a5d5e" class="outline-2">
+<h2 id="orgd8a5d5e"><span class="section-number-2">10</span> io</h2>
+<div class="outline-text-2" id="text-10">
+<p>
+提供的 Reader 和 Writer：
+</p>
+<ul class="org-ul">
+<li><p>
+LimitReader - 读取到 n 个字节后返回 EOF
+</p>
+<pre class="example">
+func LimitReader(r Reader, n int64) Reader
+</pre></li>
+<li><p>
+MultiReader - 所有 Reader 都返回 EOF 后返回 EOF
+</p>
+<pre class="example">
+func MultiReader(readers ...Reader) Reader
+</pre></li>
+<li><p>
+TeeReader - 读取的内容同时写入 Writer
+</p>
+<pre class="example">
+func TeeReader(r Reader, w Writer) Reader
+</pre></li>
+<li><p>
+MultiWriter - 写入到多个 Writer
+</p>
+<pre class="example">
+func MultiWriter(writers ...Writer) Writer
+</pre></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org33795f7" class="outline-2">
+<h2 id="org33795f7"><span class="section-number-2">11</span> time</h2>
+<div class="outline-text-2" id="text-11">
+<ul class="org-ul">
+<li><p>
+What is “m=+” in GO time string?
+The m=±&lt;value&gt; is monotonic clock reading in second.
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/52809661/what-is-m-in-go-time-string">What is "m=+" in GO time string? - Stack Overflow</a></li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

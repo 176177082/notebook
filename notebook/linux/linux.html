@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:45 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Linux 基础笔记</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">Linux 基础笔记</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgc379d84">1. 通过 man 获取帮助信息</a></li>
+<li><a href="#orga6072d7">2. 关闭系统</a></li>
+<li><a href="#org3488707">3. 用户群组</a></li>
+<li><a href="#org5340242">4. 文件权限</a></li>
+<li><a href="#orgf9817d0">5. 工作管理</a></li>
+<li><a href="#orga172806">6. 目录结构</a>
+<ul>
+<li><a href="#orgde93f58">6.1. dev</a></li>
+</ul>
+</li>
+<li><a href="#orgf3d2be0">7. 进程相关</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc379d84" class="outline-2">
+<h2 id="orgc379d84"><span class="section-number-2">1</span> 通过 man 获取帮助信息</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+<code>Date(1)</code> 括号中的代号的含义：
+</p>
+<table>
+
+
+<colgroup>
+<col  class="org-right">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">代号</th>
+<th scope="col" class="org-left">代表内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">使用者在shell环境中可以操作的命令或可运行文件</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-left">系统核心可呼叫的函数与工具等</td>
+</tr>
+
+<tr>
+<td class="org-right">3</td>
+<td class="org-left">一些常用的函数(function)与函式库(library)，大部分为C的函式库(libc)</td>
+</tr>
+
+<tr>
+<td class="org-right">4</td>
+<td class="org-left">装置文件的说明，通常在/dev下的文件</td>
+</tr>
+
+<tr>
+<td class="org-right">5</td>
+<td class="org-left">配置文件或者是某些文件的格式</td>
+</tr>
+
+<tr>
+<td class="org-right">6</td>
+<td class="org-left">游戏(games)</td>
+</tr>
+
+<tr>
+<td class="org-right">7</td>
+<td class="org-left">惯例与协议等，例如Linux文件系统、网络协议、ASCII code等等的说明</td>
+</tr>
+
+<tr>
+<td class="org-right">8</td>
+<td class="org-left">系统管理员可用的管理命令</td>
+</tr>
+
+<tr>
+<td class="org-right">9</td>
+<td class="org-left">跟kernel有关的文件</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+指定代号： <code>man 1 date.</code>
+</p>
+
+<p>
+<code>map page</code> 的快捷键：
+</p>
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">按键</th>
+<th scope="col" class="org-left">进行工作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">空格键</td>
+<td class="org-left">向下翻一页</td>
+</tr>
+
+<tr>
+<td class="org-left">[Page Down]</td>
+<td class="org-left">向下翻一页</td>
+</tr>
+
+<tr>
+<td class="org-left">[Page Up]</td>
+<td class="org-left">向上翻一页</td>
+</tr>
+
+<tr>
+<td class="org-left">[Home]</td>
+<td class="org-left">去到第一页</td>
+</tr>
+
+<tr>
+<td class="org-left">[End]</td>
+<td class="org-left">去到最后一页</td>
+</tr>
+
+<tr>
+<td class="org-left">/string</td>
+<td class="org-left">向『下』搜寻 string 这个字符串，如果要搜寻 vbird 的话，就输入 /vbird</td>
+</tr>
+
+<tr>
+<td class="org-left">?string</td>
+<td class="org-left">向『上』搜寻 string 这个字符串</td>
+</tr>
+
+<tr>
+<td class="org-left">n, N</td>
+<td class="org-left">下一个/上一个 匹配结果</td>
+</tr>
+
+<tr>
+<td class="org-left">q</td>
+<td class="org-left">退出</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+<code>man -f &lt;name&gt;</code> 获取命令 <code>name</code> 拥有的代号：
+</p>
+<pre class="example">
+$ main -f main
+man (1)              - an interface to the on-line reference manuals
+man (7)              - macros to format man pages
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orga6072d7" class="outline-2">
+<h2 id="orga6072d7"><span class="section-number-2">2</span> 关闭系统</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+命令 <code>sync</code> 将缓存在内存中的数据写入磁盘，命令 <code>shutdown/reboot/halt</code> 等会自动执行 <code>sync</code> 命令。
+</p>
+
+<p>
+<b>shutdown</b> 的指令格式为：
+</p>
+<pre class="example">
+shutdown [-t 秒] [-arkhncfF] 时间 [警告信息] 
+</pre>
+
+<p>
+常用选项：
+</p>
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">选项</th>
+<th scope="col" class="org-left">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>-h</code></td>
+<td class="org-left">将系统的服务停掉后，立即关机</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>-r</code></td>
+<td class="org-left">在将系统的服务停掉之后就重新启动</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>-c</code></td>
+<td class="org-left">取消已经在进行的 shutdown 命令内容</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+例子：
+</p>
+<pre class="example">
+[root@www ~]# shutdown -h now 
+立刻关机，其中 now 相当于时间为 0 的状态 
+[root@www ~]# shutdown -h 20:25 
+系统在今天的 20:25 分会关机，若在21:25才下达此命令，则隔天才关机 
+[root@www ~]# shutdown -h +10 
+系统再过十分钟后自动关机 
+[root@www ~]# shutdown -r now 
+系统立刻重新启动 
+[root@www ~]# shutdown -r +30 'The system will reboot'  
+再过三十分钟系统会重新启动，并显示后面的信息给所有在在线的使用者 
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org3488707" class="outline-2">
+<h2 id="org3488707"><span class="section-number-2">3</span> 用户群组</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+<code>Linux</code> 中，任何一个文件都具有 [User, Group, Other] 三种身份的个别权限，代表：文件拥有者，拥有者所在群组，其他人。
+</p>
+
+<p>
+默认的情况下，所有的系统上的账号与一般身份使用者，还有 root 的相关信息，都是记录在 <code>/etc/passwd</code> 文件内。
+</p>
+
+<p>
+个人的密码则是记录在 <code>/etc/shadow</code> 这个文件下，而所有的组名都纪录在 <code>/etc/group</code> 内。
+</p>
+
+<p>
+可以通过命令 <code>chown</code> 修改文件和目录的拥有者，通过命令 <code>chgrp</code> 修改文件和目录的用户组。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5340242" class="outline-2">
+<h2 id="org5340242"><span class="section-number-2">4</span> 文件权限</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+使用 <code>ls -l</code> 得到的输出：
+</p>
+<pre class="example">
+-rw-r--r-- 1 root root  728 Sep  3 12:25 .vimrc
+</pre>
+
+<p>
+结果分为七个字段，分别的含义为：
+</p>
+<ul class="org-ul">
+<li>第一个字段 <code>-rw-r--r--</code> 代表文件的类型和权限，其中：
+<ul class="org-ul">
+<li><p>
+第一个字符代表文件类型
+</p>
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字符</th>
+<th scope="col" class="org-left">对应的文件类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>d</code></td>
+<td class="org-left">目录</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>-</code></td>
+<td class="org-left">文件</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>l</code></td>
+<td class="org-left">链接文件，如：符号链接</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>b</code></td>
+<td class="org-left">接口设备</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>c</code></td>
+<td class="org-left">串行端口设备，如：键盘、鼠标</td>
+</tr>
+</tbody>
+</table></li>
+<li>剩下的字符三个一组，均为 <code>rwx</code> 的三个参数的组合。分别为：文件拥有者、同群组成员、其他人的权限。其中： <b>r - 可读</b>, <b>w - 可写</b>, <b>x - 可执行</b>.</li>
+</ul></li>
+<li>第二个字段 <code>1</code> 表示有多少档名连结到此节点</li>
+<li>第三个字段 <code>root</code> 表示这个文件的拥有者账号</li>
+<li>第四个字段 <code>root</code> 表示这个文件的所属群组</li>
+<li>第五个字段 <code>728</code> 表示文件的大小，单位默认为字节</li>
+<li>第六个字段 <code>Sep 3 12:25</code> 表示文件最后一次修改的日期</li>
+<li>第七个字段 <code>.vimrc</code> 表示文件名</li>
+</ul>
+
+<p>
+<b>改变所属群组 - chgrp</b>:
+</p>
+<pre class="example">
+$ chgrp &lt;group&gt; &lt;file&gt;
+</pre>
+
+<p>
+<b>改变文件拥有者 - chown</b>
+</p>
+<pre class="example">
+$ chown &lt;user&gt; &lt;file&gt;
+$ chown &lt;user&gt;:&lt;group&gt; &lt;file&gt;
+</pre>
+
+<p>
+<b>改变权限 - chmod</b>
+</p>
+
+<p>
+使用数字类型改变文件权限，不同的权限有一个分数：
+</p>
+<pre class="example">
+r:4
+w:2
+x:1
+</pre>
+
+<p>
+每种身份的权限分数为各自的三个权限分数相加的和，比如：
+</p>
+<pre class="example">
+owner = rwx = 4+2+1 = 7
+group = rwx = 4+2+1 = 7
+others= --- = 0+0+0 = 0
+</pre>
+
+<p>
+权限变更就可以这样：
+</p>
+<pre class="example">
+$ chmod 770 filename
+</pre>
+
+<p>
+使用符号类型改变文件权限需要遵循一定的语法：
+</p>
+<pre class="example">
+$ chmod [ugoa][+-=][rwx],... filename
+</pre>
+
+<p>
+<b>u, g, o</b> 代表文件拥有者、群组、其他人。 <b>a</b> 代表所有。
+</p>
+
+<p>
+<b>+, -, =</b> 代表添加、删除、设置。
+</p>
+
+<p>
+例如：
+</p>
+<pre class="example">
+$ chmod u=rwx,go=rx .bashrc
+</pre>
+
+<p>
+使得：
+</p>
+<ul class="org-ul">
+<li>拥有者具有可读、可写、可执行的权限</li>
+<li>群组和其他人具有可读与执行的权限</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf9817d0" class="outline-2">
+<h2 id="orgf9817d0"><span class="section-number-2">5</span> 工作管理</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+在 <code>Shell</code> 中运行的程序可以分为 <b>前景运行</b> 和 <b>背景运行</b> 两种类型，其中，在 <b>前景</b> 中运行的程序可以通过 <code>Ctrl-C</code> 停止运行。
+</p>
+
+<p>
+而 <b>背景</b> 中运行的程序可以分为『暂停 (stop)』与『运行中 (running)』两种状态。
+</p>
+
+<p>
+可以通过在命令的尾部添加 <code>&amp;</code> 字符的方式让改命令在背景中运行，这时，常常可以通过 <code>&gt; /dev/null</code> 的方式将该命令的标准输出重定向，而正在前景运行的程序也可以通过 <code>Ctrl-Z</code> 的方式将它丢到背景暂停。
+</p>
+
+<p>
+这里需要注意的是，使用 <code>Ctrl-Z</code> 只是让任务在背景中暂停，而不是继续运行，这时，可以通过 <code>bg</code> 命令让暂停的程序在背景中继续运行。
+</p>
+
+<p>
+其他命令：
+</p>
+<ul class="org-ul">
+<li>命令 <code>jobs</code> 可以查看目前背景中的任务的工作状态</li>
+<li>命令 <code>fg</code> 可以将背景中的工作拿到前景中来运行</li>
+<li>命令 <code>bg</code> 可以让在背景中暂停的工作运行</li>
+<li>命令 <code>kill</code> 可以用在终止程序的运行，信号 <code>9</code> 强制终止，信号 <code>15</code> 正常结束，它的参数可以是 <code>PID</code> 或者 <code>%jobnumber</code></li>
+</ul>
+
+<p>
+同时，也可以通过 <code>nohup</code> 命令让程序忽略 <code>SIGHUP</code> 信号运行，常常用来在终端退出后也可以继续运行某程序。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga172806" class="outline-2">
+<h2 id="orga172806"><span class="section-number-2">6</span> 目录结构</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Linux 的目录结构大致都是相同的，了解不同的目录的作用有助于 Linux 系统的使用：
+</p>
+<ul class="org-ul">
+<li><a href="https://zh.wikipedia.org/wiki/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84%E6%A0%87%E5%87%86">文件系统层次结构标准 - 维基百科，自由的百科全书</a></li>
+</ul>
+</div>
+
+<div id="outline-container-orgde93f58" class="outline-3">
+<h3 id="orgde93f58"><span class="section-number-3">6.1</span> dev</h3>
+<div class="outline-text-3" id="text-6-1">
+<ul class="org-ul">
+<li>/dev/null - 丢弃一切写入它的数据，可以通过重定向到它来丢弃不必要的数据</li>
+<li>/dev/zero - 提供无限的空字符，可以用来覆盖信息</li>
+<li>/dev/random - 可以用于生成随机数</li>
+<li>/dev/full - 写入时返回设备无剩余空间，读取时返回无限的空字符</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf3d2be0" class="outline-2">
+<h2 id="orgf3d2be0"><span class="section-number-2">7</span> 进程相关</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+和进程相关的概念还是很多的，比如父子进程、守护进程、孤儿进程和僵尸进程等，其中：
+</p>
+<ul class="org-ul">
+<li><p>
+在 Linux 中新的进程通常都是由 fork 来创建的，这时 fork 出来的新进程便是原来进程的子进程，同时，子进程会得到父进程资源的副本。
+</p>
+
+<p>
+这里需要注意的是，虽然进程之间存在父子关系，但实际上，父子进程之间的关系相对来说还是十分独立的，默认情况下父子进程的生死并不相依。
+</p></li>
+
+<li><p>
+由于在 Linux 中，每一个系统与用户进行交流的界面称为终端，每一个从此终端开始运行的进程都会依附于这个终端，这个终端就称为这些进程的控制终端，当控制终端被关闭时，相应的进程都会自动关闭。但是守护进程却能够突破这种限制，它从被执行开始运转，直到整个系统关闭时才退出。
+</p>
+
+<p>
+如果想让某个进程不因为用户或终端或其他地变化而受到影响，那么就必须把这个进程变成一个守护进程。
+</p>
+
+<p>
+这里需要注意的是，终端关闭时相应的进程自动关闭并不是因为父子进程的关系。
+</p></li>
+
+<li>如果一个子进程的父进程先于子进程结束，子进程就成为一个孤儿进程，它由 init 进程收养，成为 init 进程的子进程。</li>
+
+<li><p>
+僵尸进程是一种特殊的情况，虽然父子进程之间运行时算是独立的，但是，父子进程之间还是存在一定的依赖关系，每个进程在结束自己之前通常会调用 exit() 命令，资源即使早就全部释放了，但进程号，运行时间，退出状态却会因此命令而保留，等到 <b>父进程</b> 调用了 waitpid() 时，才会释放这些内容。
+</p>
+
+<p>
+如果父进程不调用 waitpid()，则子进程的信息永远不会释放，这就是所谓的僵尸进程。
+</p></li>
+</ul>
+
+<p>
+参考链接：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.cnblogs.com/wuchanming/p/4037495.html">Linux进程学习（孤儿进程和守护进程） - Jessica程序猿 - 博客园</a></li>
+<li><a href="https://akaedu.github.io/book/ch34s03.html">3. 守护进程</a></li>
+<li><a href="https://www.jianshu.com/p/d0a3b4f65b1a">进程关系，父子是否生死相依 - 简书</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

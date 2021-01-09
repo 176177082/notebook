@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:45 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>远程过程调用</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">远程过程调用</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgb9092a4">1. 概览</a></li>
+<li><a href="#orgcc4ce8d">2. 核心模块</a></li>
+<li><a href="#org7a6b42c">3. 实现</a>
+<ul>
+<li><a href="#orga23cdcb">3.1. Finagle</a></li>
+<li><a href="#orga76d873">3.2. Thrift</a>
+<ul>
+<li><a href="#org32e9846">3.2.1. 使用不规范导致的 BUG 记录</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org2da40b3">4. 相关问题</a>
+<ul>
+<li><a href="#org99c24e5">4.1. 既然有 http 请求，为什么还要用 rpc 调用？</a></li>
+</ul>
+</li>
+<li><a href="#org19ceca5">5. 相关链接</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb9092a4" class="outline-2">
+<h2 id="orgb9092a4"><span class="section-number-2">1</span> 概览</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+RPC 是远程过程调用（Remote Procedure Call）的缩写形式，Birrell 和 Nelson 在 1984 发表于 ACM Transactions on Computer Systems 的论文《Implementing remote procedure calls》对 RPC 做了经典的诠释。
+</p>
+
+<p>
+RPC 是指计算机 A 上的进程，调用另外一台计算机 B 上的进程，其中 A 上的调用进程被挂起，而 B 上的被调用进程开始执行，当值返回给 A 时，A 进程继续执行。调用方可以通过使用参数将信息传送给被调用方，而后可以通过传回的结果得到信息。而这一过程，对于开发人员来说是透明的。  
+</p>
+
+<p>
+远程过程调用采用客户机/服务器(C/S)模式。请求程序就是一个客户机，而服务提供程序就是一台服务器。和常规或本地过程调用一样，远程过程调用是同步操作，在远程过程结果返回之前，需要暂时中止请求程序。使用相同地址空间的低权进程或低权线程允许同时运行多个远程过程调用。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgcc4ce8d" class="outline-2">
+<h2 id="orgcc4ce8d"><span class="section-number-2">2</span> 核心模块</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+一个 RPC 的核心功能主要有 5 个部分组成，分别是：客户端、客户端 Stub、网络传输模块、服务端 Stub、服务端等：
+</p>
+<ul class="org-ul">
+<li>客户端(Client)：服务调用方</li>
+<li>客户端存根(Client Stub)：存放服务端地址信息，将客户端的请求参数数据信息打包成网络消息，再通过网络传输发送给服务端</li>
+<li>服务端存根(Server Stub)：接收客户端发送过来的请求消息并进行解包，然后再调用本地服务进行处理</li>
+<li>服务端(Server)：服务的真正提供者</li>
+<li>Network Service：底层传输，可以是 TCP 或 HTTP</li>
+</ul>
+
+<p>
+需要注意区分 RPC 协议和框架，两者常常绑定在一起，但不绝对，RPC 协议关注的应该是编解码、序列化等问题，和传输方式相对立，而框架则对调用进行包装，负责负责均衡、服务发现等。
+</p>
+
+<img src="https://pic3.zhimg.com/80/v2-0854647c8265ba5b4f79897c3504aa8f_1440w.jpg">
+</div>
+</div>
+
+<div id="outline-container-org7a6b42c" class="outline-2">
+<h2 id="org7a6b42c"><span class="section-number-2">3</span> 实现</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-orga23cdcb" class="outline-3">
+<h3 id="orga23cdcb"><span class="section-number-3">3.1</span> Finagle</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+对于 RPC 框架来说，通常需要提供 Server/Client SDK 来完成通信和调用，具体的协议可能不同。
+</p>
+
+<p>
+其中，Finagle 是协议无关的 RPC 框架，可以搭配多种协议和语言，支持编译得到多种语言的 Server/Client SDK。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="http://skaka.me/blog/2016/05/02/finagle3/">微服务框架 Finagle 介绍 Part3: 在 Finagle 中开发基于 Thrift 协议的应用 - skaka的博客</a></li>
+<li><a href="https://www.infoq.cn/article/2014/05/twitter-finagle-intro">Twitter 的 RPC 框架 Finagle 简介 - InfoQ</a></li>
+<li><a href="http://kapsterio.github.io/thrift/2016/10/20/thrift-async-server.html">thrift async server · kaspterio</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orga76d873" class="outline-3">
+<h3 id="orga76d873"><span class="section-number-3">3.2</span> Thrift</h3>
+<div class="outline-text-3" id="text-3-2">
+</div>
+<div id="outline-container-org32e9846" class="outline-4">
+<h4 id="org32e9846"><span class="section-number-4">3.2.1</span> 使用不规范导致的 BUG 记录</h4>
+<div class="outline-text-4" id="text-3-2-1">
+<ul class="org-ul">
+<li>问题现象：客户端和服务端 IDL 文件版本不一致，客户端给一个字段传值了，但是服务端接收处理后得到的结果为 nil</li>
+<li>问题原因：修改 IDL 文件的过程中，对旧字段的 index 进行了修改，导致客户端和服务端 IDL 字段 index 的不兼容</li>
+</ul>
+
+<p>
+thrift 生成的代码：
+</p>
+<div class="org-src-container">
+<pre class="src src-go">case 3:
+if fieldTypeId == thrift.LIST {
+  if err := p.ReadField3(iprot); err != nil {
+    return err
+  }
+} else {
+  if err := iprot.Skip(fieldTypeId); err != nil {
+    return err
+  }
+}
+</pre>
+</div>
+
+<p>
+当修改了字段 index 导致字段类型不一样时，服务端读取到客户端的传参，发现类型不一样会 SKIP 掉，得到 nil。
+</p>
+
+<p>
+PS：所以为啥不是返回一个 err 而是直接 skip 呢……
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2da40b3" class="outline-2">
+<h2 id="org2da40b3"><span class="section-number-2">4</span> 相关问题</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org99c24e5" class="outline-3">
+<h3 id="org99c24e5"><span class="section-number-3">4.1</span> 既然有 http 请求，为什么还要用 rpc 调用？</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+REST 是一种设计风格，它的很多思维方式与 RPC 是完全冲突的。 RPC 的思想是把本地函数映射到 API，也就是说一个 API 对应的是一个 function，我本地有一个 getAllUsers，远程也能通过某种约定的协议来调用这个 getAllUsers。至于这个协议是 Socket、是 HTTP 还是别的什么并不重要； RPC 中的主体都是动作，是个动词，表示我要做什么。而REST则不然，它的 URL 主体是资源，是个名词。而且也仅支持 HTTP 协议，规定了使用 HTTP Method 表达本次要做的动作，类型一般也不超过那四五种。这些动作表达了对资源仅有的几种转化方式。
+</p>
+
+<p>
+RPC 的根本问题是耦合。RPC 客户端以多种方式与服务实现紧密耦合，并且很难在不中断客户端的情况下更改服务实现。RPC 更偏向内部调用，REST 更偏向外部调用。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.jianshu.com/p/b0343bfd216e">RPC 简介及框架选择 - 简书</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org19ceca5" class="outline-2">
+<h2 id="org19ceca5"><span class="section-number-2">5</span> 相关链接</h2>
+<div class="outline-text-2" id="text-5">
+<ul class="org-ul">
+<li><a href="https://www.cnkirito.moe/rpc-registry/">深入理解 RPC 之服务注册与发现篇 | 徐靖峰|个人博客</a></li>
+<li><a href="https://waylau.com/remote-procedure-calls/">远程过程调用(RPC)详解 | waylau.com</a></li>
+<li><a href="https://www.infoq.cn/article/ujea*5ch0HjW2racClC9">RPC 协议之争和选型要点-InfoQ</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

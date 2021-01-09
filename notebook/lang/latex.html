@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:45 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Latex</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">Latex</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org81a87d3">1. 简单使用</a>
+<ul>
+<li><a href="#orgc172955">1.1. Tex Live 安装</a></li>
+<li><a href="#org1692c7d">1.2. 文本模式</a></li>
+</ul>
+</li>
+<li><a href="#org9286768">2. 包管理器</a></li>
+<li><a href="#orgeb46c59">3. Tex 理解</a></li>
+<li><a href="#org94b0cd4">4. 相关问题</a>
+<ul>
+<li><a href="#orgb5137dc">4.1. 怎样编译 Tex 文件</a></li>
+<li><a href="#org27ce530">4.2. Tex 引擎、格式、发行版之间的关系</a></li>
+<li><a href="#orgcd4ce6a">4.3. cls 和 sty 文件的区别</a></li>
+<li><a href="#org067fb99">4.4. 如何在 Latex 中使用中文</a></li>
+<li><a href="#org9544bcb">4.5. Latex2e 和 Latex 之间的区别</a></li>
+<li><a href="#org4c25b10">4.6. LaTeX 与 TeX 的区别</a></li>
+<li><a href="#org50a92a2">4.7. 命令和环境的区别</a></li>
+</ul>
+</li>
+<li><a href="#orgf7cc958">5. 相关链接</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org81a87d3" class="outline-2">
+<h2 id="org81a87d3"><span class="section-number-2">1</span> 简单使用</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-orgc172955" class="outline-3">
+<h3 id="orgc172955"><span class="section-number-3">1.1</span> Tex Live 安装</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+在清华镜像站下载压缩包 <code>install-tl.zip</code> 并解压，地址：
+</p>
+<pre class="example">
+https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/tlnet/
+</pre>
+
+<p>
+执行脚本 <code>install-tl-advanced.bat</code> 即可。
+</p>
+
+<p>
+MacOS 上的 Tex Live 叫做 MacTeX，安装方式：
+</p>
+<pre class="example">
+If you meant "texlive" specifically:
+There are three versions of MacTeX.
+
+Full installation:
+  brew cask install mactex
+
+Full installation without bundled applications:
+  brew cask install mactex-no-gui
+
+Minimal installation:
+  brew cask install basictex
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org1692c7d" class="outline-3">
+<h3 id="org1692c7d"><span class="section-number-3">1.2</span> 文本模式</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+Tex 中的一些字符是特殊字符，需要输入这些字符时需要通过 <code>\</code> 进行转义，同时，由于 <code>\\</code> 表示为换行，因此，如果要输入 <code>\</code> 需要使用 <code>\textbackslash</code>.
+</p>
+
+<p>
+一些特殊字符：
+</p>
+<pre class="example">
+\# \$ \^ \&amp; \_ \{ \} \~ \textbackslash \%
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org9286768" class="outline-2">
+<h2 id="org9286768"><span class="section-number-2">2</span> 包管理器</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+通过命令行工具 <code>tlmgr</code> 可以快捷的更新下载宏包：
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">$ tlmgr intsall package
+</pre>
+</div>
+
+<p>
+可以通过如下指令设置 tlmgr 的镜像加速器：
+</p>
+<pre class="example">
+$ tlmgr option repository https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/tlnet
+</pre>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://mirror.tuna.tsinghua.edu.cn/help/CTAN/">Ctan | 镜像站使用帮助 | 清华大学开源软件镜像站 | Tsinghua Open Source Mirror</a></li>
+</ul>
+
+<p>
+列出已经下载的宏包：
+</p>
+<pre class="example">
+$ tlmgr list --only-installed
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgeb46c59" class="outline-2">
+<h2 id="orgeb46c59"><span class="section-number-2">3</span> Tex 理解</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Tex 本质上是一种页面排版系统，其工作流程大概为：
+</p>
+<ol class="org-ol">
+<li>通过 Tex 标记语言来编写需要输出排版的内容</li>
+<li>通过 Tex 引擎将 Tex 编译为页面描述语言 DVI 格式的文件</li>
+<li>通过驱动将 DVI 格式的文件转译为其他格式的页面描述语言，如 PDF</li>
+<li>将转译后的页面描述语言输入到 RIP 设备</li>
+<li>RIP 设备根据输入生成点阵图像可以输出到激光照排机或直接制版机等制版设备，也可以选择输出到打印机</li>
+</ol>
+
+<p>
+整个过程设计到了页面排版系统中的很多东西，关键是需要明白：
+</p>
+<ul class="org-ul">
+<li>Tex 本身只是一种标记语言，和 XML 这类语言没有本质区别，关键是在于可以通过 Tex 引擎将 Tex 编译为页面描述语言，如 DVI</li>
+</ul>
+
+<p>
+其中，DVI 是一种设备无关的格式，它不能嵌入字体和图形，所有不能算是完整的页面描述语言，只能算作准页面描述语言，而页面描述语言，则是作为 RIP 设备的输入来生成点阵图像打印显示。
+</p>
+
+<p>
+字体则是一种与页面排版系统密切相关的一种文件，需要理解字体包含：
+</p>
+<ul class="org-ul">
+<li>编码层 - 通过索引定义了字符集，通过二进制编码定义了字符编码格式</li>
+<li>格式层 - 定义了字形的描述方法和字体文件的存储格式</li>
+<li>显示层 - 字体的外在表现形式</li>
+</ul>
+
+<p>
+和 Tex 对应的话，大概就是：
+</p>
+<ul class="org-ul">
+<li>字体编码层对应 Tex 标记语言本身</li>
+<li>字体格式层对应 Tex 编译后的页面描述语言</li>
+<li>字体显示层对应 Tex 最后的输出</li>
+</ul>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li>Latex Notes 的第一章和第三章</li>
+<li><a href="https://en.wikipedia.org/wiki/TeX_font_metric">TeX font metric - Wikipedia</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/OpenType">OpenType - 维基百科，自由的百科全书</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/TrueType">TrueType - 维基百科，自由的百科全书</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org94b0cd4" class="outline-2">
+<h2 id="org94b0cd4"><span class="section-number-2">4</span> 相关问题</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-orgb5137dc" class="outline-3">
+<h3 id="orgb5137dc"><span class="section-number-3">4.1</span> 怎样编译 Tex 文件</h3>
+<div class="outline-text-3" id="text-4-1">
+<div class="org-src-container">
+<pre class="src src-bash">$ pdflatex filename  <span class="org-comment-delimiter"># </span><span class="org-comment">output latex</span>
+$ latex    filename  <span class="org-comment-delimiter"># </span><span class="org-comment">all</span>
+$ bibtex   filename  <span class="org-comment-delimiter"># </span><span class="org-comment">refrence document</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org27ce530" class="outline-3">
+<h3 id="org27ce530"><span class="section-number-3">4.2</span> Tex 引擎、格式、发行版之间的关系</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+Tex 引擎用于将 Tex 编译为页面描述语言，不同的 Tex 引擎对 Tex 进行了不同的扩展，就像 GCC 对 C 语言的扩展一样，而格式是相对来说较为基础的 Tex 宏包，比如 Latex。
+</p>
+
+<p>
+而发行版，就是集成了 Tex 引擎和很多宏包和其他一些工具的工具集，参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://tex.stackexchange.com/questions/296616/questions-regarding-the-distinction-between-xetex-and-xelatex-and-how-they-relat">Questions regarding the distinction between XeTeX and XeLaTeX and how they relate to TeX and LaTeX? - TeX - LaTeX Stack Exchange</a></li>
+<li><a href="https://liam.page/2018/11/26/introduction-to-TeX-engine-format-and-distribution/">TeX 引擎、格式、发行版之介绍 | 始终</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgcd4ce6a" class="outline-3">
+<h3 id="orgcd4ce6a"><span class="section-number-3">4.3</span> cls 和 sty 文件的区别</h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+.cls 和 .sty 文件都是增加 LaTeX 功能的补足文件。在排版文章时使用 \documentclass{} 和 \usepackage{} 进行加载。
+</p>
+
+<p>
+通常将 .cls 文件称之为类文件，将 .sty 文件称之为风格文件或者包。
+</p>
+
+<p>
+虽然它们都可以包含任意的 TeX 和 LaTeX 代码，但是它们的使用方式不同。必须通过 \documentclass 加载一个类文件，并且在一个 LaTeX 文件中只能出现一次，通常也是第一个出现的命令。而另一方面，包是一个可选项，它可以根据需求加载任意多个（在开始文档之前）。
+</p>
+
+<p>
+编写原则：
+</p>
+<ul class="org-ul">
+<li>如果一个命令是用来控制文档结构的，则应该放到类文件中；否则应该放到包文件中</li>
+<li>如果一个命令可以被其他所有的文档使用，那么将这个命令放置到一个包中；如果不是，则将它放到一个类文件中</li>
+<li>当一个命令使上述两条规则冲突的时候，优先考虑第一条规则。如 \section 命令几乎在所有的文档中都使用，但因为其是用来控制文档结构的，我们将其放置到类文件中</li>
+</ul>
+
+<p>
+参考：<a href="https://www.jianshu.com/p/12b4a4b3afce">latex 中 cls 和 sty 文件 - 简书</a>
+</p>
+
+<p>
+这也引出来了其他一些问题，比如说为什么 package 的后缀名为 sty 而不是 pkg，这是因为本质上所有的 tex 宏包都可以看做是样式文件，以前也没有 cls 这个后缀名：
+</p>
+<ul class="org-ul">
+<li><a href="https://tex.stackexchange.com/questions/97418/sty-suffix-extension-for-latex-packages/97420">texmf - .sty suffix (extension) for LaTeX packages - TeX - LaTeX Stack Exchange</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org067fb99" class="outline-3">
+<h3 id="org067fb99"><span class="section-number-3">4.4</span> 如何在 Latex 中使用中文</h3>
+<div class="outline-text-3" id="text-4-4">
+<p>
+在 Latex 中使用中文的简单方案是使用 CTEX 宏包和 xelatex 引擎，其中，CTEX 宏包提供了简便的 ctexart、ctexrep、ctexbook 和 ctexbemer 文档类，但是如果想使用其他的文档类的话，也可以单独使用 ctex 宏包。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-latex"><span class="org-keyword">\usepackage</span>[UTF8]{<span class="org-builtin">ctex</span>}
+</pre>
+</div>
+
+<p>
+还可以通过 <code>heading</code> 选项开启中文风格的标题：
+</p>
+<div class="org-src-container">
+<pre class="src src-latex"><span class="org-keyword">\usepackage</span>[UTF8, heading = true]{<span class="org-builtin">ctex</span>}
+</pre>
+</div>
+
+<p>
+其中，CTEX 宏包会使用 CJK 字体集，CJK 的含义是中日韩统一表意文字在电脑的所有字体列表，参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://zh.wikipedia.org/wiki/CJK%E5%AD%97%E4%BD%93%E5%88%97%E8%A1%A8">CJK 字体列表 - 维基百科，自由的百科全书</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org9544bcb" class="outline-3">
+<h3 id="org9544bcb"><span class="section-number-3">4.5</span> Latex2e 和 Latex 之间的区别</h3>
+<div class="outline-text-3" id="text-4-5">
+<blockquote>
+<p>
+LaTeX2e is the latest stable release of LaTeX.
+</p>
+</blockquote>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://tex.stackexchange.com/questions/13541/difference-between-latex-latex2e-latex3">Difference between LaTeX, LaTeX2e, LaTeX3 ? - TeX - LaTeX Stack Exchange</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4c25b10" class="outline-3">
+<h3 id="org4c25b10"><span class="section-number-3">4.6</span> LaTeX 与 TeX 的区别</h3>
+<div class="outline-text-3" id="text-4-6">
+<p>
+LaTeX 是用 TeX 编写的宏集，只不过现在有些命令比如 <code>pdflatex</code> 会默认加载这种宏集，这使得 <code>TeX</code> 和 <code>LaTeX</code> 的边界变得有点模糊不清。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.zhihu.com/question/49681542">LaTeX 与 TeX 有什么本质区别？ - 知乎</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/TeX">TeX - 维基百科，自由的百科全书</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org50a92a2" class="outline-3">
+<h3 id="org50a92a2"><span class="section-number-3">4.7</span> 命令和环境的区别</h3>
+<div class="outline-text-3" id="text-4-7">
+<p>
+命令通常用来来控制 LaTeX 文档的行为，常见的格式为：
+</p>
+<div class="org-src-container">
+<pre class="src src-tex"><span class="org-keyword">\commandname</span>[optional argument]{main argument}
+
+<span class="org-comment-delimiter">% </span><span class="org-comment">&#22810;&#20010;&#21442;&#25968;</span>
+<span class="org-keyword">\multicolumn</span>{number of columns joined}{alignment}{content} 
+</pre>
+</div>
+
+<p>
+还有一些命令可以不要参数：
+</p>
+<div class="org-src-container">
+<pre class="src src-tex"><span class="org-keyword">\item</span> Text being item content
+</pre>
+</div>
+
+<p>
+环境是一种特殊的命令，常见格式为：
+</p>
+<div class="org-src-container">
+<pre class="src src-tex"><span class="org-keyword">\begin</span>{<span class="org-function-name">environmentname</span>}
+  content
+<span class="org-keyword">\end</span>{<span class="org-function-name">environmentname</span>}
+</pre>
+</div>
+
+<p>
+注：环境也是命令，因此也可以有参数和选项
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.overleaf.com/learn/latex/Commands_and_environments">Commands and environments - Overleaf, Online LaTeX Editor</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf7cc958" class="outline-2">
+<h2 id="orgf7cc958"><span class="section-number-2">5</span> 相关链接</h2>
+<div class="outline-text-2" id="text-5">
+<ul class="org-ul">
+<li><a href="https://texfaq.org/">The TeX Frequently Asked Question List | The TeX FAQ</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

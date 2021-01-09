@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:43 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SSH</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">SSH</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgd7673cb">1. 简单使用</a></li>
+<li><a href="#orgbdfab43">2. 文件传输</a></li>
+<li><a href="#org92f0d85">3. git ssh 私钥</a></li>
+<li><a href="#orgfe489b2">4. GSSAPI</a></li>
+<li><a href="#org8bb71b4">5. 相关问题</a>
+<ul>
+<li><a href="#orgfc2aff0">5.1. 连接后长时间未使用终端 hang 住怎么办？</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgd7673cb" class="outline-2">
+<h2 id="orgd7673cb"><span class="section-number-2">1</span> 简单使用</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+使用用户名和密码登录：
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">$ ssh user@host
+</pre>
+</div>
+
+<p>
+指定端口号，默认为 22:
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">$ ssh -p 2222 user@host
+</pre>
+</div>
+
+<p>
+第一次登录时会出现如下提示：
+</p>
+<pre class="example">
+The authenticity of host 'host (12.18.429.21)' can't be established.
+
+RSA key fingerprint is 98:2e:d7:e0:de:9f:ac:67:28:c2:42:2d:37:16:58:4d.
+
+Are you sure you want to continue connecting (yes/no)?
+</pre>
+
+<p>
+使用公钥登录，其中公钥放在服务器，自己用私钥文件：
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">$ ssh -i file user@host
+</pre>
+</div>
+
+<p>
+教程：
+</p>
+<ul class="org-ul">
+<li><a href="https://wangdoc.com/ssh/index.html">SSH 教程 - 网道</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgbdfab43" class="outline-2">
+<h2 id="orgbdfab43"><span class="section-number-2">2</span> 文件传输</h2>
+<div class="outline-text-2" id="text-2">
+<ol class="org-ol">
+<li><p>
+从服务器上下载文件
+</p>
+<pre class="example">
+scp user@host:/path/filename /path/local
+</pre></li>
+
+<li><p>
+上传本地文件到服务器
+</p>
+<pre class="example">
+scp /path/filename user@host:/path/remote
+</pre></li>
+
+<li><p>
+从服务器下载整个目录
+</p>
+<pre class="example">
+scp -r user@host:/path/remote_dir/ /path/local_dir
+</pre></li>
+
+<li><p>
+上传目录到服务器
+</p>
+<pre class="example">
+scp -r local_dir user@host:/path/remote_dir
+</pre></li>
+</ol>
+
+<p>
+可以使用 <code>-i</code> 参数指定 <b>私钥文件</b>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org92f0d85" class="outline-2">
+<h2 id="org92f0d85"><span class="section-number-2">3</span> git ssh 私钥</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+git ssh 私钥不能像除自己以外的用户共享，因此需要执行：
+</p>
+<pre class="example">
+$ chome go=---
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgfe489b2" class="outline-2">
+<h2 id="orgfe489b2"><span class="section-number-2">4</span> GSSAPI</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+建立 SSH 连接时如果开启了 GSSAPI 认证会消耗较多的时间，因此，如果不需要使用 GSSAPI 的话可以关掉该配置：
+</p>
+<div class="org-src-container">
+<pre class="src src-conf">Host *
+  GSSAPIAuthentication no
+</pre>
+</div>
+
+<p>
+配置文件路径为：
+</p>
+<ul class="org-ul">
+<li>服务端 - <code>/etc/ssh/sshd_config</code></li>
+<li>客户端 - <code>/etc/ssh/ssh_config</code></li>
+</ul>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://jaminzhang.github.io/linux/GSSAPI-related-options-in-ssh-configuration/">SSH 中的 GSSAPI 相关选项 - Jamin Zhang</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org8bb71b4" class="outline-2">
+<h2 id="org8bb71b4"><span class="section-number-2">5</span> 相关问题</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<div id="outline-container-orgfc2aff0" class="outline-3">
+<h3 id="orgfc2aff0"><span class="section-number-3">5.1</span> 连接后长时间未使用终端 hang 住怎么办？</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+通过 ssh 连接后所在环境是 ssh，而非 bash，需要通过 ssh 指令来断开连接：
+</p>
+<blockquote>
+<p>
+ESCAPE CHARACTERS
+     When a pseudo-terminal has been requested, ssh supports a number of func-
+     tions through the use of an escape character.
+</p>
+
+<p>
+A single tilde character can be sent as ~~ or by following the tilde by a
+character other than those described below.  The escape character must
+always follow a newline to be interpreted as special.  The escape charac-
+ter can be changed in configuration files using the EscapeChar configura-
+tion directive or on the command line by the -e option.
+</p>
+
+<p>
+The supported escapes (assuming the default `~') are:
+</p>
+
+<p>
+~.      Disconnect.
+</p>
+
+<p>
+~^Z     Background ssh.
+</p>
+
+<p>
+~#      List forwarded connections.
+</p>
+
+<p>
+~&amp;      Background ssh at logout when waiting for forwarded connection /
+	X11 sessions to terminate.
+</p>
+
+<p>
+~?      Display a list of escape characters.
+</p>
+
+<p>
+~B      Send a BREAK to the remote system (only useful if the peer sup-
+	ports it).
+</p>
+
+<p>
+~C      Open command line.  Currently this allows the addition of port
+	forwardings using the -L, -R and -D options (see above).  It also
+	allows the cancellation of existing port-forwardings with
+	-KL[bind_address:]port for local, -KR[bind_address:]port for
+	remote and -KD[bind_address:]port for dynamic port-forwardings.
+	!command allows the user to execute a local command if the
+	PermitLocalCommand option is enabled in ssh_config(5).  Basic
+	help is available, using the -h option.
+</p>
+
+<p>
+~R      Request rekeying of the connection (only useful if the peer sup-
+	ports it).
+</p>
+
+<p>
+~V      Decrease the verbosity (LogLevel) when errors are being written
+	to stderr.
+</p>
+
+<p>
+~v      Increase the verbosity (LogLevel) when errors are being written
+	to stderr.t    
+</p>
+</blockquote>
+
+<p>
+但是感觉没有生效……不知道是不是姿势不对 QAQ
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>

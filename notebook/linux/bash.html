@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- 2021-01-09 周六 19:45 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bash</title>
+<meta name="generator" content="Org mode">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://rgb-24bit.github.io/blog/misc/style.css">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125860001-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125860001-1');
+</script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://rgb-24bit.github.io/notebook/"> UP </a>
+ |
+ <a accesskey="H" href="https://rgb-24bit.github.io"> HOME </a>
+</div><div id="content">
+<h1 class="title">Bash</h1>
+<div id="table-of-contents">
+<h2>&#30446;&#24405;</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgf30f34f">1. shebang</a></li>
+<li><a href="#org4c6171f">2. 内置命令</a></li>
+<li><a href="#orgc8b3d94">3. 语法</a></li>
+<li><a href="#org98d7648">4. 子 shell</a></li>
+<li><a href="#org7cb7785">5. 命令行参数</a></li>
+<li><a href="#org1eb2ab8">6. 代理配置</a></li>
+<li><a href="#orgdd37341">7. 配置文件</a></li>
+<li><a href="#orgbd9c4ab">8. PROMPT_COMMAND</a></li>
+<li><a href="#org6fe3f9b">9. 相关技巧</a>
+<ul>
+<li><a href="#orga068348">9.1. 获取当前目录</a></li>
+</ul>
+</li>
+<li><a href="#orgc8e60c2">10. 相关问题</a>
+<ul>
+<li><a href="#org8f0e69c">10.1. 怎样将字符串转换为小写</a></li>
+<li><a href="#org4002384">10.2. 怎样在命令行格式化 json 字符串</a></li>
+<li><a href="#org7c13349">10.3. 如何在脚本里面调用另一个脚本</a></li>
+<li><a href="#org22cd275">10.4. 遍历命令行参数</a></li>
+<li><a href="#org9a8ec55">10.5. 在函数内部使用 getopts</a></li>
+<li><a href="#org5e7e13c">10.6. 执行传入的命令</a></li>
+<li><a href="#org3276fa5">10.7. ${var}, "\(var" 和 "\){var}" 的区别</a></li>
+<li><a href="#orgf8469b4">10.8. 单引号和双引号的区别</a></li>
+<li><a href="#org272b340">10.9. [ 和 [[ 的区别</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf30f34f" class="outline-2">
+<h2 id="orgf30f34f"><span class="section-number-2">1</span> shebang</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+脚本第一行叫做 <code>shebang</code>, 用于告诉 <code>shell</code> 使用什么程序执行这个脚本。
+</p>
+<div class="org-src-container">
+<pre class="src src-bash"><span class="org-comment-delimiter">#</span><span class="org-comment">!/usr/bin/</span><span class="org-keyword">env</span><span class="org-comment"> bash</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4c6171f" class="outline-2">
+<h2 id="org4c6171f"><span class="section-number-2">2</span> 内置命令</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+set 命令可以用来修改 Shell 环境的运行参数，如果命令行下不带任何参数，直接运行 set，还会显示所有的环境变量和 Shell 函数。
+</p>
+
+<p>
+常用的选项：
+</p>
+<ul class="org-ul">
+<li>-u，-o nounset，遇到不存在的变量时报错，并停止执行</li>
+<li>-x，-o xtrace，在运行结果之前，先输出执行的那一行命令</li>
+<li>-e，-o errexit，脚本只要发生错误，就终止执行</li>
+<li>-o pipefail，只要一个子命令失败，整个管道命令就失败，脚本终止执行</li>
+</ul>
+
+<p>
+合并写法：
+</p>
+<pre class="example">
+# 写法一
+set -euxo pipefail
+
+# 写法二
+set -eux
+set -o pipefail
+</pre>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="http://www.ruanyifeng.com/blog/2017/11/bash-set.html">Bash 脚本 set 命令教程 - 阮一峰的网络日志</a></li>
+</ul>
+
+<hr>
+
+<p>
+shopt 命令也可以用来设置选项，-s 打开，-u 关闭，参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.gnu.org/software/bash/manual/html_node/The-Shopt-Builtin.html">The Shopt Builtin (Bash Reference Manual)</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc8b3d94" class="outline-2">
+<h2 id="orgc8b3d94"><span class="section-number-2">3</span> 语法</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+变量操作：
+</p>
+<div class="org-src-container">
+<pre class="src src-bash"><span class="org-variable-name">varname</span>=value                       <span class="org-comment-delimiter"># </span><span class="org-comment">&#23450;&#20041;&#21464;&#37327;</span>
+<span class="org-variable-name">varname</span>=value command               <span class="org-comment-delimiter"># </span><span class="org-comment">&#23450;&#20041;&#23376;&#36827;&#31243;&#21464;&#37327;&#24182;&#25191;&#34892;&#23376;&#36827;&#31243;</span>
+<span class="org-builtin">echo</span> $<span class="org-variable-name">varname</span>                       <span class="org-comment-delimiter"># </span><span class="org-comment">&#26597;&#30475;&#21464;&#37327;&#20869;&#23481;</span>
+<span class="org-builtin">echo</span> $<span class="org-variable-name">$</span>                             <span class="org-comment-delimiter"># </span><span class="org-comment">&#26597;&#30475;&#24403;&#21069; shell &#30340;&#36827;&#31243;&#21495;</span>
+<span class="org-builtin">echo</span> $<span class="org-variable-name">!</span>                             <span class="org-comment-delimiter"># </span><span class="org-comment">&#26597;&#30475;&#26368;&#36817;&#35843;&#29992;&#30340;&#21518;&#21488;&#20219;&#21153;&#36827;&#31243;&#21495;</span>
+<span class="org-builtin">echo</span> $<span class="org-variable-name">?</span>                             <span class="org-comment-delimiter"># </span><span class="org-comment">&#26597;&#30475;&#26368;&#36817;&#19968;&#26465;&#21629;&#20196;&#30340;&#36820;&#22238;&#30721;</span>
+<span class="org-builtin">export</span> <span class="org-variable-name">VARNAME</span>=value                <span class="org-comment-delimiter"># </span><span class="org-comment">&#35774;&#32622;&#29615;&#22659;&#21464;&#37327;&#65288;&#23558;&#20250;&#24433;&#21709;&#21040;&#23376;&#36827;&#31243;&#65289;</span>
+
+array[0]=valA                       <span class="org-comment-delimiter"># </span><span class="org-comment">&#23450;&#20041;&#25968;&#32452;</span>
+array[1]=valB
+array[2]=valC
+<span class="org-variable-name">array</span>=([0]=valA [1]=valB [2]=valC)  <span class="org-comment-delimiter"># </span><span class="org-comment">&#21478;&#19968;&#31181;&#26041;&#24335;</span>
+<span class="org-variable-name">array</span>=(valA valB valC)              <span class="org-comment-delimiter"># </span><span class="org-comment">&#21478;&#19968;&#31181;&#26041;&#24335;</span>
+
+${<span class="org-variable-name">array</span>[i]}                         <span class="org-comment-delimiter"># </span><span class="org-comment">&#21462;&#24471;&#25968;&#32452;&#20013;&#30340;&#20803;&#32032;</span>
+${#<span class="org-variable-name">array</span>[@]}                        <span class="org-comment-delimiter"># </span><span class="org-comment">&#21462;&#24471;&#25968;&#32452;&#30340;&#38271;&#24230;</span>
+${#<span class="org-variable-name">array</span>[i]}                        <span class="org-comment-delimiter"># </span><span class="org-comment">&#21462;&#24471;&#25968;&#32452;&#20013;&#26576;&#20010;&#21464;&#37327;&#30340;&#38271;&#24230;</span>
+
+declare -a                          <span class="org-comment-delimiter"># </span><span class="org-comment">&#26597;&#30475;&#25152;&#26377;&#25968;&#32452;</span>
+declare -f                          <span class="org-comment-delimiter"># </span><span class="org-comment">&#26597;&#30475;&#25152;&#26377;&#20989;&#25968;</span>
+declare -F                          <span class="org-comment-delimiter"># </span><span class="org-comment">&#26597;&#30475;&#25152;&#26377;&#20989;&#25968;&#65292;&#20165;&#26174;&#31034;&#20989;&#25968;&#21517;</span>
+declare -i                          <span class="org-comment-delimiter"># </span><span class="org-comment">&#26597;&#30475;&#25152;&#26377;&#25972;&#25968;</span>
+declare -r                          <span class="org-comment-delimiter"># </span><span class="org-comment">&#26597;&#30475;&#25152;&#26377;&#21482;&#35835;&#21464;&#37327;</span>
+declare -x                          <span class="org-comment-delimiter"># </span><span class="org-comment">&#26597;&#30475;&#25152;&#26377;&#34987;&#23548;&#20986;&#25104;&#29615;&#22659;&#21464;&#37327;&#30340;&#19996;&#35199;</span>
+declare -p varname                  <span class="org-comment-delimiter"># </span><span class="org-comment">&#36755;&#20986;&#21464;&#37327;&#26159;&#24590;&#20040;&#23450;&#20041;&#30340;&#65288;&#31867;&#22411;+&#20540;&#65289;</span>
+
+${<span class="org-variable-name">varname</span>:-word}                    <span class="org-comment-delimiter"># </span><span class="org-comment">&#22914;&#26524;&#21464;&#37327;&#19981;&#20026;&#31354;&#21017;&#36820;&#22238;&#21464;&#37327;&#65292;&#21542;&#21017;&#36820;&#22238; word</span>
+${<span class="org-variable-name">varname</span>:=word}                    <span class="org-comment-delimiter"># </span><span class="org-comment">&#22914;&#26524;&#21464;&#37327;&#19981;&#20026;&#31354;&#21017;&#36820;&#22238;&#21464;&#37327;&#65292;&#21542;&#21017;&#36171;&#20540;&#25104; word &#24182;&#36820;&#22238;</span>
+${<span class="org-variable-name">varname</span>:?message}                 <span class="org-comment-delimiter"># </span><span class="org-comment">&#22914;&#26524;&#21464;&#37327;&#19981;&#20026;&#31354;&#21017;&#36820;&#22238;&#21464;&#37327;&#65292;&#21542;&#21017;&#25171;&#21360;&#38169;&#35823;&#20449;&#24687;&#24182;&#36864;&#20986;</span>
+${<span class="org-variable-name">varname</span>:+word}                    <span class="org-comment-delimiter"># </span><span class="org-comment">&#22914;&#26524;&#21464;&#37327;&#19981;&#20026;&#31354;&#21017;&#36820;&#22238; word&#65292;&#21542;&#21017;&#36820;&#22238; null</span>
+${<span class="org-variable-name">varname</span>:offset:len}               <span class="org-comment-delimiter"># </span><span class="org-comment">&#21462;&#24471;&#23383;&#31526;&#20018;&#30340;&#23376;&#23383;&#31526;&#20018;</span>
+
+${<span class="org-variable-name">variable</span>#pattern}                 <span class="org-comment-delimiter"># </span><span class="org-comment">&#22914;&#26524;&#21464;&#37327;&#22836;&#37096;&#21305;&#37197; pattern&#65292;&#21017;&#21024;&#38500;&#26368;&#23567;&#21305;&#37197;&#37096;&#20998;&#36820;&#22238;&#21097;&#19979;&#30340;</span>
+${<span class="org-variable-name">variable</span>##pattern}                <span class="org-comment-delimiter"># </span><span class="org-comment">&#22914;&#26524;&#21464;&#37327;&#22836;&#37096;&#21305;&#37197; pattern&#65292;&#21017;&#21024;&#38500;&#26368;&#22823;&#21305;&#37197;&#37096;&#20998;&#36820;&#22238;&#21097;&#19979;&#30340;</span>
+${<span class="org-variable-name">variable</span>%pattern}                 <span class="org-comment-delimiter"># </span><span class="org-comment">&#22914;&#26524;&#21464;&#37327;&#23614;&#37096;&#21305;&#37197; pattern&#65292;&#21017;&#21024;&#38500;&#26368;&#23567;&#21305;&#37197;&#37096;&#20998;&#36820;&#22238;&#21097;&#19979;&#30340;</span>
+${<span class="org-variable-name">variable</span>%%pattern}                <span class="org-comment-delimiter"># </span><span class="org-comment">&#22914;&#26524;&#21464;&#37327;&#23614;&#37096;&#21305;&#37197; pattern&#65292;&#21017;&#21024;&#38500;&#26368;&#22823;&#21305;&#37197;&#37096;&#20998;&#36820;&#22238;&#21097;&#19979;&#30340;</span>
+${<span class="org-variable-name">variable</span>/pattern/str}             <span class="org-comment-delimiter"># </span><span class="org-comment">&#23558;&#21464;&#37327;&#20013;&#31532;&#19968;&#20010;&#21305;&#37197; pattern &#30340;&#26367;&#25442;&#25104; str&#65292;&#24182;&#36820;&#22238;</span>
+${<span class="org-variable-name">variable</span>//pattern/str}            <span class="org-comment-delimiter"># </span><span class="org-comment">&#23558;&#21464;&#37327;&#20013;&#25152;&#26377;&#21305;&#37197; pattern &#30340;&#22320;&#26041;&#26367;&#25442;&#25104; str &#24182;&#36820;&#22238;</span>
+
+${#<span class="org-variable-name">varname</span>}                         <span class="org-comment-delimiter"># </span><span class="org-comment">&#36820;&#22238;&#23383;&#31526;&#20018;&#38271;&#24230;</span>
+
+*(patternlist)                      <span class="org-comment-delimiter"># </span><span class="org-comment">&#38646;&#27425;&#25110;&#32773;&#22810;&#27425;&#21305;&#37197;</span>
++(patternlist)                      <span class="org-comment-delimiter"># </span><span class="org-comment">&#19968;&#27425;&#25110;&#32773;&#22810;&#27425;&#21305;&#37197;</span>
+?(patternlist)                      <span class="org-comment-delimiter"># </span><span class="org-comment">&#38646;&#27425;&#25110;&#32773;&#19968;&#27425;&#21305;&#37197;</span>
+@(patternlist)                      <span class="org-comment-delimiter"># </span><span class="org-comment">&#21333;&#35789;&#21305;&#37197;</span>
+<span class="org-negation-char">!</span>(patternlist)                      <span class="org-comment-delimiter"># </span><span class="org-comment">&#19981;&#21305;&#37197;</span>
+
+<span class="org-variable-name">array</span>=($<span class="org-variable-name">text</span>)                       <span class="org-comment-delimiter"># </span><span class="org-comment">&#25353;&#31354;&#26684;&#20998;&#38548; text &#25104;&#25968;&#32452;&#65292;&#24182;&#36171;&#20540;&#32473;&#21464;&#37327;</span>
+<span class="org-variable-name">IFS</span>=<span class="org-string">"/"</span> <span class="org-variable-name">array</span>=($<span class="org-variable-name">text</span>)               <span class="org-comment-delimiter"># </span><span class="org-comment">&#25353;&#26012;&#26438;&#20998;&#38548;&#23383;&#31526;&#20018; text &#25104;&#25968;&#32452;&#65292;&#24182;&#36171;&#20540;&#32473;&#21464;&#37327;</span>
+<span class="org-variable-name">text</span>=<span class="org-string">"${array[*]}"</span>                  <span class="org-comment-delimiter"># </span><span class="org-comment">&#29992;&#31354;&#26684;&#38142;&#25509;&#25968;&#32452;&#24182;&#36171;&#20540;&#32473;&#21464;&#37327;</span>
+<span class="org-variable-name">text</span>=$(<span class="org-variable-name">IFS</span>=/; <span class="org-builtin">echo</span> <span class="org-string">"${array[*]}"</span>)   <span class="org-comment-delimiter"># </span><span class="org-comment">&#29992;&#26012;&#26464;&#38142;&#25509;&#25968;&#32452;&#24182;&#36171;&#20540;&#32473;&#21464;&#37327;</span>
+
+<span class="org-variable-name">A</span>=( foo bar <span class="org-string">"a  b c"</span> 42 )           <span class="org-comment-delimiter"># </span><span class="org-comment">&#25968;&#32452;&#23450;&#20041;</span>
+<span class="org-variable-name">B</span>=(<span class="org-string">"${A[@]:1:2}"</span>)                   <span class="org-comment-delimiter"># </span><span class="org-comment">&#25968;&#32452;&#20999;&#29255;&#65306;B=( bar "a  b c" )</span>
+<span class="org-variable-name">C</span>=(<span class="org-string">"${A[@]:1}"</span>)                     <span class="org-comment-delimiter"># </span><span class="org-comment">&#25968;&#32452;&#20999;&#29255;&#65306;C=( bar "a  b c" 42 )</span>
+<span class="org-builtin">echo</span> <span class="org-string">"${B[@]}"</span>                      <span class="org-comment-delimiter"># </span><span class="org-comment">bar a  b c</span>
+<span class="org-builtin">echo</span> <span class="org-string">"${B[1]}"</span>                      <span class="org-comment-delimiter"># </span><span class="org-comment">a  b c</span>
+<span class="org-builtin">echo</span> <span class="org-string">"${C[@]}"</span>                      <span class="org-comment-delimiter"># </span><span class="org-comment">bar a  b c 42</span>
+<span class="org-builtin">echo</span> <span class="org-string">"${C[@]: -2:2}"</span>                <span class="org-comment-delimiter"># </span><span class="org-comment">a  b c 42  &#20943;&#21495;&#21069;&#30340;&#31354;&#26684;&#26159;&#24517;&#39035;&#30340;</span>
+
+$(UNIX command)                     <span class="org-comment-delimiter"># </span><span class="org-comment">&#36816;&#34892;&#21629;&#20196;&#65292;&#24182;&#23558;&#26631;&#20934;&#36755;&#20986;&#20869;&#23481;&#25429;&#33719;&#24182;&#36820;&#22238;</span>
+<span class="org-variable-name">varname</span>=$(id -u user)               <span class="org-comment-delimiter"># </span><span class="org-comment">&#23558;&#29992;&#25143;&#21517;&#20026; user &#30340; uid &#36171;&#20540;&#32473; varname &#21464;&#37327;</span>
+
+<span class="org-variable-name">num</span>=$(expr 1 + 2)                   <span class="org-comment-delimiter"># </span><span class="org-comment">&#20860;&#23481; posix sh &#30340;&#35745;&#31639;&#65292;&#20351;&#29992; expr &#21629;&#20196;&#35745;&#31639;&#32467;&#26524;</span>
+<span class="org-variable-name">num</span>=$(expr $<span class="org-variable-name">num</span> + 1)                <span class="org-comment-delimiter"># </span><span class="org-comment">&#25968;&#23383;&#33258;&#22686;</span>
+expr 2 <span class="org-string">\*</span> <span class="org-string">\(</span> 2 + 3 <span class="org-string">\)</span>               <span class="org-comment-delimiter"># </span><span class="org-comment">&#20860;&#23481; posix sh &#30340;&#22797;&#26434;&#35745;&#31639;&#65292;&#36755;&#20986; 10</span>
+
+<span class="org-variable-name">num</span>=$((1 + 2))                      <span class="org-comment-delimiter"># </span><span class="org-comment">&#35745;&#31639; 1+2 &#36171;&#20540;&#32473; num&#65292;&#20351;&#29992; bash &#29420;&#26377;&#30340; $((..)) &#35745;&#31639;</span>
+<span class="org-variable-name">num</span>=$(($<span class="org-variable-name">num</span> + 1))                   <span class="org-comment-delimiter"># </span><span class="org-comment">&#21464;&#37327;&#36882;&#22686;</span>
+<span class="org-variable-name">num</span>=$((num + 1))                    <span class="org-comment-delimiter"># </span><span class="org-comment">&#21464;&#37327;&#36882;&#22686;&#65292;&#21452;&#25324;&#21495;&#20869;&#30340; $ &#21487;&#20197;&#30465;&#30053;</span>
+<span class="org-variable-name">num</span>=$((1 + (2 + 3) * 2))            <span class="org-comment-delimiter"># </span><span class="org-comment">&#22797;&#26434;&#35745;&#31639;</span>
+
+</pre>
+</div>
+
+<hr>
+
+<p>
+条件判断：
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">statement1 &amp;&amp; statement2  <span class="org-comment-delimiter"># </span><span class="org-comment">and &#25805;&#20316;&#31526;</span>
+statement1 || statement2  <span class="org-comment-delimiter"># </span><span class="org-comment">or &#25805;&#20316;&#31526;</span>
+
+exp1 -a exp2              <span class="org-comment-delimiter"># </span><span class="org-comment">exp1 &#21644; exp2 &#21516;&#26102;&#20026;&#30495;&#26102;&#36820;&#22238;&#30495;&#65288;POSIX XSI&#25193;&#23637;&#65289;</span>
+exp1 -o exp2              <span class="org-comment-delimiter"># </span><span class="org-comment">exp1 &#21644; exp2 &#26377;&#19968;&#20010;&#20026;&#30495;&#23601;&#36820;&#22238;&#30495;&#65288;POSIX XSI&#25193;&#23637;&#65289;</span>
+( expression )            <span class="org-comment-delimiter"># </span><span class="org-comment">&#22914;&#26524; expression &#20026;&#30495;&#26102;&#36820;&#22238;&#30495;&#65292;&#36755;&#20837;&#27880;&#24847;&#25324;&#21495;&#21069;&#21453;&#26012;&#26438;</span>
+<span class="org-negation-char">!</span> expression              <span class="org-comment-delimiter"># </span><span class="org-comment">&#22914;&#26524; expression &#20026;&#20551;&#37027;&#36820;&#22238;&#30495;</span>
+
+str1 = str2               <span class="org-comment-delimiter"># </span><span class="org-comment">&#21028;&#26029;&#23383;&#31526;&#20018;&#30456;&#31561;&#65292;&#22914; [ "$x" = "$y" ] &amp;&amp; echo yes</span>
+str1 != str2              <span class="org-comment-delimiter"># </span><span class="org-comment">&#21028;&#26029;&#23383;&#31526;&#20018;&#19981;&#31561;&#65292;&#22914; [ "$x" != "$y" ] &amp;&amp; echo yes</span>
+str1 &lt; str2               <span class="org-comment-delimiter"># </span><span class="org-comment">&#23383;&#31526;&#20018;&#23567;&#20110;&#65292;&#22914; [ "$x" \&lt; "$y" ] &amp;&amp; echo yes</span>
+str2 &gt; str2               <span class="org-comment-delimiter"># </span><span class="org-comment">&#23383;&#31526;&#20018;&#22823;&#20110;&#65292;&#27880;&#24847; &lt; &#25110; &gt; &#26159;&#23383;&#38754;&#37327;&#65292;&#36755;&#20837;&#26102;&#35201;&#21152;&#21453;&#26012;&#26438;</span>
+-n str1                   <span class="org-comment-delimiter"># </span><span class="org-comment">&#21028;&#26029;&#23383;&#31526;&#20018;&#19981;&#20026;&#31354;&#65288;&#38271;&#24230;&#22823;&#20110;&#38646;&#65289;</span>
+-z str1                   <span class="org-comment-delimiter"># </span><span class="org-comment">&#21028;&#26029;&#23383;&#31526;&#20018;&#20026;&#31354;&#65288;&#38271;&#24230;&#31561;&#20110;&#38646;&#65289;</span>
+
+-a file                   <span class="org-comment-delimiter"># </span><span class="org-comment">&#21028;&#26029;&#25991;&#20214;&#23384;&#22312;&#65292;&#22914; [ -a /tmp/abc ] &amp;&amp; echo "exists"</span>
+-d file                   <span class="org-comment-delimiter"># </span><span class="org-comment">&#21028;&#26029;&#25991;&#20214;&#23384;&#22312;&#65292;&#19988;&#35813;&#25991;&#20214;&#26159;&#19968;&#20010;&#30446;&#24405;</span>
+-e file                   <span class="org-comment-delimiter"># </span><span class="org-comment">&#21028;&#26029;&#25991;&#20214;&#23384;&#22312;&#65292;&#21644; -a &#31561;&#20215;</span>
+-f file                   <span class="org-comment-delimiter"># </span><span class="org-comment">&#21028;&#26029;&#25991;&#20214;&#23384;&#22312;&#65292;&#19988;&#35813;&#25991;&#20214;&#26159;&#19968;&#20010;&#26222;&#36890;&#25991;&#20214;&#65288;&#38750;&#30446;&#24405;&#31561;&#65289;</span>
+-r file                   <span class="org-comment-delimiter"># </span><span class="org-comment">&#21028;&#26029;&#25991;&#20214;&#23384;&#22312;&#65292;&#19988;&#21487;&#35835;</span>
+-s file                   <span class="org-comment-delimiter"># </span><span class="org-comment">&#21028;&#26029;&#25991;&#20214;&#23384;&#22312;&#65292;&#19988;&#23610;&#23544;&#22823;&#20110;0</span>
+-w file                   <span class="org-comment-delimiter"># </span><span class="org-comment">&#21028;&#26029;&#25991;&#20214;&#23384;&#22312;&#65292;&#19988;&#21487;&#20889;</span>
+-x file                   <span class="org-comment-delimiter"># </span><span class="org-comment">&#21028;&#26029;&#25991;&#20214;&#23384;&#22312;&#65292;&#19988;&#25191;&#34892;</span>
+-N file                   <span class="org-comment-delimiter"># </span><span class="org-comment">&#25991;&#20214;&#19978;&#27425;&#20462;&#25913;&#36807;&#21518;&#36824;&#27809;&#26377;&#35835;&#21462;&#36807;</span>
+-O file                   <span class="org-comment-delimiter"># </span><span class="org-comment">&#25991;&#20214;&#23384;&#22312;&#19988;&#23646;&#20110;&#24403;&#21069;&#29992;&#25143;</span>
+-G file                   <span class="org-comment-delimiter"># </span><span class="org-comment">&#25991;&#20214;&#23384;&#22312;&#19988;&#21305;&#37197;&#20320;&#30340;&#29992;&#25143;&#32452;</span>
+file1 -nt file2           <span class="org-comment-delimiter"># </span><span class="org-comment">&#25991;&#20214;1 &#27604; &#25991;&#20214;2 &#26032;</span>
+file1 -ot file2           <span class="org-comment-delimiter"># </span><span class="org-comment">&#25991;&#20214;1 &#27604; &#25991;&#20214;2 &#26087;</span>
+
+num1 -eq num2             <span class="org-comment-delimiter"># </span><span class="org-comment">&#25968;&#23383;&#21028;&#26029;&#65306;num1 == num2</span>
+num1 -ne num2             <span class="org-comment-delimiter"># </span><span class="org-comment">&#25968;&#23383;&#21028;&#26029;&#65306;num1 != num2</span>
+num1 -lt num2             <span class="org-comment-delimiter"># </span><span class="org-comment">&#25968;&#23383;&#21028;&#26029;&#65306;num1 &lt; num2</span>
+num1 -le num2             <span class="org-comment-delimiter"># </span><span class="org-comment">&#25968;&#23383;&#21028;&#26029;&#65306;num1 &lt;= num2</span>
+num1 -gt num2             <span class="org-comment-delimiter"># </span><span class="org-comment">&#25968;&#23383;&#21028;&#26029;&#65306;num1 &gt; num2</span>
+num1 -ge num2             <span class="org-comment-delimiter"># </span><span class="org-comment">&#25968;&#23383;&#21028;&#26029;&#65306;num1 &gt;= num2</span>
+</pre>
+</div>
+
+<hr>
+
+<p>
+分支选择：
+</p>
+<div class="org-src-container">
+<pre class="src src-bash"><span class="org-builtin">test</span> {expression}         <span class="org-comment-delimiter"># </span><span class="org-comment">&#21028;&#26029;&#26465;&#20214;&#20026;&#30495;&#30340;&#35805; test &#31243;&#24207;&#36820;&#22238;0 &#21542;&#21017;&#38750;&#38646;</span>
+[ expression ]            <span class="org-comment-delimiter"># </span><span class="org-comment">&#21028;&#26029;&#26465;&#20214;&#20026;&#30495;&#30340;&#35805;&#36820;&#22238;0 &#21542;&#21017;&#38750;&#38646;</span>
+
+<span class="org-builtin">test</span> <span class="org-string">"abc"</span> = <span class="org-string">"def"</span>        <span class="org-comment-delimiter"># </span><span class="org-comment">&#26597;&#30475;&#36820;&#22238;&#20540; echo $? &#26174;&#31034; 1&#65292;&#22240;&#20026;&#26465;&#20214;&#20026;&#20551;</span>
+<span class="org-builtin">test</span> <span class="org-string">"abc"</span> != <span class="org-string">"def"</span>       <span class="org-comment-delimiter"># </span><span class="org-comment">&#26597;&#30475;&#36820;&#22238;&#20540; echo $? &#26174;&#31034; 0&#65292;&#22240;&#20026;&#26465;&#20214;&#20026;&#30495;</span>
+
+<span class="org-builtin">test</span> -a /tmp; <span class="org-builtin">echo</span> $<span class="org-variable-name">?</span>     <span class="org-comment-delimiter"># </span><span class="org-comment">&#35843;&#29992; test &#21028;&#26029; /tmp &#26159;&#21542;&#23384;&#22312;&#65292;&#24182;&#25171;&#21360; test &#30340;&#36820;&#22238;&#20540;</span>
+[ -a /tmp ]; <span class="org-builtin">echo</span> $<span class="org-variable-name">?</span>      <span class="org-comment-delimiter"># </span><span class="org-comment">&#21644;&#19978;&#38754;&#23436;&#20840;&#31561;&#20215;&#65292;/tmp &#32943;&#23450;&#26159;&#23384;&#22312;&#30340;&#65292;&#25152;&#20197;&#36755;&#20986;&#26159; 0</span>
+
+<span class="org-builtin">test</span> cond &amp;&amp; cmd1         <span class="org-comment-delimiter"># </span><span class="org-comment">&#21028;&#26029;&#26465;&#20214;&#20026;&#30495;&#26102;&#25191;&#34892; cmd1</span>
+[ cond ] &amp;&amp; cmd1          <span class="org-comment-delimiter"># </span><span class="org-comment">&#21644;&#19978;&#38754;&#23436;&#20840;&#31561;&#20215;</span>
+[ cond ] &amp;&amp; cmd1 || cmd2  <span class="org-comment-delimiter"># </span><span class="org-comment">&#26465;&#20214;&#20026;&#30495;&#25191;&#34892; cmd1 &#21542;&#21017;&#25191;&#34892; cmd2</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">&#21028;&#26029; /etc/passwd &#25991;&#20214;&#26159;&#21542;&#23384;&#22312;</span>
+<span class="org-comment-delimiter"># </span><span class="org-comment">&#32463;&#20856;&#30340; if &#35821;&#21477;&#23601;&#26159;&#21028;&#26029;&#21518;&#38754;&#30340;&#21629;&#20196;&#36820;&#22238;&#20540;&#20026;0&#30340;&#35805;&#65292;&#35748;&#20026;&#26465;&#20214;&#20026;&#30495;&#65292;&#21542;&#21017;&#20026;&#20551;</span>
+<span class="org-keyword">if </span><span class="org-builtin">test</span> -e /etc/passwd; <span class="org-keyword">then</span>
+    <span class="org-builtin">echo</span> <span class="org-string">"alright it exists ... "</span>
+<span class="org-keyword">else</span>
+    <span class="org-builtin">echo</span> <span class="org-string">"it doesn't exist ... "</span>
+<span class="org-keyword">fi</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">&#21644;&#19978;&#38754;&#23436;&#20840;&#31561;&#20215;&#65292;[ &#26159;&#20010;&#21644; test &#19968;&#26679;&#30340;&#21487;&#25191;&#34892;&#31243;&#24207;&#65292;&#20294;&#26368;&#21518;&#19968;&#20010;&#21442;&#25968;&#24517;&#39035;&#20026; ]</span>
+<span class="org-comment-delimiter"># </span><span class="org-comment">&#36825;&#20010;&#21517;&#23383;&#20026; "[" &#30340;&#21487;&#25191;&#34892;&#31243;&#24207;&#19968;&#33324;&#23601;&#22312; /bin &#25110; /usr/bin &#19979;&#38754;&#65292;&#27604; test &#20248;&#38597;&#20123;</span>
+<span class="org-keyword">if</span> [ -e /etc/passwd ]; <span class="org-keyword">then</span>   
+    <span class="org-builtin">echo</span> <span class="org-string">"alright it exists ... "</span>
+<span class="org-keyword">else</span>
+    <span class="org-builtin">echo</span> <span class="org-string">"it doesn't exist ... "</span>
+<span class="org-keyword">fi</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">&#21644;&#19978;&#38754;&#20004;&#20010;&#23436;&#20840;&#31561;&#20215;&#65292;&#20854;&#23454;&#21040; bash &#26102;&#20195; [ &#24050;&#32463;&#26159;&#20869;&#37096;&#21629;&#20196;&#20102;&#65292;&#29992; enable &#21487;&#20197;&#30475;&#21040;</span>
+[ -e /etc/passwd ] &amp;&amp; <span class="org-builtin">echo</span> <span class="org-string">"alright it exists"</span> || <span class="org-builtin">echo</span> <span class="org-string">"it doesn't exist"</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">&#21028;&#26029;&#21464;&#37327;&#30340;&#20540;</span>
+<span class="org-keyword">if</span> [ <span class="org-string">"$varname"</span> = <span class="org-string">"foo"</span> ]; <span class="org-keyword">then</span>
+    <span class="org-builtin">echo</span> <span class="org-string">"this is foo"</span>
+<span class="org-keyword">elif</span> [ <span class="org-string">"$varname"</span> = <span class="org-string">"bar"</span> ]; <span class="org-keyword">then</span>
+    <span class="org-builtin">echo</span> <span class="org-string">"this is bar"</span>
+<span class="org-keyword">else</span>
+    <span class="org-builtin">echo</span> <span class="org-string">"neither"</span>
+<span class="org-keyword">fi</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">&#22797;&#26434;&#26465;&#20214;&#21028;&#26029;&#65292;&#27880;&#24847; || &#21644; &amp;&amp; &#26159;&#23436;&#20840;&#20860;&#23481; POSIX &#30340;&#25512;&#33616;&#20889;&#27861;</span>
+<span class="org-keyword">if</span> [ $<span class="org-variable-name">x</span> -gt 10 ] &amp;&amp; [ $<span class="org-variable-name">x</span> -lt 20 ]; <span class="org-keyword">then</span>
+    <span class="org-builtin">echo</span> <span class="org-string">"yes, between 10 and 20"</span>
+<span class="org-keyword">fi</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">&#21487;&#20197;&#29992; &amp;&amp; &#21629;&#20196;&#36830;&#25509;&#31526;&#26469;&#20570;&#21644;&#19978;&#38754;&#23436;&#20840;&#31561;&#20215;&#30340;&#20107;&#24773;</span>
+[ $<span class="org-variable-name">x</span> -gt 10 ] &amp;&amp; [ $<span class="org-variable-name">x</span> -lt 20 ] &amp;&amp; <span class="org-builtin">echo</span> <span class="org-string">"yes, between 10 and 20"</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">&#23567;&#25324;&#21495;&#21644; -a -o &#26159; POSIX XSI &#25193;&#23637;&#20889;&#27861;&#65292;&#23567;&#25324;&#21495;&#26159;&#23383;&#38754;&#37327;&#65292;&#36755;&#20837;&#26102;&#21069;&#38754;&#35201;&#21152;&#21453;&#26012;&#26438;</span>
+<span class="org-keyword">if</span> [ <span class="org-string">\(</span> $<span class="org-variable-name">x</span> -gt 10 <span class="org-string">\)</span> -a <span class="org-string">\(</span> $<span class="org-variable-name">x</span> -lt 20 <span class="org-string">\)</span> ]; <span class="org-keyword">then</span>
+    <span class="org-builtin">echo</span> <span class="org-string">"yes, between 10 and 20"</span>
+<span class="org-keyword">fi</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">&#21516;&#26679;&#21487;&#20197;&#29992; &amp;&amp; &#21629;&#20196;&#36830;&#25509;&#31526;&#26469;&#20570;&#21644;&#19978;&#38754;&#23436;&#20840;&#31561;&#20215;&#30340;&#20107;&#24773;</span>
+[ <span class="org-string">\(</span> $<span class="org-variable-name">x</span> -gt 10 <span class="org-string">\)</span> -a <span class="org-string">\(</span> $<span class="org-variable-name">x</span> -lt 20 <span class="org-string">\)</span> ] &amp;&amp; <span class="org-builtin">echo</span> <span class="org-string">"yes, between 10 and 20"</span>
+
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">&#21028;&#26029;&#31243;&#24207;&#23384;&#22312;&#30340;&#35805;&#23601;&#25191;&#34892;</span>
+[ -x /bin/ls ] &amp;&amp; /bin/ls -l
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org98d7648" class="outline-2">
+<h2 id="org98d7648"><span class="section-number-2">4</span> 子 shell</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+在 shell 中是否进入子 shell 的情况可以分为几种：
+</p>
+<ol class="org-ol">
+<li>执行 bash 内置命令时，父进程不会创建子进程来执行这些命令，而是直接在当前 bash 环境中执行。但如果将内置命令放在管道后，则此内置命令将和管道左边的进程同属于一个进程组</li>
+<li>执行 bash 命令本身时，会进入新的子 shell 环境</li>
+<li>通过 ./script.sh 的方式执行 shell 脚本时，进入子 shell 环境</li>
+<li>执行 shell 函数时，和执行内置命令的情况类似，因此可以通过 shell 函数来使用或修改当前 shell 的环境</li>
+<li>命令替换，通过 $() 执行命令时会进入子 shell</li>
+<li>使用括号 () 组合一系列命令时也会进入子 shell</li>
+</ol>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.cnblogs.com/f-ck-need-u/p/7446194.html">子 shell 以及什么时候进入子 shell - 骏马金龙 - 博客园</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7cb7785" class="outline-2">
+<h2 id="org7cb7785"><span class="section-number-2">5</span> 命令行参数</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+在简单的 Shell 脚本中我们可以通过一些内置变量来处理命令行参数，包括：
+</p>
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">内置变量</th>
+<th scope="col" class="org-left">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>$0</code></td>
+<td class="org-left">命令本身</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>$1..n</code></td>
+<td class="org-left">第 1 到第 n 个参数</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>$#</code></td>
+<td class="org-left">命令行参数的个数</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>$@</code></td>
+<td class="org-left">参数本身的列表，命令本身除外</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>$*</code></td>
+<td class="org-left">和 <code>$@</code> 相同，只不过 <code>"$*"</code> 会将参数解释成一个字符串，而 <code>"$@"</code> 会解释为参数数组</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>$?</code></td>
+<td class="org-left">上个命令的退出状态，或函数的返回值</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>$$</code></td>
+<td class="org-left">当前 Shell 进程 ID</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+但是在复杂的脚本中我们往往需要更好的处理命令行参数的方式，这时可以使用内置的 <code>getopts</code> 命令：
+</p>
+<div class="org-src-container">
+<pre class="src src-bash"><span class="org-keyword">while </span><span class="org-builtin">getopts</span> <span class="org-string">"a:bc"</span> arg            <span class="org-comment-delimiter"># </span><span class="org-comment">&#36873;&#39033;&#21518;&#38754;&#30340;&#20882;&#21495;&#34920;&#31034;&#35813;&#36873;&#39033;&#38656;&#35201;&#21442;&#25968;</span>
+<span class="org-keyword">do</span>
+    <span class="org-keyword">case</span> $<span class="org-variable-name">arg</span><span class="org-keyword"> in</span>
+        a)
+            <span class="org-builtin">echo</span> <span class="org-string">"a's arg:$OPTARG"</span>  <span class="org-comment-delimiter"># </span><span class="org-comment">&#21442;&#25968;&#23384;&#22312; $OPTARG &#20013;</span>
+            ;;
+        b)
+            <span class="org-builtin">echo</span> <span class="org-string">"b"</span>
+            ;;
+        c)
+            <span class="org-builtin">echo</span> <span class="org-string">"c"</span>
+            ;;
+        ?)                          <span class="org-comment-delimiter"># </span><span class="org-comment">&#24403;&#26377;&#19981;&#35748;&#35782;&#30340;&#36873;&#39033;&#30340;&#26102;&#20505; arg &#20026; ?</span>
+        <span class="org-builtin">echo</span> <span class="org-string">"unkonw argument"</span>
+        ;;
+    <span class="org-keyword">esac</span>
+<span class="org-keyword">done</span>
+</pre>
+</div>
+
+<p>
+参数默认值：
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span class="org-comment-delimiter"># </span><span class="org-comment">not define</span>
+${<span class="org-variable-name">VAR</span>-DEFAULT}
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">not define or ''</span>
+${<span class="org-variable-name">VAR</span>:-DEFAULT}
+</pre>
+</div>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.cnblogs.com/franktan/archive/2010/03/01/1634516.html">Bash Shell 中命令行选项/参数处理 - Frank Tan - 博客园</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org1eb2ab8" class="outline-2">
+<h2 id="org1eb2ab8"><span class="section-number-2">6</span> 代理配置</h2>
+<div class="outline-text-2" id="text-6">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">变量</th>
+<th scope="col" class="org-left">描述</th>
+<th scope="col" class="org-left">值示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">http_proxy</td>
+<td class="org-left">为 http 网站设置代理</td>
+<td class="org-left">10.0.0.51:8080,socks5://192.168.1.1:1080</td>
+</tr>
+
+<tr>
+<td class="org-left">https_proxy</td>
+<td class="org-left">为 https 网站设置代理</td>
+<td class="org-left">同上</td>
+</tr>
+
+<tr>
+<td class="org-left">ftp_proxy</td>
+<td class="org-left">为 ftp 协议设置代理</td>
+<td class="org-left">socks5://192.168.1.1:1080</td>
+</tr>
+
+<tr>
+<td class="org-left">no_proxy</td>
+<td class="org-left">无需代理的主机或域名，可以使用通配符，用「，」分隔</td>
+<td class="org-left">*.aiezu.com</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+配置为函数：
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span class="org-function-name">proxy</span>() {
+    <span class="org-variable-name">http_proxy</span>=&lt;addr&gt; <span class="org-variable-name">https_proxy</span>=&lt;addr&gt; $<span class="org-variable-name">@</span>
+}
+</pre>
+</div>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://aiezu.com/article/linux_bash_set_proxy.html">Linux bash终端设置代理（proxy）访问 - 爱E族</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgdd37341" class="outline-2">
+<h2 id="orgdd37341"><span class="section-number-2">7</span> 配置文件</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+Bash 配置文件的读取需要区分 login shell 和 non-login shell，而是不是 login shell 则是在交互式 shell 中判断的。
+</p>
+
+<p>
+交互式 shell 就是指平时那种输入命令执行的 shell，而非交互式 shell，可以理解为 bash script 的运行环境。
+</p>
+
+<p>
+登录式 shell 是用户使用自己的 user ID 登录交互式 shell 的第一个进程，而在 login shell 内打开的新 shell 就不是 login shell 了，不同 shell 读取的配置文件顺序为：
+</p>
+<pre class="example">
++----------------+-----------+-----------+------+
+|                |Interactive|Interactive|Script|
+|                |login      |non-login  |      |
++----------------+-----------+-----------+------+
+|/etc/profile    |   A       |           |      |
++----------------+-----------+-----------+------+
+|/etc/bash.bashrc|           |    A      |      |
++----------------+-----------+-----------+------+
+|~/.bashrc       |           |    B      |      |
++----------------+-----------+-----------+------+
+|~/.bash_profile |   B1      |           |      |
++----------------+-----------+-----------+------+
+|~/.bash_login   |   B2      |           |      |
++----------------+-----------+-----------+------+
+|~/.profile      |   B3      |           |      |
++----------------+-----------+-----------+------+
+|                |           |           |      |
++----------------+-----------+-----------+------+
+|BASH_ENV        |           |           |  A   |
++----------------+-----------+-----------+------+
+|                |           |           |      |
++----------------+-----------+-----------+------+
+|~/.bash_logout  |    C      |           |      |
++----------------+-----------+-----------+------+
+</pre>
+
+<p>
+其中，读取顺序 A -&gt; B -&gt; C，B1 B2 B3 表示只读取其中第一个发现的文件。
+</p>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://superuser.com/questions/183870/difference-between-bashrc-and-bash-profile">bash - Difference between .bashrc and .bash_profile - Super User</a></li>
+<li><a href="http://einverne.github.io/post/2019/01/login-shell-vs-non-login-shell.html">登录式 shell 和非登录式 shell 区别 | Verne in GitHub</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgbd9c4ab" class="outline-2">
+<h2 id="orgbd9c4ab"><span class="section-number-2">8</span> PROMPT_COMMAND</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+PROMPT_COMMAND 是一个 bash 环境变量，这个变量的中内容是作为一个普通的 bash 命令执行的，而且执行时间是在 bash 显示 prompt 之前，可以通过这个变量来记录执行日志：
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span class="org-variable-name">LOGIN_IP</span>=$(who am i | awk <span class="org-string">'{print $NF}'</span>)
+\export <span class="org-variable-name">PROMPT_COMMAND</span>=<span class="org-string">'{ msg=$(history 1 | { read x y; echo $y; });echo $(date +"%Y-%m-%d %H:%M:%S") [$(whoami)@$SSH_USER$LOGIN_IP `pwd` ]" $msg" &gt;&gt; /var/log/.history; }'</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6fe3f9b" class="outline-2">
+<h2 id="org6fe3f9b"><span class="section-number-2">9</span> 相关技巧</h2>
+<div class="outline-text-2" id="text-9">
+<ul class="org-ul">
+<li>可以通过 type 判断命令是 可执行文件、shell 内置命令还是别名</li>
+<li>可以通过 apropos 和关键词在 man page 描述中查找相应的程序</li>
+<li>通过 command &lt;xxx&gt; 的方式忽略 alias 直接执行程序或者内建命令</li>
+</ul>
+</div>
+
+<div id="outline-container-orga068348" class="outline-3">
+<h3 id="orga068348"><span class="section-number-3">9.1</span> 获取当前目录</h3>
+<div class="outline-text-3" id="text-9-1">
+<div class="org-src-container">
+<pre class="src src-sh"><span class="org-variable-name">DIR</span>=<span class="org-string">"$( cd "$( dirname "${BASH_SOURCE[0]}" )" &gt;/dev/null 2&gt;&amp;1 &amp;&amp; pwd )"</span>
+</pre>
+</div>
+
+<p>
+遍历目录下文件：
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span class="org-function-name">loadScripts</span>() {
+    <span class="org-keyword">for</span> __SCRIPT<span class="org-keyword"> in</span> $<span class="org-variable-name">__CURRENT_DIR</span>/$<span class="org-variable-name">1</span>/*; <span class="org-keyword">do</span>
+        <span class="org-keyword">if</span> [ -r $<span class="org-variable-name">__SCRIPT</span> ]; <span class="org-keyword">then</span>
+            source $<span class="org-variable-name">__SCRIPT</span>
+        <span class="org-keyword">fi</span>
+    <span class="org-keyword">done</span>
+}
+</pre>
+</div>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/59895/how-to-get-the-source-directory-of-a-bash-script-from-within-the-script-itself">How to get the source directory of a Bash script from within the script itself? - Stack Overflow</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc8e60c2" class="outline-2">
+<h2 id="orgc8e60c2"><span class="section-number-2">10</span> 相关问题</h2>
+<div class="outline-text-2" id="text-10">
+</div>
+<div id="outline-container-org8f0e69c" class="outline-3">
+<h3 id="org8f0e69c"><span class="section-number-3">10.1</span> 怎样将字符串转换为小写</h3>
+<div class="outline-text-3" id="text-10-1">
+<p>
+简单点的方式可以使用 <code>tr</code> 命令来完成这一操作：
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">$ echo STRING | tr <span class="org-string">'[:upper:]'</span> <span class="org-string">'[:lower:]'</span>
+</pre>
+</div>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/2264428/how-to-convert-a-string-to-lower-case-in-bash">How to convert a string to lower case in Bash? - Stack Overflow</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4002384" class="outline-3">
+<h3 id="org4002384"><span class="section-number-3">10.2</span> 怎样在命令行格式化 json 字符串</h3>
+<div class="outline-text-3" id="text-10-2">
+<p>
+在拥有 <code>Python</code> 解释器的环境中可以通过如下方式实现：
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">$ curl -s url | python -m json.tool
+</pre>
+</div>
+
+<p>
+更多可以参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/352098/how-can-i-pretty-print-json-in-a-shell-script">unix - How can I pretty-print JSON in a shell script? - Stack Overflow</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7c13349" class="outline-3">
+<h3 id="org7c13349"><span class="section-number-3">10.3</span> 如何在脚本里面调用另一个脚本</h3>
+<div class="outline-text-3" id="text-10-3">
+<p>
+可以使用如下三种方式，其中，使用 <code>bash</code> 的适合无法修改当前 shell 的环境变量，而 <code>.</code> 是 <code>source</code> 的一种 alias：
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">bash another_script.sh
+source another_script.sh
+. another_script.sh
+</pre>
+</div>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/8352851/how-to-call-one-shell-script-from-another-shell-script">bash - How to call one shell script from another shell script? - Stack Overflow</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org22cd275" class="outline-3">
+<h3 id="org22cd275"><span class="section-number-3">10.4</span> 遍历命令行参数</h3>
+<div class="outline-text-3" id="text-10-4">
+<div class="org-src-container">
+<pre class="src src-sh"><span class="org-keyword">for</span> var<span class="org-keyword"> in</span> <span class="org-string">"$@"</span>
+<span class="org-keyword">do</span>
+    <span class="org-builtin">echo</span> <span class="org-string">"$var"</span>
+<span class="org-keyword">done</span>
+</pre>
+</div>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/255898/how-to-iterate-over-arguments-in-a-bash-script">command line - How to iterate over arguments in a Bash script - Stack Overflow</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org9a8ec55" class="outline-3">
+<h3 id="org9a8ec55"><span class="section-number-3">10.5</span> 在函数内部使用 getopts</h3>
+<div class="outline-text-3" id="text-10-5">
+<p>
+在使用 <code>getopts</code> 之前设置 <code>local OPTIND</code> 就行了：
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span class="org-function-name">foo</span>()
+{
+    foo_usage() { <span class="org-builtin">echo</span> <span class="org-string">"foo: [-a &lt;arg&gt;]"</span> 1&gt;&amp;2; <span class="org-keyword">exit</span>; }
+
+    local OPTIND o a
+    <span class="org-keyword">while </span><span class="org-builtin">getopts</span> <span class="org-string">":a:"</span> o; <span class="org-keyword">do</span>
+        <span class="org-keyword">case</span> <span class="org-string">"${o}"</span><span class="org-keyword"> in</span>
+            a)
+                <span class="org-variable-name">a</span>=<span class="org-string">"${OPTARG}"</span>
+                ;;
+            *)
+                foo_usage
+                ;;
+        <span class="org-keyword">esac</span>
+    <span class="org-keyword">done</span>
+    <span class="org-builtin">shift</span> $((OPTIND-1))
+
+    <span class="org-builtin">echo</span> <span class="org-string">"a: [${a}], non-option arguments: $*"</span>
+}
+</pre>
+</div>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/16654607/using-getopts-inside-a-bash-function">Using getopts inside a Bash function - Stack Overflow</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org5e7e13c" class="outline-3">
+<h3 id="org5e7e13c"><span class="section-number-3">10.6</span> 执行传入的命令</h3>
+<div class="outline-text-3" id="text-10-6">
+<div class="org-src-container">
+<pre class="src src-sh"><span class="org-variable-name">COMMAND</span>=<span class="org-string">"$@"</span>
+<span class="org-variable-name">http_proxy</span>=... $<span class="org-variable-name">COMMAND</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3276fa5" class="outline-3">
+<h3 id="org3276fa5"><span class="section-number-3">10.7</span> ${var}, "\(var" 和 "\){var}" 的区别</h3>
+<div class="outline-text-3" id="text-10-7">
+<ol class="org-ol">
+<li>大多数情况下，$var 和 ${var} 是一样的</li>
+<li><p>
+通过双引号包裹时，它们被视为单个 word
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span class="org-variable-name">var</span>=<span class="org-string">"foo bar"</span>
+<span class="org-keyword">for</span> i<span class="org-keyword"> in</span> <span class="org-string">"$var"</span>; <span class="org-keyword">do</span> <span class="org-comment-delimiter"># </span><span class="org-comment">Expands to 'for i in "foo bar"; do...'</span>
+    <span class="org-builtin">echo</span> $<span class="org-variable-name">i</span>         <span class="org-comment-delimiter">#   </span><span class="org-comment">so only runs the loop once</span>
+<span class="org-keyword">done</span>
+<span class="org-comment-delimiter"># </span><span class="org-comment">foo bar</span>
+
+<span class="org-variable-name">var</span>=<span class="org-string">"foo bar"</span>
+<span class="org-keyword">for</span> i<span class="org-keyword"> in</span> <span class="org-string">"$varbar"</span>; <span class="org-keyword">do</span> <span class="org-comment-delimiter"># </span><span class="org-comment">Expands to 'for i in ""; do...' since there is no</span>
+    <span class="org-builtin">echo</span> $<span class="org-variable-name">i</span>            <span class="org-comment-delimiter">#   </span><span class="org-comment">variable named 'varbar', so loop runs once and</span>
+<span class="org-keyword">done</span>                   <span class="org-comment-delimiter">#   </span><span class="org-comment">prints nothing (actually "")</span>
+
+<span class="org-variable-name">var</span>=<span class="org-string">"foo bar"</span>
+<span class="org-keyword">for</span> i<span class="org-keyword"> in</span> <span class="org-string">"${var}bar"</span>; <span class="org-keyword">do</span> <span class="org-comment-delimiter"># </span><span class="org-comment">Expands to 'for i in "foo barbar"; do...'</span>
+    <span class="org-builtin">echo</span> $<span class="org-variable-name">i</span>              <span class="org-comment-delimiter">#   </span><span class="org-comment">so runs the loop once</span>
+<span class="org-keyword">done</span>
+<span class="org-comment-delimiter"># </span><span class="org-comment">foo barbar</span>
+</pre>
+</div></li>
+</ol>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/18135451/what-is-the-difference-between-var-var-and-var-in-the-bash-shell">What is the difference between ${var}, "\(var", and "\){var}" in the Bash shell? - Stack Overflow</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgf8469b4" class="outline-3">
+<h3 id="orgf8469b4"><span class="section-number-3">10.8</span> 单引号和双引号的区别</h3>
+<div class="outline-text-3" id="text-10-8">
+<div class="org-src-container">
+<pre class="src src-sh">$ echo <span class="org-string">"$(echo "upg")"</span>
+upg
+$ echo <span class="org-string">'$(echo "upg")'</span>
+$(<span class="org-builtin">echo</span> <span class="org-string">"upg"</span>)
+</pre>
+</div>
+
+<p>
+参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/6697753/difference-between-single-and-double-quotes-in-bash">shell - Difference between single and double quotes in Bash - Stack Overflow</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org272b340" class="outline-3">
+<h3 id="org272b340"><span class="section-number-3">10.9</span> [ 和 [[ 的区别</h3>
+<div class="outline-text-3" id="text-10-9">
+<p>
+单左括号 [ 命令是一个可执行程序，位于 /bin 或者 /usr/bin 下面，它的使用方法和 test 完全一样，只是要求最后一个参数后要多加一个右括号：
+</p>
+<pre class="example">
+test -a /tmp; echo $?   # 调用 test 判断 /tmp 是否存在，并打印 test 的返回值
+[ -a /tmp ]; echo $?    # 和上面完全等价，/tmp 肯定是存在的，所以输出是 0
+</pre>
+
+<p>
+但是单括号写起来更优雅，而 [[ 则是 bash 的扩展，参考：
+</p>
+<ul class="org-ul">
+<li><a href="https://www.zhihu.com/question/266787434">Bash 脚本中 (、((、[、[[ 的区别是什么？ - 知乎</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+版权声明：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = 'rgb-24bit';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+</div>
+</body>
+</html>
