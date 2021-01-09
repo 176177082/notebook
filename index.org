@@ -303,3 +303,12 @@
   + [[file:notebook/tools/vim.org][Vim 笔记]]
 * windows
   + [[file:notebook/windows/misc.org][Misc]]
+
+#+BEGIN_EXPORT html
+<script>
+  (function(href, text) {
+    let anchor = document.querySelector("#org-div-home-and-up > a");
+    Object.assign(anchor, {"href": href, "text": text});
+  })("/notebook/search.html", "SEARCH");
+</script>
+#+END_EXPORT

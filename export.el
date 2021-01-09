@@ -25,8 +25,8 @@
           (pattern "\\b[0-9/-a-z.]+\\.org\\b") (start 0))
       (while (string-match-p pattern status start)
         (setq file-list
-              (append 'file-list (list (substring status (string-match pattern status start)
-                                                 (match-end 0)))))
+              (add-to-list 'file-list (substring status (string-match pattern status start)
+                                                 (match-end 0))))
         (setq start (match-end 0))))))
 
 (defun export-html-by-file-name (file-name)

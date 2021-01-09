@@ -12,6 +12,16 @@ TITLE_MATCHER = re.compile(r'#\+TITLE:\s*(.+)')
 EXCLUDE_DIR_NAMES = 'image', 'assets', 'static'
 NOTE_SUFFIX = '.org'
 
+SEARCH = """
+#+BEGIN_EXPORT html
+<script>
+  (function(href, text) {
+    let anchor = document.querySelector("#org-div-home-and-up > a");
+    Object.assign(anchor, {"href": href, "text": text});
+  })("/notebook/search.html", "SEARCH");
+</script>
+#+END_EXPORT
+"""
 
 Node = namedtuple('Node', ['path', 'name', 'subdirs', 'subnotes'])
 Note = namedtuple('Note', ['path', 'name'])
@@ -65,6 +75,8 @@ def makecontent(fd: TextIO, notes: Node, level: int = 0):
         fd.write(itemfmt.format(name=subnote.name,
                                 href=subnote.path.as_posix()))
 
+def makesearch(fd: TextIO):
+    fd.write(SEARCH)
 
 def make(fn: str, basedir: str):
     """Generate note index."""
@@ -73,6 +85,7 @@ def make(fn: str, basedir: str):
     with open(fn, 'w', encoding='utf-8') as fd:
         makecatalog(fd, notes)
         makecontent(fd, notes)
+        makesearch(fd)
 
 
 if __name__ == '__main__':
